@@ -98,6 +98,7 @@ def checkNameValid(name=None):
 def startAPP():
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     d(text='YY').click()
+    # os.system('adb shell input tap 600 700')
     print u'启动应用'
 
 
