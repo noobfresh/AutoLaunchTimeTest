@@ -72,8 +72,8 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
     ws.col(4).width = content_size
     #######################################
 
-    titles = ["机型", "版本", "首次启动耗时（s）", "非首次启动耗时（s）", "首页加载耗时"]
-    for index in range(0, 5):
+    titles = ["机型", "版本", "首次启动耗时（s）", "非首次启动耗时（s）"]
+    for index in range(0, titles.__len__()):
         ws.write_merge(startY, startY + 1, index, index, unicode(titles[index], 'utf-8'), style)
 
     ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
@@ -82,7 +82,7 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
         ws.write(startY + i + 2, startX - 1 + 0, list_data[i].app, style)
         ws.write(startY + i + 2, startX - 1 + 1, list_data[i].first_start, style)
         ws.write(startY + i + 2, startX - 1 + 2, list_data[i].start, style)
-        ws.write(startY + i + 2, startX - 1 + 3, list_data[i].home, style)
+        # ws.write(startY + i + 2, startX - 1 + 3, list_data[i].home, style)
 
     file_name = file_path + file_name
     try:
