@@ -10,7 +10,7 @@ from uiautomator import device as d
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/DevelopmentSoft/Sdk/')
 os.environ.update()
 
 # 常量初始化
