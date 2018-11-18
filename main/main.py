@@ -11,7 +11,7 @@ import json
 
 if __name__ == '__main__':
     # start_python()
-
+    #
     # 生成好照片
     device_name = getDeviceInfo()
     device_name = re.sub('\s', '', device_name)
@@ -24,7 +24,7 @@ if __name__ == '__main__':
         file_count = count_file(device_name + "/" + device_name + "_" + str(i))
         real_path = "./" + device_name + "/" + device_name + "_" + str(i) + "/"
         # 优化点，没有必要全裁一遍其实
-        # clip(real_path, file_count)
+        clip(real_path, file_count)
         real_first_feature_path = "./feature/" + device_name + "_launch_feature.jpg"
         first = first_frame_find(file_count, real_path, real_first_feature_path)
         # # 中间会生成多余的照片影响
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         print "first frame = {}, last frame = {}, time = {}".format(first, last, time)
         mean_time += time
     mean_time /= dir_count
-    obj["first_start"] = str(4978)
+    obj["first_start"] = str(mean_time)
     obj["start"] = ""
     json_data = [obj]
     print json.dumps(json_data)
