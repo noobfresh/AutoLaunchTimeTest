@@ -15,6 +15,8 @@ import smtplib
 import sys
 import codecs
 
+file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+
 
 # 同时支持图片和文本附件
 def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', patchFileList=None):
@@ -55,7 +57,8 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     # 设定附件信息
     if not patchFileList is None:
         for patchFile in patchFileList:
-            with codecs.open(patchFile.decode('utf-8'), 'rb') as f:
+            print "附件:" + (file_path + patchFile).decode('utf-8')
+            with codecs.open((file_path + patchFile).decode('utf-8'), 'rb') as f:
                 patchFileName = patchFile.split("/")[-1].decode('utf-8').encode('gb2312')
                 # 设置附件的MIME和文件名，这里是txt类型:
                 msgPatch = MIMEBase('text', 'txt', filename=patchFileName)
@@ -97,16 +100,15 @@ def getContent(filename):
     return contenttmp
 
 
-if __name__ == '__main__':
+def sendEmailWithDefaultConfig():
     user = "1146751867@qq.com"
     password = "lcqctgdcbvklghde"
-    to_users = "caiwenpeng@yy.com"
+    to_users = "191131464@qq.com"
     subject = "首页启动时间数据分析"
     content = "首页启动时间数据分析详见附件："
     contentType = "application/octet-stream"
     try:
-        # patchFile = ["dataresult.xls", "render.html"]
-        patchFile = "render.html"
+        patchFile = ["测试结果.xls", "柱状图.html"]
     except Exception, e:
         patchFile = None
 

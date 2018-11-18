@@ -22,15 +22,23 @@ def create_charts(title, line_data):
         width=600, height=400
     )
 
-    attr = ["第一次", "第二次", "第三次", "第四次", "第五次"]
-
     chart = Line(title, **style.init_style)
 
-    print (title)
+    attr = []
+    print line_data
+
+    size = line_data[0].dataList.__len__()
+    print "len = " + str(size)
+    for i in range(1, size + 1):
+        cur = "第 " + str(i) + " 次"
+        attr.append(cur)
+
+    print attr
+    # print (title)
 
     for data in line_data:
-        print (data.phone_type)
-        print (data.dataList)
+        # print (data.phone_type)
+        # print (data.dataList)
         chart.add(data.phone_type, attr, data.dataList, is_label_show=True)
     page.add(chart)
 
@@ -48,15 +56,14 @@ def create_line(json_file_name, title, result_file_name):
     for data in json_object:
         v = data['datas']
         app = data['app']
-        print v
-        print data
-
         line = LineData(v, app)
         line_data.append(line)
 
-    file_name = file_path + result_file_name +".html"
-    print file_name
-    create_charts(title, line_data).render(file_name)
+    file_name = file_path + result_file_name + ".html"
+
+    print "开始生成柱状图..."
+    print "柱状图生成路径:" + file_name
+    create_charts(title, line_data).render(file_name.decode('utf-8'))
 
 
 def main():
