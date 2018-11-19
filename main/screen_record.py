@@ -64,7 +64,7 @@ def grantPermission():
 
 # 录屏
 def screenRecord(name):
-    subprocess.Popen("adb shell screenrecord --time-limit 40 " + save_dir + name)
+    subprocess.Popen("adb shell screenrecord --time-limit 30 " + save_dir + name)
     print u'录屏开始'
 
 
@@ -145,14 +145,14 @@ def registerEvent(d):
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
 def videoToPhoto(dirname, index):
     curPath = os.getcwd()
-    print curPath
+    print '+++++++++++++' + curPath
     if os.path.isdir(dirname):
         os.removedirs(dirname)
     os.makedirs(dirname)
     chagePath = curPath + '/' + dirname
-    print chagePath
+    print '+++++++++++++' + chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 30 -f ' + 'image2 %05d.jpg'
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 20 -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
@@ -209,14 +209,14 @@ def inputListener(d, data):
     if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-            "yy123456")
+            "1111aaaa")
     if machineName == "R9s" and d(className="android.widget.LinearLayout",
                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
+            timeout=50000):
         d.click(696, 1793)
     if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
                                        resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
+            timeout=50000):
         d.click(458, 1602)
 
 
@@ -265,15 +265,15 @@ def main():
             screenRecord(notfirst_dir + '/' + str(index) + '.mp4')
             killProcess()
             startAPP()
-            time.sleep(15)
-        time.sleep(35)
+            time.sleep(20)
+        time.sleep(30)
         pullRecord(notfirst_dir)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
         print "====" + folder
         os.chdir(folder)
         killProcess()
-        for index in range(firstLaunchTimes):
+        for index in range(notFirstLaunchTimes):
             videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
         os.chdir(path)
 
@@ -284,3 +284,7 @@ if __name__ == "__main__":
     main()
 
 # 问题：多设备连接
+
+
+
+
