@@ -19,4 +19,4 @@ LaunchTime Automoatic Test Demo
      
 2. 折线图
 
-[折线图示例](https://github.com/hutcwp/img-floder/blob/master/line.png)
+![折线图示例](https://github.com/hutcwp/img-floder/blob/master/line.png)
