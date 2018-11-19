@@ -100,14 +100,14 @@ if __name__ == '__main__':
 
     #######################################
     sheet_name = "time_cost"
-    file_name = "测试结果"
+    file_name = "data_result"
     json_file_path = "data.json"
     create_sheet(sheet_name, utf8(file_name), json_file_path)
 
     json_file_name = "datas.json"
     phone_type = "oppo r9s"
     title = phone_type + "首次启动耗时"
-    result_name = "柱状图"
+    result_name = "chart"
     create_line(json_file_name, title, result_name)
 
     sendEmailWithDefaultConfig()

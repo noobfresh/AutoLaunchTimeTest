@@ -4,15 +4,14 @@ import os
 
 from pyExcelerator import *
 
-
 import sys
-
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 # file_path = os.getcwd() + '\\' + os.path.join('dataresult', '')
 file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+
 
 class SheetStruct:
 
@@ -99,6 +98,10 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
 
 
 def create_sheet(sheet_name, file_name, json_file_path):
+    if not os.path.exists(json_file_path):
+        print "创建表格失败：" + json_file_path + "不存在"
+        return
+
     with open(json_file_path, 'r') as f:
         # 顺序保证下
         content = f.read()

@@ -44,6 +44,10 @@ def create_charts(title, line_data):
 
 
 def create_line(json_file_name, title, result_file_name):
+    if not os.path.exists(json_file_name):
+        print "创建表格失败：" + json_file_name + "不存在"
+        return
+
     with open(json_file_name, 'r') as f:
         # 顺序保证下
         content = f.read()

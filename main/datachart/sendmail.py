@@ -57,9 +57,9 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     # 设定附件信息
     if not patchFileList is None:
         for patchFile in patchFileList:
-            print "附件:" + (file_path + patchFile).decode('utf-8')
-            with codecs.open((file_path + patchFile).decode('utf-8'), 'rb') as f:
-                patchFileName = patchFile.split("/")[-1].decode('utf-8').encode('gb2312')
+            print "附件:" + (file_path + patchFile)
+            with codecs.open(file_path + patchFile, 'rb') as f:
+                patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
                 msgPatch = MIMEBase('text', 'txt', filename=patchFileName)
                 # 加上必要的头信息:
