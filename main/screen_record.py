@@ -10,7 +10,7 @@ from uiautomator import device as d
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
 # 常量初始化
@@ -281,6 +281,12 @@ def main():
         for index in range(notFirstLaunchTimes):
             videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
         os.chdir(path)
+
+
+def start_python():
+    thread1 = doInThread(runwatch, d, 0)
+    thread2 = doInThread(inputListener, d, 0)
+    main()
 
 
 if __name__ == "__main__":
