@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 
 from calculate.base_utils import count_dirs, count_file
 from calculate.clip import clip
@@ -19,7 +20,7 @@ def utf8(file_name):
 
 
 if __name__ == '__main__':
-    start = time.time()
+    start = datetime.datetime.now()
     start_python()
     #
     # 生成好照片
@@ -112,5 +113,5 @@ if __name__ == '__main__':
     sendEmailWithDefaultConfig()
 
     print json.dumps(json_data)
-    # end = time.time()
-    # print "all time = {}".format(start-end)
+    end = start = datetime.datetime.now()
+    print "all time = {}".format(end - start)
