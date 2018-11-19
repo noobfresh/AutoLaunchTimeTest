@@ -14,12 +14,16 @@ LaunchTime Automoatic Test Demo
 下载后解压，解压后在目录中找到bin文件夹，把bin目录添加到环境变量path
 #### 5、python库安装
 opencv_python, pillow, numpy, flatten, scikit-image,pyecharts
-,pyExcelerator
+,pyExcelerator,uiautomator
 
 ### 代码部分
 代码主要分为3部分
 #### 1、screen_record.py
-主要通过adb命令和UIAutomator进行应用的安装，弹窗处理，视频录制上传，视频切帧
+主要通过adb命令和UIAutomator进行应用的安装，弹窗处理，视频录制上传，视频切帧。   
+弹窗处理主要通过UIAutomator的对界面元素的点击，部分OPPO手机的安装界面，的取消和安装按钮点击不了，原因是dump出来的xml里面没有这几个按钮，现在的做法是对这些手机分别做处理。    
+暂时只支持单个手机插入，后面会做处理。    
+录屏的视频会在手机/sdcard/screenrecord存一份，所有流程走完后会上传视频，然后通过FFmpeg把视频切成帧。目前还未对视频以及帧的存储目录做处理，可能会有一些问题。    
+目前启动应用只支持YY，后续打算通过配置文件进行处理，扩展到支持其他APP
 #### 2、calculate
 #### 算法部分
 
