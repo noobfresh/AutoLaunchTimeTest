@@ -8,7 +8,7 @@ LaunchTime Automoatic Test Demo
 
 ##### 数据表格统计生成:
 当所有数据跑完之后，会结果会以json的格式生成，现在包括两种数据生成，示例如下：
-1. excel统计表格
+1. excel统计表格：统计某台手机所有测试项平均数据
 
 |机型 | 版本 | 首次启动耗时（s） |非首次启动耗时（s）|
 |---------|---------|---------|---------|
@@ -17,6 +17,6 @@ LaunchTime Automoatic Test Demo
 | | 虎牙6.6.5 | 3.65 |2.15 |
 | |陌陌8.10.4 | 1.63 |2.44|
      
-2. 折线图
+2. 折线图：表示任意测试项平均数据
 
 ![折线图示例](https://github.com/hutcwp/img-floder/blob/master/line.png)
