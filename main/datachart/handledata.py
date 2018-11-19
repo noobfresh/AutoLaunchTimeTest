@@ -4,7 +4,6 @@ import os
 
 from pyExcelerator import *
 
-import datetime
 
 import sys
 
@@ -86,12 +85,15 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
 
     file_name = file_path + file_name
     try:
+        if not os.path.exists(file_path):
+            print "文件路径不存在，现在创建一个..."
+            print file_path
+            os.mkdir(file_path)
+
         w.save(file_name + '.xls')
-    except :
-        new_file_name = file_name + datetime.datetime.now().strftime('_%Y-%m-%d_%H-%M-%S')
-        print (file_name + " Excel表格处于打开中，生成名变换为：" + new_file_name)
-        w.save(new_file_name + '.xls')
-        print ("Excel文件生成路径:" + os.path.abspath(new_file_name))
+    except IOError:
+        print "创建文件失败！，异常如下:"
+        print Exception
     else:
         print ("Excel文件生成路径:" + os.path.abspath(file_name))
 
@@ -115,7 +117,7 @@ def create_sheet(sheet_name, file_name, json_file_path):
 
 def main():
     sheet_name = "time_cost"
-    file_name = "测试结果"
+    file_name = "data_result"
     json_file_path = "data.json"
     create_sheet(sheet_name, file_name.decode('utf-8'), json_file_path)
 

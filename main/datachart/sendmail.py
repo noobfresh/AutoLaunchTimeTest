@@ -108,8 +108,14 @@ def sendEmailWithDefaultConfig():
     content = "首页启动时间数据分析详见附件："
     contentType = "application/octet-stream"
     try:
-        patchFile = ["测试结果.xls", "柱状图.html"]
+        patchFile = []
+        for root, dirs, files in os.walk(file_path):
+            patchFile = files
+        print "收集邮件附件："
+        print patchFile
+
     except Exception, e:
+        print "收集附件失败：" + e
         patchFile = None
 
     authInfo = {}
