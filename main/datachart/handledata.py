@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 # file_path = os.getcwd() + '\\' + os.path.join('dataresult', '')
-file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+file_path = 'C:\\Users\\Administrator\\PycharmProjects\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
 
 class SheetStruct:
 

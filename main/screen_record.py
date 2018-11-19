@@ -10,7 +10,7 @@ from uiautomator import device as d
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/DevelopmentSoft/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
 # 常量初始化
@@ -26,7 +26,6 @@ def getDeviceInfo():
     deviceName = os.popen('adb shell getprop ro.product.model').read()
     global temp_dir
     temp_dir = checkNameValid(deviceName.strip('\n'))
-    print deviceName
     return deviceName
 
 
@@ -57,7 +56,7 @@ def grantPermission():
 
 # 录屏
 def screenRecord(name):
-    subprocess.Popen("adb shell screenrecord --time-limit 30 " + save_dir + name)
+    subprocess.Popen("adb shell screenrecord --time-limit 40 " + save_dir + name)
     print u'录屏开始'
 
 
@@ -97,8 +96,10 @@ def checkNameValid(name=None):
 # 启动应用
 def startAPP():
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
-    d(text='YY').click()
-    # os.system('adb shell input tap 600 700')
+    try:
+        d(text='YY').click()
+    except:
+        d(text='@YY').click()
     print u'启动应用'
 
 
@@ -121,25 +122,29 @@ def uninstallAPK():
 
 # 注册一些点击事件
 def registerEvent(d):
-    d.watcher('allowroot').when(text=u'允许').click(text=u'允许')
-    d.watcher('allow').when(text=u'始终允许').click(text=u'始终允许')
-    d.watcher('anzhuang').when(text=u'继续安装').click(text=u'继续安装')
+    d.watcher('allow').when(text=u'允许').click(text=u'允许')
+    d.watcher('alwaysallow').when(text=u'始终允许').click(text=u'始终允许')
+    d.watcher('stillaz').when(text=u'继续安装').click(text=u'继续安装')
     d.watcher('az').when(text=u'安装').click(text=u'安装')
     d.watcher('complete').when(text=u'完成').click(text=u'完成')
+    # d.watcher('start').when(text='YY').click(text='YY')
+    # d.watcher('startA').when(text='@YY').click(text='@YY')
+    d.watcher('sure').when(text=u'确定').click(text=u'确定')
+    d.watcher('hao').when(text=u'好').click(text=u'好')
 
 
 # 视频转换成帧
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
 def videoToPhoto(dirname, index):
     curPath = os.getcwd()
-    print curPath
+    print "-------------------------------------" + curPath
     if os.path.isdir(dirname):
         os.removedirs(dirname)
     os.makedirs(dirname)
     chagePath = curPath + '/' + dirname
     print chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '\\' + index + '.mp4' + ' -r 60 -f ' + 'image2 %05d.jpg'
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 60 -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
@@ -163,6 +168,9 @@ class FuncThread(threading.Thread):
 
     def isFinished(self):
         return self.finished
+
+    def isStopped(self):
+        return self.stopped
 
 
 # 启动子线程运行一些func
@@ -189,6 +197,22 @@ def runwatch(d, data):
         time.sleep(0.5)
 
 
+# 监听输入密码
+def inputListener(d, data):
+    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
+            timeout=50000):
+        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+            "yy123456")
+    if temp_dir == "OPPOR9s" and d(className="android.widget.LinearLayout",
+                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+        timeout=50000):
+        d.click(696, 1793)
+    if temp_dir == "OPPOR11Plusk" and d(className="android.widget.LinearLayout",
+                                        resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+        timeout=50000):
+        d.click(458, 1602)
+
+
 # main函数，线程sleep时间有待商榷
 def main():
     getDeviceInfo()
@@ -198,14 +222,14 @@ def main():
     times = input()
     print u'请输入要安装的apk名称：'
     apkName = raw_input()
-    installAPK(apkName)
     if opType == 1:
         mkdir(temp_dir)
+        installAPK(apkName)
+        time.sleep(10)
         for index in range(times):
             clearData()
             time.sleep(3)
             screenRecord(temp_dir + '/' + str(index) + '.mp4')
-            time.sleep(3)
             startAPP()
             time.sleep(20)
     elif opType == 2:
@@ -215,13 +239,11 @@ def main():
             grantPermission()
             time.sleep(2)
             """
-            killProcess()
-            time.sleep(2)
             screenRecord(temp_dir + '/' + str(index) + '.mp4')
-            time.sleep(3)
+            killProcess()
             startAPP()
             time.sleep(20)
-    time.sleep(30)
+    time.sleep(40)
     pullRecord(temp_dir)
     path = os.path.abspath('.')
     folder = path + '/' + temp_dir
@@ -230,19 +252,18 @@ def main():
     killProcess()
     for index in range(times):
         videoToPhoto(str(temp_dir + "_" + str(index)), str(index))
+    os.chdir(path)
 
 
 def start_python():
-    doInThread(runwatch, d, 0)
+    thread1a = doInThread(runwatch, d, 0)
+    thread2a = doInThread(inputListener, d, 0)
     main()
 
 
 if __name__ == "__main__":
-    doInThread(runwatch, d, 0)
+    thread1 = doInThread(runwatch, d, 0)
+    thread2 = doInThread(inputListener, d, 0)
     main()
 
 # 问题：多设备连接
-
-
-
-
