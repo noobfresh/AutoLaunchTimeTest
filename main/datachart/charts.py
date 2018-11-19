@@ -25,15 +25,13 @@ def create_charts(title, line_data):
     chart = Line(title, **style.init_style)
 
     attr = []
-    print line_data
 
     size = line_data[0].dataList.__len__()
-    print "len = " + str(size)
+
     for i in range(1, size + 1):
         cur = "第 " + str(i) + " 次"
         attr.append(cur)
 
-    print attr
     # print (title)
 
     for data in line_data:
@@ -46,6 +44,10 @@ def create_charts(title, line_data):
 
 
 def create_line(json_file_name, title, result_file_name):
+    if not os.path.exists(json_file_name):
+        print "创建表格失败：" + json_file_name + "不存在"
+        return
+
     with open(json_file_name, 'r') as f:
         # 顺序保证下
         content = f.read()
@@ -61,8 +63,8 @@ def create_line(json_file_name, title, result_file_name):
 
     file_name = file_path + result_file_name + ".html"
 
-    print "开始生成柱状图..."
-    print "柱状图生成路径:" + file_name
+    print "开始生成图表..."
+    print "图表生成路径:" + file_name
     create_charts(title, line_data).render(file_name.decode('utf-8'))
 
 
@@ -70,7 +72,7 @@ def main():
     json_file_name = "datas.json"
     phone_type = "oppo r9s"
     title = phone_type + "首次启动耗时"
-    result_file_name = str("cheart").decode('utf-8')
+    result_file_name = str("chart").decode('utf-8')
     create_line(json_file_name, title, result_file_name)
 
 
