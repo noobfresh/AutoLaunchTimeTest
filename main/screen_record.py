@@ -237,6 +237,7 @@ def main():
     print u'请输入要安装的apk名称：'
     apkName = raw_input()
     if firstLaunchTimes > 1:
+        uninstallAPK()
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
         installAPK(apkName)
