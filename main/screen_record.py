@@ -214,11 +214,11 @@ def inputListener(d, data):
             "1111aaaa")
     if machineName == "R9s" and d(className="android.widget.LinearLayout",
                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-            timeout=50000):
+        timeout=50000):
         d.click(696, 1793)
     if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
                                        resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-            timeout=50000):
+        timeout=50000):
         d.click(458, 1602)
 
 
@@ -230,11 +230,13 @@ def main():
     # opType=input()
     print u'输入首次启动测试次数'
     firstLaunchTimes = input()
+    firstLaunchTimes += 1
     print u'输入非首次启动测试次数'
     notFirstLaunchTimes = input()
+    notFirstLaunchTimes += 1
     print u'请输入要安装的apk名称：'
     apkName = raw_input()
-    if firstLaunchTimes > 0:
+    if firstLaunchTimes > 1:
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
         installAPK(apkName)
@@ -256,7 +258,7 @@ def main():
             videoToPhoto(str(first_dir + "_" + str(index)), str(index))
         os.chdir(path)
 
-    if notFirstLaunchTimes > 0:
+    if notFirstLaunchTimes > 1:
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
         for index in range(notFirstLaunchTimes):
@@ -286,7 +288,3 @@ if __name__ == "__main__":
     main()
 
 # 问题：多设备连接
-
-
-
-
