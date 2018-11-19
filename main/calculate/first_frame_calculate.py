@@ -13,8 +13,8 @@ def first_frame_find(length, real_path, real_feature_path):
     for i in range(1, length+1):
         src_file_path = real_path + base_utils.adapter_num(i) + ".jpg"
         feature_name = real_path + base_utils.adapter_num(i) + "_feature.jpg"
-        print src_file_path
-        print real_feature_path
+        # print src_file_path
+        # print real_feature_path
         match_img(src_file_path, real_feature_path, threshold, feature_name)
         if base_utils.os.path.exists(feature_name):
             # 首帧思路，如果识别到了，取出截取部分与特征图做个彩色直方图对比，确定

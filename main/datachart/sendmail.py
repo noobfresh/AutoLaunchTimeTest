@@ -103,7 +103,7 @@ def getContent(filename):
 def sendEmailWithDefaultConfig():
     user = "1146751867@qq.com"
     password = "lcqctgdcbvklghde"
-    to_users = "191131464@qq.com"
+    to_users = "191131464@qq.com, pengyangfan@yy.com"
     subject = "首页启动时间数据分析"
     content = "首页启动时间数据分析详见附件："
     contentType = "application/octet-stream"
@@ -123,3 +123,7 @@ def sendEmailWithDefaultConfig():
     #         content = fp.read()
 
     sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType, patchFile)
+
+
+if __name__ == '__main__':
+    sendEmailWithDefaultConfig()
