@@ -13,7 +13,8 @@ LaunchTime Automoatic Test Demo
 [FFmpeg下载地址](https://www.ffmpeg.org/download.html#build-windows "Markdown")   
 下载后解压，解压后在目录中找到bin文件夹，把bin目录添加到环境变量path
 #### 5、python库安装
-
+opencv_python, pillow, numpy, flatten, scikit-image,pyecharts
+,pyExcelerator
 
 ### 代码部分
 代码主要分为3部分
