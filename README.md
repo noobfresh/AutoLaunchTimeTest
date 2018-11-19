@@ -15,6 +15,12 @@ LaunchTime Automoatic Test Demo
 ####5、python库安装
 
 
+###代码部分
+代码主要分为3部分
+####1、screen_record.py
+主要通过adb命令和UIAutomator进行应用的安装，弹窗处理，视频录制上传，视频切帧
+####2、calculate
+####3、datachart
 
 #### 数据表格统计生成:
 当所有数据跑完之后，会结果会以json的格式生成，现在包括两种数据生成，示例如下：
