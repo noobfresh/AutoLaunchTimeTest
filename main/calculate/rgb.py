@@ -44,13 +44,18 @@ def calculate_repos_rgb(folder):
     return mean_r, mean_g, mean_b
 
 
+def calculate_homepage_rgb():
+    rgb_folder = calculate_repos_rgb("homepage")
+    return rgb_folder
+
+
 def compare_rgb(path, rgb_folder):
     rgb_pic = calculate_pic_rgb(path)
     # 主要就是怎么比这几个值了，要根据哪个值为准呢
     # 当前我决定取，rgb每个值都差了15 以上，则认为还没加载完成，这个值取啥一样是个难点
-    if rgb_pic[0] >= rgb_folder[0] + 15:
-        if rgb_pic[1] >= rgb_folder[1] + 20:
-            if rgb_pic[2] >= rgb_folder[2] + 20:
+    if rgb_pic[0] > rgb_folder[0] + 20:
+        if rgb_pic[1] > rgb_folder[1] + 20:
+            if rgb_pic[2] > rgb_folder[2] + 20:
                 return False
     return True
 

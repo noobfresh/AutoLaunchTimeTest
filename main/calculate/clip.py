@@ -23,6 +23,22 @@ def clip(path, count):
         # print base_utils.rename_path(path, i)
 
 
+def clip_specific_pic(path):
+    print path
+    img = Image.open(path)
+    width = img.size[0]
+    height = img.size[1]
+    img = img.crop(
+        (
+            0,
+            300,
+            width,
+            height - 200
+        )
+    )
+    img.save(path)
+
+
 if __name__ == '__main__':
     # for i in range(1, 28):
     #     path = "../homepage/" + base_utils.adapter_num(i) + ".jpg"

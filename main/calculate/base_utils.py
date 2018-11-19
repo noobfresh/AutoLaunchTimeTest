@@ -47,7 +47,7 @@ def rename(count):
 
 def rename_files():
     i = 1
-    path = "./homepage"
+    path = "../homepage"
     for file1 in os.listdir(path):
         if os.path.isfile(os.path.join(path, file1)) == True:
             new_name = rename(i)
@@ -68,4 +68,4 @@ def count_dirs(path):
 
 
 if __name__ == '__main__':
-    print 1
+    rename_files()
