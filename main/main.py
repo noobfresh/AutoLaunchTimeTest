@@ -52,11 +52,11 @@ if __name__ == '__main__':
 
     json_datas = [
         {
-            "app": "7.11 首次启动",
+            "app": u"7.11 首次启动",
             "datas": datas1
         },
         {
-            "app": "7.11 非首次启动",
+            "app": u"7.11 非首次启动",
             "datas": datas2
         }
     ]
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     json_file_name = "datas.json"
     phone_type = device_name
-    title = phone_type + "首次启动耗时"
+    title = phone_type + u"首次启动耗时"
     result_name = "chart"
     create_line(json_file_name, title, result_name)
 

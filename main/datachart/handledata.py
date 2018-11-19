@@ -9,11 +9,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-# file_path = getAppPath() + '\\' + os.path.join('dataresult', '')
 file_path = os.path.dirname(__file__) + "\\dataresult\\"
-
-
-# file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
 
 
 class SheetStruct:
@@ -73,9 +69,9 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
     ws.col(4).width = content_size
     #######################################
 
-    titles = ["机型", "版本", "首次启动耗时（s）", "非首次启动耗时（s）"]
+    titles = [u"机型", u"版本", u"首次启动耗时（s）", u"非首次启动耗时（s）"]
     for index in range(0, titles.__len__()):
-        ws.write_merge(startY, startY + 1, index, index, unicode(titles[index], 'utf-8'), style)
+        ws.write_merge(startY, startY + 1, index, index, unicode(str(titles[index]), 'utf-8'), style)
 
     ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
 
@@ -88,21 +84,21 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
     file_name = file_path + file_name
     try:
         if not os.path.exists(file_path):
-            print "文件路径不存在，现在创建一个..."
+            print u"文件路径不存在，现在创建一个..."
             print file_path
             os.mkdir(file_path)
 
         w.save(file_name + '.xls')
     except IOError:
-        print "创建文件失败！，异常如下:"
+        print u"创建文件失败！，异常如下:"
         print Exception
     else:
-        print ("Excel文件生成路径:" + os.path.abspath(file_name))
+        print (u"Excel文件生成路径:" + os.path.abspath(file_name))
 
 
 def create_sheet(sheet_name, file_name, json_file_path):
     if not os.path.exists(json_file_path):
-        print "创建表格失败：" + json_file_path + "不存在"
+        print u"创建表格失败：" + json_file_path + u"不存在"
         return
 
     with open(json_file_path, 'r') as f:
@@ -112,7 +108,7 @@ def create_sheet(sheet_name, file_name, json_file_path):
         json_object = json.loads(text)
 
     data_list = []
-    print "开始执行写入数据到excel..."
+    print u"开始执行写入数据到excel..."
     for data in json_object:
         print data
         item = SheetStruct(data['phone'], data['app'], data['first_start'], data['start'], data['first_start'])

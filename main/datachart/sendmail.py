@@ -57,7 +57,7 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     # 设定附件信息
     if not patchFileList is None:
         for patchFile in patchFileList:
-            print "附件:" + (file_path + patchFile)
+            print u"附件:" + (file_path + patchFile)
             with codecs.open(file_path + patchFile, 'rb') as f:
                 patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
@@ -86,9 +86,9 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
         smtp.login(user, passwd)
         smtp.sendmail(strFrom, toAddList, msgRoot.as_string())
         smtp.quit()
-        print "邮件发送成功!"
+        print u"邮件发送成功!"
     except Exception, e:
-        print "失败：" + str(e)
+        print u"失败：" + str(e)
 
 
 def getContent(filename):
@@ -101,21 +101,21 @@ def getContent(filename):
 
 
 def sendEmailWithDefaultConfig():
-    user = "1146751867@qq.com"
-    password = "lcqctgdcbvklghde"
-    to_users = "191131464@qq.com, pengyangfan@yy.com"
-    subject = "首页启动时间数据分析"
-    content = "首页启动时间数据分析详见附件："
-    contentType = "application/octet-stream"
+    user = u"1146751867@qq.com"
+    password = u"lcqctgdcbvklghde"
+    to_users = u"191131464@qq.com, pengyangfan@yy.com"
+    subject = u"首页启动时间数据分析"
+    content = u"首页启动时间数据分析详见附件："
+    contentType = u"application/octet-stream"
     try:
         patchFile = []
         for root, dirs, files in os.walk(file_path):
             patchFile = files
-        print "收集邮件附件："
+        print u"收集邮件附件："
         print patchFile
 
     except Exception, e:
-        print "收集附件失败：" + e
+        print u"收集附件失败：" + e
         patchFile = None
 
     authInfo = {}
