@@ -64,7 +64,7 @@ def grantPermission():
 
 # 录屏
 def screenRecord(name):
-    subprocess.Popen("adb shell screenrecord --time-limit 30 " + save_dir + name)
+    subprocess.Popen("adb shell screenrecord --time-limit 20 " + save_dir + name)
     print u'录屏开始'
 
 
@@ -105,8 +105,10 @@ def checkNameValid(name=None):
 def startAPP():
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
+        print "--------start app1"
         d(text='YY').click()
     except:
+        print "--------start app2"
         d(text='@YY').click()
     print u'启动应用'
 
@@ -152,7 +154,7 @@ def videoToPhoto(dirname, index):
     chagePath = curPath + '/' + dirname
     print '+++++++++++++' + chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 20 -f ' + 'image2 %05d.jpg'
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 30 -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
@@ -242,8 +244,8 @@ def main():
             clearData()
             time.sleep(3)
             startAPP()
-            time.sleep(20)
-        time.sleep(30)
+            time.sleep(25)
+        time.sleep(20)
         pullRecord(first_dir)
         path = os.path.abspath('.')
         folder = path + '/' + first_dir
@@ -265,8 +267,8 @@ def main():
             screenRecord(notfirst_dir + '/' + str(index) + '.mp4')
             killProcess()
             startAPP()
-            time.sleep(20)
-        time.sleep(30)
+            time.sleep(25)
+        time.sleep(20)
         pullRecord(notfirst_dir)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
