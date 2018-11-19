@@ -10,7 +10,7 @@ from uiautomator import device as d
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
 os.environ.update()
 
 # 常量初始化
@@ -19,13 +19,21 @@ packageName = 'com.duowan.mobile'
 save_dir = '/sdcard/screenrecord/'
 # 这个要换成设备名称
 temp_dir = 'yy'
+# 手机名称
+machineName = ''
+
+
+# 当前目录
 
 
 # 拿设备信息防止文件夹重名
 def getDeviceInfo():
+    global machineName
     deviceName = os.popen('adb shell getprop ro.product.model').read()
     global temp_dir
     temp_dir = checkNameValid(deviceName.strip('\n'))
+    machineName = d.info['productName']
+    print machineName
     return deviceName
 
 
@@ -38,7 +46,7 @@ def installAPK(name):
     print u'安装成功'
 
 
-# 授权
+# 授权,不生效,弃用
 def grantPermission():
     os.system('adb shell pm grant ' + packageName + ' android.permission.READ_CONTACTS')
     os.system('adb shell pm grant ' + packageName + ' android.permission.INTERNET')
@@ -137,14 +145,14 @@ def registerEvent(d):
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
 def videoToPhoto(dirname, index):
     curPath = os.getcwd()
-    print "-------------------------------------" + curPath
+    print curPath
     if os.path.isdir(dirname):
         os.removedirs(dirname)
     os.makedirs(dirname)
     chagePath = curPath + '/' + dirname
     print chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 60 -f ' + 'image2 %05d.jpg'
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 30 -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
@@ -194,7 +202,6 @@ def runwatch(d, data):
             return True
         # d.watchers.reset()
         d.watchers.run()
-        time.sleep(0.5)
 
 
 # 监听输入密码
@@ -203,12 +210,12 @@ def inputListener(d, data):
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
             "yy123456")
-    if temp_dir == "OPPOR9s" and d(className="android.widget.LinearLayout",
-                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+    if machineName == "R9s" and d(className="android.widget.LinearLayout",
+                                  resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
         d.click(696, 1793)
-    if temp_dir == "OPPOR11Plusk" and d(className="android.widget.LinearLayout",
-                                        resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+    if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
+                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
         d.click(458, 1602)
 
@@ -216,49 +223,59 @@ def inputListener(d, data):
 # main函数，线程sleep时间有待商榷
 def main():
     getDeviceInfo()
-    print u'输入测试类型: 1->首次启动 2->非首次启动'
-    opType = input()
-    print u'输入需要测试几次'
-    times = input()
+    global temp_dir
+    # print u'输入测试类型: 1->首次启动 2->非首次启动'
+    # opType=input()
+    print u'输入首次启动测试次数'
+    firstLaunchTimes = input()
+    print u'输入非首次启动测试次数'
+    notFirstLaunchTimes = input()
     print u'请输入要安装的apk名称：'
     apkName = raw_input()
-    if opType == 1:
-        mkdir(temp_dir)
+    if firstLaunchTimes > 0:
+        first_dir = temp_dir + "_first"
+        mkdir(first_dir)
         installAPK(apkName)
         time.sleep(10)
-        for index in range(times):
+        for index in range(firstLaunchTimes):
+            screenRecord(first_dir + '/' + str(index) + '.mp4')
             clearData()
             time.sleep(3)
-            screenRecord(temp_dir + '/' + str(index) + '.mp4')
             startAPP()
             time.sleep(20)
-    elif opType == 2:
-        mkdir(temp_dir)
-        for index in range(times):
+        time.sleep(30)
+        pullRecord(first_dir)
+        path = os.path.abspath('.')
+        folder = path + '/' + first_dir
+        print "====" + folder
+        os.chdir(folder)
+        killProcess()
+        for index in range(firstLaunchTimes):
+            videoToPhoto(str(first_dir + "_" + str(index)), str(index))
+        os.chdir(path)
+
+    if notFirstLaunchTimes > 0:
+        notfirst_dir = temp_dir + "_notfirst"
+        mkdir(notfirst_dir)
+        for index in range(notFirstLaunchTimes):
             """
             grantPermission()
             time.sleep(2)
             """
-            screenRecord(temp_dir + '/' + str(index) + '.mp4')
+            screenRecord(notfirst_dir + '/' + str(index) + '.mp4')
             killProcess()
             startAPP()
-            time.sleep(20)
-    time.sleep(40)
-    pullRecord(temp_dir)
-    path = os.path.abspath('.')
-    folder = path + '/' + temp_dir
-    print folder
-    os.chdir(folder)
-    killProcess()
-    for index in range(times):
-        videoToPhoto(str(temp_dir + "_" + str(index)), str(index))
-    os.chdir(path)
-
-
-def start_python():
-    thread1a = doInThread(runwatch, d, 0)
-    thread2a = doInThread(inputListener, d, 0)
-    main()
+            time.sleep(15)
+        time.sleep(35)
+        pullRecord(notfirst_dir)
+        path = os.path.abspath('.')
+        folder = path + '/' + notfirst_dir
+        print "====" + folder
+        os.chdir(folder)
+        killProcess()
+        for index in range(firstLaunchTimes):
+            videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
+        os.chdir(path)
 
 
 if __name__ == "__main__":
