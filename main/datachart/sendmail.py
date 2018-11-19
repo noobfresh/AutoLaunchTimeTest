@@ -15,7 +15,7 @@ import smtplib
 import sys
 import codecs
 
-file_path = 'C:\\Users\\Administrator\\PycharmProjects\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
 
 
 # 同时支持图片和文本附件

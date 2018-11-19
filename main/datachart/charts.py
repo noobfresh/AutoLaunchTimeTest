@@ -5,7 +5,7 @@ import os
 from pyecharts import Line, Page, Style
 
 # file_path = os.getcwd() + '\\' + os.path.join('dataresult', '')
-file_path = 'C:\\Users\\Administrator\\PycharmProjects\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
 
 
 class LineData:
