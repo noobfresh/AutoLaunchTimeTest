@@ -15,7 +15,7 @@ import smtplib
 import sys
 import codecs
 
-file_path = 'E:\\APPstart\\AutoLaunchTimeTest\\main\\datachart\\dataresult\\'
+file_path = os.path.dirname(__file__) + "\\dataresult\\"
 
 
 # 同时支持图片和文本附件
