@@ -71,9 +71,11 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
 
     titles = [u"机型", u"版本", u"首次启动耗时（s）", u"非首次启动耗时（s）"]
     for index in range(0, titles.__len__()):
-        ws.write_merge(startY, startY + 1, index, index, unicode(str(titles[index]), 'utf-8'), style)
+        # ws.write_merge(startY, startY + 1, index, index, unicode(str(titles[index]), 'utf-8'), style)
+        ws.write(startY+1, index, unicode(str(titles[index]), 'utf-8'), style)
 
-    ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
+    # ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
+    ws.write(startY + 2, 0, list_data[0].phone, style)
 
     for i in range(0, list_data.__len__()):
         ws.write(startY + i + 2, startX - 1 + 0, list_data[i].app, style)
