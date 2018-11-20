@@ -228,14 +228,41 @@ def main():
     global temp_dir
     # print u'输入测试类型: 1->首次启动 2->非首次启动'
     # opType=input()
-    print u'输入首次启动测试次数'
-    firstLaunchTimes = input()
+    # print u'输入首次启动测试次数'
+    # firstLaunchTimes = input()
+    # firstLaunchTimes += 1
+    # print u'输入非首次启动测试次数'
+    # notFirstLaunchTimes = input()
+    # notFirstLaunchTimes += 1
+    # print u'请输入要安装的apk名称：'
+    # apkName = raw_input()
+    firstLaunchTimes, notFirstLaunchTimes = 0, 0
+    apkName = ""
+    try:
+        print (u'输入首次启动测试次数')
+        firstLaunchTimes = int(raw_input())
+    except Exception as e:
+        print e
+        print u"输入有误，请输入整型"
+        exit(1)
     firstLaunchTimes += 1
-    print u'输入非首次启动测试次数'
-    notFirstLaunchTimes = input()
+    try:
+        print u"输入非首次启动测试次数"
+        notFirstLaunchTimes = int(raw_input())
+    except Exception as e:
+        print e
+        print u"输入有误，请输入整型"
+        exit(1)
     notFirstLaunchTimes += 1
-    print u'请输入要安装的apk名称：'
-    apkName = raw_input()
+    try:
+        print u"输入要安装的apk的名称"
+        apkName = raw_input()
+    except Exception as e:
+        print e
+        print u"输入有误"
+        exit(1)
+    print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
+
     if firstLaunchTimes > 1:
         uninstallAPK()
         first_dir = temp_dir + "_first"

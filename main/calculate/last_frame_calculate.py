@@ -8,7 +8,7 @@ from clip import clip_specific_pic
 
 
 last_frame_feature = "./feature/vivoX7_homepage_feature.jpg"
-threshold = 0.95  # 准确率测试
+threshold = 0.92  # 准确率测试
 base_path = "./extract_folder_all/"
 demo_path = "./homepage/"
 
