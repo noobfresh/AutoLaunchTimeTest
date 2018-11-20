@@ -40,7 +40,7 @@ def calculate(device_name, name_with_suffix):
             datas.append(0)
             print "can't not find first frame"
             continue
-        time = (last - first + 1) * (1000 / 60)
+        time = (last - first + 1) * (1000 / 30)
         datas.append(time)
         print "first frame = {}, last frame = {}, time = {}".format(first, last, time)
         mean_time += time
