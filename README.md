@@ -72,6 +72,6 @@ ps：特征图需保证唯一，放置在feature目录下，
 2. 折线图：表示任意测试项平均数据
 	![折线图示例](https://github.com/hutcwp/img-floder/blob/master/line.png)
 
-
-
+#### 邮件发送
+可自动在数据生成完成后，以邮件的形式发送到指定邮箱
 
