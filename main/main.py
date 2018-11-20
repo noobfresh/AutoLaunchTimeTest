@@ -1,21 +1,13 @@
 # coding=utf-8
 import datetime
-import json
-import os
 import re
 
-
-from datachart.charts import create_line
-from datachart.handledata import create_sheet
+from calculate.conclude import calculate
+from datachart.charts import *
+from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
 from screen_record import getDeviceInfo
 from screen_record import start_python
-from calculate.conclude import calculate
-
-
-def utf8(file_name):
-    return file_name.decode('utf-8')
-
 
 if __name__ == '__main__':
     start_time = datetime.datetime.now()
@@ -63,28 +55,18 @@ if __name__ == '__main__':
 
     print json.dumps(json_data)
 
-    print json.dumps(json_datas)
-
-    # --------------------    写入    -----------------------#
-    fileObject = open('data.json', 'w')
-    fileObject.write(json.dumps(json_data))
-    fileObject.close()
-
-    fileObject = open('datas.json', 'w')
-    fileObject.write(json.dumps(json_datas))
-    fileObject.close()
-
-    #######################################
+    # 生成excel表格
     sheet_name = "time_cost"
     file_name = "data_result"
-    json_file_path = "data.json"
-    create_sheet(sheet_name, utf8(file_name), json_file_path)
+    create_excel(sheet_name, file_name, json_data)
 
-    json_file_name = "datas.json"
-    phone_type = device_name
-    title = phone_type + u"首次启动耗时"
+    # 生成折线图
     result_name = "chart"
-    create_line(json_file_name, title, result_name)
+    chart1 = ChartItem("vivo首次启动耗时", json_datas)
+    chart2 = ChartItem("vivo非首次启动耗时", json_datas)
+    chart_items = [chart1, chart2]
+
+    create_charts(result_name, chart_items)
 
     sendEmailWithDefaultConfig()
 

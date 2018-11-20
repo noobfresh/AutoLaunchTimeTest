@@ -1,10 +1,9 @@
 # ecoding=utf-8
 import json
 import os
+import sys
 
 from pyExcelerator import *
-
-import sys
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -20,6 +19,16 @@ class SheetStruct:
         self.home = home
         self.first_start = first_start
         self.start = start
+
+
+def utf8(file_name):
+    return file_name.decode('utf-8')
+
+
+def write_json(json_data, json_file_name):
+    fileObject = open(json_file_name, 'w')
+    fileObject.write(json.dumps(json_data))
+    fileObject.close()
 
 
 def init_normal_style():
@@ -72,7 +81,7 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
     titles = [u"机型", u"版本", u"首次启动耗时（s）", u"非首次启动耗时（s）"]
     for index in range(0, titles.__len__()):
         # ws.write_merge(startY, startY + 1, index, index, unicode(str(titles[index]), 'utf-8'), style)
-        ws.write(startY+1, index, unicode(str(titles[index]), 'utf-8'), style)
+        ws.write(startY + 1, index, unicode(str(titles[index]), 'utf-8'), style)
 
     # ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
     ws.write(startY + 2, 0, list_data[0].phone, style)
@@ -117,6 +126,12 @@ def create_sheet(sheet_name, file_name, json_file_path):
         data_list.append(item)
 
     create_sheet_by_json(sheet_name, file_name, data_list)
+
+
+def create_excel(sheet_name, file_name, json_data):
+    json_file_path = "excel_datas.json"
+    write_json(json_data, json_file_path)
+    create_sheet(sheet_name, utf8(file_name), json_file_path)
 
 
 def main():
