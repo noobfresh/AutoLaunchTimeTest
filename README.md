@@ -1,5 +1,7 @@
 # AutoLaunchTimeTest
 LaunchTime Automoatic Test Demo
+## 介绍
+使用python结合图像对比，实现自动化测试app启动耗时。
 
 使用流程
 
