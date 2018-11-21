@@ -111,8 +111,11 @@ def startAPP():
         print "--------start app1"
         d(text='YY').click()
     except:
-        print "--------start app2"
-        d(text='@YY').click()
+        try:
+            print "--------start app2"
+            d(text='@YY').click()
+        except:
+            print u"启动失败"
     print u'启动应用'
 
 
@@ -215,26 +218,36 @@ def inputListener(d, data):
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
             "yy123456")
+    print 1
     if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
             "yy123456")
+    print 2
     if machineName == "R9s" and d(className="android.widget.LinearLayout",
                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
         d.click(696, 1793)
+    print 3
     if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
                                        resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
         d.click(458, 1602)
+    print 4
+    if machineName == "PACM00" and d(className="android.widget.LinearLayout",
+                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+        timeout=50000):
+        d.click(458, 1900)
+    print 5
 
 
 # main函数，线程sleep时间有待商榷
 def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     getDeviceInfo()
     global temp_dir
+    firstLaunchTimes = int(firstLaunchTimes) + 1
+    notFirstLaunchTimes = int(notFirstLaunchTimes) + 1
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
-
     if firstLaunchTimes > 1:
         uninstallAPK()
         first_dir = temp_dir + "_first"
@@ -293,5 +306,6 @@ if __name__ == "__main__":
     thread2 = doInThread(inputListener, d, 0)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
     # print 1
+    # d.dump("PACM00.xml")
 
 # 问题：多设备连接

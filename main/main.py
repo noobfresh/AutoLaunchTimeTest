@@ -32,7 +32,7 @@ if __name__ == '__main__':
         "phone": device_name,
         "app": "7.11.1",
         "first_start": mean_time1,
-        "start": mean_time1,
+        "start": mean_time2,
         "home": ""
     }]
 
