@@ -6,8 +6,8 @@ from calculate.conclude import calculate
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
-from screen_record import start_python
-from screen_record import getDeviceInfo
+from screenrecord.screen_record import getDeviceInfo
+from screenrecord.screen_record import start_python
 import sys
 
 import settings
