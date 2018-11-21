@@ -8,10 +8,13 @@ import threading
 import re
 from uiautomator import device as d
 import sys
+import settings
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
+
+
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
 os.environ.update()
 
 # 常量初始化
@@ -160,7 +163,8 @@ def videoToPhoto(dirname, index):
     chagePath = curPath + '/' + dirname
     print '+++++++++++++' + chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 30 -f ' + 'image2 %05d.jpg'
+    print "帧数 = " + str(settings.get_value("ffmpeg"))
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
@@ -235,7 +239,7 @@ def inputListener(d, data):
         d.click(458, 1602)
     print 4
     if machineName == "PACM00" and d(className="android.widget.LinearLayout",
-                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
+                                     resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
         d.click(458, 1900)
     print 5

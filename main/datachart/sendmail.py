@@ -1,19 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import codecs
 #   说明：Python内置对SMTP的支持，可以发送纯文本邮件、HTML邮件以及带附件的邮件
 #   调用方式：python sendmail.py 发件人 发件人密码 收件人列表(逗号隔开) 标题 邮件正文文件 邮件类型(html,plain) 邮件附件(可选)
 import os
+import smtplib
+from email import encoders
+from email.header import Header
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-from email.mime.base import MIMEBase
-from email.header import Header
 from email.utils import parseaddr, formataddr
-from email import encoders
-import smtplib
-import sys
-import codecs
 
 file_path = os.path.dirname(__file__) + "\\dataresult\\"
 
@@ -103,7 +101,7 @@ def getContent(filename):
 def sendEmailWithDefaultConfig():
     user = u"1146751867@qq.com"
     password = u"lcqctgdcbvklghde"
-    to_users = u"191131464@qq.com, pengyangfan@yy.com"
+    to_users = u"191131464@qq.com, pengyangfan@yy.com,weiyi1@yy.com"
     subject = u"首页启动时间数据分析"
     content = u"首页启动时间数据分析详见附件："
     contentType = u"application/octet-stream"

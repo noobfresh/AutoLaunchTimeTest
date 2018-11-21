@@ -4,6 +4,7 @@ from first_frame_calculate import first_frame_find
 from last_frame_calculate import last_frame_find_rgb
 from rgb import calculate_homepage_rgb
 from os.path import exists
+import settings
 
 
 def calculate(device_name, name_with_suffix):
@@ -40,7 +41,8 @@ def calculate(device_name, name_with_suffix):
             datas.append(0)
             print "can't not find first frame"
             continue
-        time = (last - first + 1) * (1000 / 30)
+        print "帧数 = " + str(settings.get_value("ffmpeg"))
+        time = (last - first + 1) * (1000 / settings.get_value("ffmpeg"))
         datas.append(time)
         print "first frame = {}, last frame = {}, time = {}".format(first, last, time)
         mean_time += time
