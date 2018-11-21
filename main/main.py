@@ -8,10 +8,11 @@ from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
 from screen_record import getDeviceInfo
 from screen_record import start_python
+import sys
 
 if __name__ == '__main__':
     start_time = datetime.datetime.now()
-    start_python()
+    start_python(sys.argv[1], sys.argv[2], sys.argv[3])
     end_video_2_frame_time = datetime.datetime.now()
     print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
     # ---------------------------- Calculate part ------------------------------#
@@ -62,8 +63,8 @@ if __name__ == '__main__':
 
     # 生成折线图
     result_name = "chart"
-    chart1 = ChartItem("vivo首次启动耗时", json_datas)
-    chart2 = ChartItem("vivo非首次启动耗时", json_datas)
+    chart1 = ChartItem(device_name + "首次启动耗时", json_datas)
+    chart2 = ChartItem(device_name + "非首次启动耗时", json_datas)
     chart_items = [chart1, chart2]
 
     create_charts(result_name, chart_items)

@@ -7,6 +7,7 @@ import shutil
 import threading
 import re
 from uiautomator import device as d
+import sys
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
@@ -30,10 +31,11 @@ machineName = ''
 def getDeviceInfo():
     global machineName
     deviceName = os.popen('adb shell getprop ro.product.model').read()
+    deviceName = re.sub('\s', '', deviceName)
     global temp_dir
     temp_dir = checkNameValid(deviceName.strip('\n'))
-    machineName = d.info['productName']
-    print machineName
+    machineName = deviceName
+    print "machine name = {}".format(deviceName)
     return deviceName
 
 
@@ -70,6 +72,7 @@ def screenRecord(name):
 
 # 数据上传
 def pullRecord(name):
+    print save_dir + name
     os.system('adb pull ' + save_dir + name)
     print u'数据上传成功'
 
@@ -211,7 +214,11 @@ def inputListener(d, data):
     if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-            "1111aaaa")
+            "yy123456")
+    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
+            timeout=50000):
+        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
+            "yy123456")
     if machineName == "R9s" and d(className="android.widget.LinearLayout",
                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
         timeout=50000):
@@ -223,44 +230,9 @@ def inputListener(d, data):
 
 
 # main函数，线程sleep时间有待商榷
-def main():
+def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     getDeviceInfo()
     global temp_dir
-    # print u'输入测试类型: 1->首次启动 2->非首次启动'
-    # opType=input()
-    # print u'输入首次启动测试次数'
-    # firstLaunchTimes = input()
-    # firstLaunchTimes += 1
-    # print u'输入非首次启动测试次数'
-    # notFirstLaunchTimes = input()
-    # notFirstLaunchTimes += 1
-    # print u'请输入要安装的apk名称：'
-    # apkName = raw_input()
-    firstLaunchTimes, notFirstLaunchTimes = 0, 0
-    apkName = ""
-    try:
-        print (u'输入首次启动测试次数')
-        firstLaunchTimes = int(raw_input())
-    except Exception as e:
-        print e
-        print u"输入有误，请输入整型"
-        exit(1)
-    firstLaunchTimes += 1
-    try:
-        print u"输入非首次启动测试次数"
-        notFirstLaunchTimes = int(raw_input())
-    except Exception as e:
-        print e
-        print u"输入有误，请输入整型"
-        exit(1)
-    notFirstLaunchTimes += 1
-    try:
-        print u"输入要安装的apk的名称"
-        apkName = raw_input()
-    except Exception as e:
-        print e
-        print u"输入有误"
-        exit(1)
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
 
     if firstLaunchTimes > 1:
@@ -310,15 +282,16 @@ def main():
         os.chdir(path)
 
 
-def start_python():
+def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
     thread1 = doInThread(runwatch, d, 0)
     thread2 = doInThread(inputListener, d, 0)
-    main()
+    main(firstLaunchTimes, notFirstLaunchTimes, apkName)
 
 
 if __name__ == "__main__":
     thread1 = doInThread(runwatch, d, 0)
     thread2 = doInThread(inputListener, d, 0)
-    main()
+    main(sys.argv[1], sys.argv[2], sys.argv[3])
+    # print 1
 
 # 问题：多设备连接
