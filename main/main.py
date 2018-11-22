@@ -15,7 +15,7 @@ import sys
 
 import settings
 
-user_config = False
+user_config = True
 
 
 # 从参数中读取帧率
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     apk_name = u"yy.apk"
 
     try:
-        if user_config is True:
+        if user_config is False:
             print "使用命令行输入参数..."
             conf = Config()
             frame = conf.getdefaultconf().frame
