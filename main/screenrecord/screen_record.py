@@ -195,7 +195,9 @@ def videoToPhoto(dirname, index):
     chagePath = curPath + '/' + dirname
     print '+++++++++++++' + chagePath
     os.chdir(chagePath)
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r 30 -f ' + 'image2 %05d.jpg'
+    print "帧数 = " + str(settings.get_value("ffmpeg"))
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
+        settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
