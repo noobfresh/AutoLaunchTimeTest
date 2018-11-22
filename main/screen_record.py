@@ -217,12 +217,12 @@ def inputListener(d, data):
     if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-            "yy123456")
+            "1111aaaa")
     print 1
     if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
             timeout=50000):
         d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
-            "yy123456")
+            "1111aaaa")
     print 2
     if machineName == "R9s" and d(className="android.widget.LinearLayout",
                                   resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
