@@ -251,31 +251,41 @@ def runwatch(d, data):
 
 # 监听输入密码
 def inputListener(d, data):
-    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
-            timeout=50000):
-        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-            "yy123456")
+    machineName = getDeviceInfo()
+    if machineName == "OPPOR11Plusk":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                "1111aaaa")
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(458, 1602)
     print 1
-    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
-            timeout=50000):
-        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
-            "yy123456")
+
+    if machineName == "OPPOR9s":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                "yy123456")
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(696, 1793)
     print 2
-    if machineName == "R9s" and d(className="android.widget.LinearLayout",
-                                  resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(696, 1793)
+
+    if machineName == "PACM00":
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(458, 1900)
     print 3
-    if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
-                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(458, 1602)
+
+    if machineName == "OPPOA59a":
+        if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
+                timeout=50000):
+            d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
+                "yy123456")
     print 4
-    if machineName == "PACM00" and d(className="android.widget.LinearLayout",
-                                     resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(458, 1900)
-    print 5
 
 
 # main函数，线程sleep时间有待商榷
