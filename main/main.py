@@ -6,13 +6,35 @@ from calculate.conclude import calculate
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
-from screen_record import getDeviceInfo
-from screen_record import start_python
+from screenrecord.screen_record import getDeviceInfo
+from screenrecord.screen_record import start_python
 import sys
+
+import settings
+
+
+# 从参数中读取帧率
+def init_ffmpeg(ffmpeg):
+    settings._init()
+    try:
+        if (int(ffmpeg) < 0):
+            raise Exception('num < 0')
+
+        settings.set_value("ffmpeg", ffmpeg)
+    except Exception:
+        settings.set_value("ffmpeg", 30)
+        print "未设置帧率，使用默认的帧率值！"
+
+    print u"帧数 = " + str(settings.get_value("ffmpeg"))
+
 
 if __name__ == '__main__':
     start_time = datetime.datetime.now()
+
+    init_ffmpeg(sys.argv[4])
+    # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
     start_python(sys.argv[1], sys.argv[2], sys.argv[3])
+
     end_video_2_frame_time = datetime.datetime.now()
     print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
     # ---------------------------- Calculate part ------------------------------#

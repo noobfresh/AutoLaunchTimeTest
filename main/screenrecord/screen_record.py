@@ -4,14 +4,14 @@ import os
 import subprocess
 import time
 import shutil
-import threading
+from sub_thread import doInThread
 import re
 from uiautomator import device as d
 import sys
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android')
 os.environ.update()
 
 # 常量初始化
@@ -165,43 +165,6 @@ def videoToPhoto(dirname, index):
     os.chdir(curPath)
 
 
-# 线程函数,用来运行一些watcher，事件监听
-class FuncThread(threading.Thread):
-    def __init__(self, func, *params, **paramMap):
-        threading.Thread.__init__(self)
-        self.func = func
-        self.params = params
-        self.paramMap = paramMap
-        self.rst = None
-        self.finished = False
-
-    def run(self):
-        self.rst = self.func(*self.params, **self.paramMap)
-        self.finished = True
-
-    def getResult(self):
-        return self.rst
-
-    def isFinished(self):
-        return self.finished
-
-    def isStopped(self):
-        return self.stopped
-
-
-# 启动子线程运行一些func
-def doInThread(func, *params, **paramMap):
-    t_setDaemon = None
-    if 't_setDaemon' in paramMap:
-        t_setDaemon = paramMap['t_setDaemon']
-        del paramMap['t_setDaemon']
-    ft = FuncThread(func, *params, **paramMap)
-    if t_setDaemon != None:
-        ft.setDaemon(t_setDaemon)
-    ft.start()
-    return ft
-
-
 # 运行点击事件
 def runwatch(d, data):
     registerEvent(d)
@@ -214,31 +177,41 @@ def runwatch(d, data):
 
 # 监听输入密码
 def inputListener(d, data):
-    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
-            timeout=50000):
-        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-            "1111aaaa")
+    machineName = getDeviceInfo()
+    if machineName == "OPPOR11Plusk":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                "1111aaaa")
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(458, 1602)
     print 1
-    if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
-            timeout=50000):
-        d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
-            "1111aaaa")
+
+    if machineName == "OPPOR9s":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                "yy123456")
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(696, 1793)
     print 2
-    if machineName == "R9s" and d(className="android.widget.LinearLayout",
-                                  resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(696, 1793)
+
+    if machineName == "PACM00":
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(458, 1900)
     print 3
-    if machineName == "R11Plusk" and d(className="android.widget.LinearLayout",
-                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(458, 1602)
+
+    if machineName == "OPPOA59a":
+        if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
+                timeout=50000):
+            d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
+                "yy123456")
     print 4
-    if machineName == "PACM00" and d(className="android.widget.LinearLayout",
-                                       resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(
-        timeout=50000):
-        d.click(458, 1900)
-    print 5
 
 
 # main函数，线程sleep时间有待商榷
@@ -293,6 +266,12 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         for index in range(notFirstLaunchTimes):
             videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
         os.chdir(path)
+
+
+def start_python():
+    thread1 = doInThread(runwatch, d, 0)
+    thread2 = doInThread(inputListener, d, 0)
+    main()
 
 
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
