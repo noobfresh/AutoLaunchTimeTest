@@ -2,7 +2,9 @@
 import datetime
 import re
 
+from config.configs import Config
 from calculate.conclude import calculate
+
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
@@ -12,6 +14,8 @@ from screenrecord.screen_record import start_python
 import sys
 
 import settings
+
+user_config = False
 
 
 # 从参数中读取帧率
@@ -30,16 +34,43 @@ def init_ffmpeg(ffmpeg):
 
 
 if __name__ == '__main__':
+
+    cg = Config()
+
     start_time = datetime.datetime.now()
 
-    try:
-        init_ffmpeg(sys.argv[4])
-    except Exception:
-        init_ffmpeg(-1)
-        MLog.error(u"没有传帧数这个参数!")
+    frame = 0
+    first_start = 0
+    normal_start = 0
+    apk_name = u"yy.apk"
 
-    # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
-    start_python(sys.argv[1], sys.argv[2], sys.argv[3])
+    try:
+        if user_config is True:
+            print "使用命令行输入参数..."
+            conf = Config()
+            frame = conf.getdefaultconf().frame
+            first_start = conf.getdefaultconf().first_start
+            normal_start = conf.getdefaultconf().normal_start
+            apk_name = conf.getdefaultconf().apk_name
+        else:
+            print "使用配置文件参数..."
+            first_start = sys.argv[1]
+            normal_start = sys.argv[2]
+            apk_name = sys.argv[3]
+            frame = sys.argv[4]
+    except Exception:
+        MLog.error(u"获取参数错误,使用默认值")
+        frame = 30
+        first_start = 1
+        normal_start = 1
+        apk_name = u"yy.apk"
+
+    finally:
+        # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
+        print "apk = " + str(apk_name) + " ,first_start = " \
+              + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame)
+        init_ffmpeg(int(frame))
+        start_python(int(first_start), int(normal_start), str(apk_name))
 
     end_video_2_frame_time = datetime.datetime.now()
     print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
