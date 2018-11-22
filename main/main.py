@@ -6,6 +6,7 @@ from calculate.conclude import calculate
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
+from log.log import MLog
 from screenrecord.screen_record import getDeviceInfo
 from screenrecord.screen_record import start_python
 import sys
@@ -31,7 +32,12 @@ def init_ffmpeg(ffmpeg):
 if __name__ == '__main__':
     start_time = datetime.datetime.now()
 
-    init_ffmpeg(sys.argv[4])
+    try:
+        init_ffmpeg(sys.argv[4])
+    except Exception:
+        init_ffmpeg(-1)
+        MLog.error(u"没有传帧数这个参数!")
+
     # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
     start_python(sys.argv[1], sys.argv[2], sys.argv[3])
 
