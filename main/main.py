@@ -15,7 +15,7 @@ import sys
 
 import settings
 
-user_config = True
+user_config = False
 
 
 # 从参数中读取帧率
@@ -28,7 +28,7 @@ def init_ffmpeg(ffmpeg):
         settings.set_value("ffmpeg", ffmpeg)
     except Exception:
         settings.set_value("ffmpeg", 30)
-        print "未设置帧率，使用默认的帧率值！"
+        print u"未设置帧率，使用默认的帧率值！"
 
     print u"帧数 = " + str(settings.get_value("ffmpeg"))
 
@@ -45,15 +45,15 @@ if __name__ == '__main__':
     apk_name = u"yy.apk"
 
     try:
-        if user_config is False:
-            print "使用命令行输入参数..."
+        if user_config is True:
+            print u"使用配置文件参数..."
             conf = Config()
             frame = conf.getdefaultconf().frame
             first_start = conf.getdefaultconf().first_start
             normal_start = conf.getdefaultconf().normal_start
             apk_name = conf.getdefaultconf().apk_name
         else:
-            print "使用配置文件参数..."
+            print u"使用命令行输入参数..."
             first_start = sys.argv[1]
             normal_start = sys.argv[2]
             apk_name = sys.argv[3]
