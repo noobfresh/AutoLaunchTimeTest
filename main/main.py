@@ -4,6 +4,7 @@ import re
 
 from config.configs import Config
 from calculate.conclude import calculate
+from calculate.conclude import new_calculate
 
 from datachart.charts import *
 from datachart.handledata import create_excel
@@ -37,48 +38,52 @@ if __name__ == '__main__':
 
     start_time = datetime.datetime.now()
 
-    frame = 0
-    first_start = 0
-    normal_start = 0
-    apk_name = u"yy.apk"
+    frame = 30
+    first_start = 1
+    normal_start = 1
+    apk_name = u"70003.apk"
+    #
+    # try:
+    #     if user_config is True:
+    #         print u"使用配置文件参数..."
+    #         conf = Config("default.ini")
+    #         frame = conf.getconf("default").frame
+    #         first_start = conf.getconf("default").first_start
+    #         normal_start = conf.getconf("default").normal_start
+    #         apk_name = conf.getconf("default").apk_name
+    #     else:
+    #         print u"使用命令行输入参数..."
+    #         first_start = sys.argv[1]
+    #         normal_start = sys.argv[2]
+    #         apk_name = sys.argv[3]
+    #         frame = sys.argv[4]
+    # except Exception:
+    #     MLog.error(u"获取参数错误,使用默认值")
+    #     frame = 30
+    #     first_start = 1
+    #     normal_start = 1
+    #     apk_name = u"yy.apk"
+    #
+    # finally:
+    #     # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
+    #     print "apk = " + str(apk_name) + " ,first_start = " \
+    #           + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame)
+    #     init_ffmpeg(int(frame))
+    #     start_python(int(first_start), int(normal_start), str(apk_name))
 
-    try:
-        if user_config is True:
-            print u"使用配置文件参数..."
-            conf = Config("default.ini")
-            frame = conf.getconf("default").frame
-            first_start = conf.getconf("default").first_start
-            normal_start = conf.getconf("default").normal_start
-            apk_name = conf.getconf("default").apk_name
-        else:
-            print u"使用命令行输入参数..."
-            first_start = sys.argv[1]
-            normal_start = sys.argv[2]
-            apk_name = sys.argv[3]
-            frame = sys.argv[4]
-    except Exception:
-        MLog.error(u"获取参数错误,使用默认值")
-        frame = 30
-        first_start = 1
-        normal_start = 1
-        apk_name = u"yy.apk"
-
-    finally:
-        # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
-        print "apk = " + str(apk_name) + " ,first_start = " \
-              + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame)
-        init_ffmpeg(int(frame))
-        start_python(int(first_start), int(normal_start), str(apk_name))
+    init_ffmpeg(int(frame))
 
     end_video_2_frame_time = datetime.datetime.now()
     print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
     # ---------------------------- Calculate part ------------------------------#
     #
     # 生成好照片
+    path = os.path.dirname(__file__) + "\\"
+    os.chdir(path)
     device_name = getDeviceInfo()
     device_name = re.sub('\s', '', device_name)
-    mean_time1, datas1 = calculate(device_name, device_name + "_first")
-    mean_time2, datas2 = calculate(device_name, device_name + "_notfirst")
+    mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
+    mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)
     # mean_time2, datas2 = "0", [0]
     end_calculate_time = datetime.datetime.now()
     print u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time)
@@ -102,11 +107,11 @@ if __name__ == '__main__':
 
     json_datas = [
         {
-            "app": u"7.11 首次启动",
+            "app": apk_name + "首次启动",
             "datas": datas1
         },
         {
-            "app": u"7.11 非首次启动",
+            "app": apk_name + "非首次启动",
             "datas": datas2
         }
     ]
@@ -121,8 +126,8 @@ if __name__ == '__main__':
     # 生成折线图
     result_name = "chart"
     chart1 = ChartItem(device_name + "首次启动耗时", json_datas)
-    chart2 = ChartItem(device_name + "非首次启动耗时", json_datas)
-    chart_items = [chart1, chart2]
+    # chart2 = ChartItem(device_name + "非首次启动耗时", json_datas)
+    chart_items = [chart1]
 
     create_charts(result_name, chart_items)
 

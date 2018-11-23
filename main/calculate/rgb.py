@@ -22,7 +22,7 @@ def calculate_pic_rgb(path):
     mean_r /= (width * height)
     mean_g /= (width * height)
     mean_b /= (width * height)
-    print "mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b)
+    # print "mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b)
     return mean_r, mean_g, mean_b
 
 
