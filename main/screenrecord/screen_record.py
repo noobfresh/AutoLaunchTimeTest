@@ -6,6 +6,7 @@ import time
 import shutil
 import threading
 import re
+from uiautomator import Device
 from uiautomator import device as d
 import sys
 import settings
@@ -25,9 +26,13 @@ save_dir = '/sdcard/screenrecord/'
 temp_dir = 'yy'
 # 手机名称
 machineName = ''
+deviceList = []
 
 
-# 当前目录
+def getDevice(series):
+    global deviceList
+    for index in range(len(series)):
+        deviceList[index] = Device(series[index])
 
 
 # 拿设备信息防止文件夹重名
@@ -113,9 +118,6 @@ def startAPP():
     try:
         print u"尝试启动app"
         startAppBySwipe()
-        print "--------start app1"
-        print u"--------start app1"
-        d(text='YY').click()
     except:
         print u"启动app失败！"
 
@@ -299,7 +301,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     firstLaunchTimes = int(firstLaunchTimes)
     notFirstLaunchTimes = int(notFirstLaunchTimes)
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
-    if firstLaunchTimes > 1:
+    if firstLaunchTimes > 0:
         uninstallAPK()
         firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
@@ -327,7 +329,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         videoToPhoto(str(first_dir + "_" + "first"), "first")
         os.chdir(path)
 
-    if notFirstLaunchTimes > 1:
+    if notFirstLaunchTimes > 0:
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
         notfirstTimes = notFirstLaunchTimes * 15
@@ -370,6 +372,5 @@ if __name__ == "__main__":
     settings._init()
     settings.set_value("ffmpeg", 30)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
-
 
 # 问题：多设备连接
