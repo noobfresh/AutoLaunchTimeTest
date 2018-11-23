@@ -114,11 +114,11 @@ def checkNameValid(name=None):
 
 
 # 启动应用
-def startAPP():
+def startAPP(times,video):
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
         print u"尝试启动app"
-        startAppBySwipe()
+        startAppBySwipe(times,video)
     except:
         print u"启动app失败！"
 
@@ -134,7 +134,7 @@ def startAPP():
     #         print u"启动失败"
 
 
-def startAppBySwipe():
+def startAppBySwipe(times,video):
     try:
         pos = d(text="YY").bounds
         print u"start YY"
@@ -145,10 +145,12 @@ def startAppBySwipe():
     print "----------->"
     print pos
     # offset代表偏移量，方便点中logo中间部分
+    screenRecord(times, video)
+    time.sleep(2)
     offset = 0
     x = pos['left'] + offset
     y = pos['top'] + offset
-    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(int(x) + 1) + " " + str(y) + " 1"
+    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(int(x) + 10) + " " + str(y) + " 10"
     print start_shell
     os.system(start_shell)
 
@@ -345,14 +347,14 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
         installAPK(apkName)
-        time.sleep(10)
-        screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
+        time.sleep(30) #后续改成轮询是否有安装包的包名，有再录屏
+        #screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         startTime = time.time()
         for index in range(firstLaunchTimes):
             clearData()
             time.sleep(3)
-            startAPP()
-            time.sleep(15)
+            startAPP(firstTimes, first_dir + '/' + 'first.mp4')
+            time.sleep(20)
         endTime = time.time()
         if firstTimes > int(endTime - startTime):
             print u'尚未录制结束'
@@ -371,7 +373,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
         notfirstTimes = notFirstLaunchTimes * 15
-        screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
+        #screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
         startTime = time.time()
         for index in range(notFirstLaunchTimes):
             """
@@ -380,8 +382,8 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
             """
 
             killProcess()
-            startAPP()
-            time.sleep(12)
+            startAPP(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
+            time.sleep(20)
         endTime = time.time()
         if firstTimes > int(endTime - startTime):
             print u'尚未录制结束'
