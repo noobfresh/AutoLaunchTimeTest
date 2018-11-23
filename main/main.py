@@ -35,8 +35,6 @@ def init_ffmpeg(ffmpeg):
 
 if __name__ == '__main__':
 
-    cg = Config()
-
     start_time = datetime.datetime.now()
 
     frame = 0
@@ -47,11 +45,11 @@ if __name__ == '__main__':
     try:
         if user_config is True:
             print u"使用配置文件参数..."
-            conf = Config()
-            frame = conf.getdefaultconf().frame
-            first_start = conf.getdefaultconf().first_start
-            normal_start = conf.getdefaultconf().normal_start
-            apk_name = conf.getdefaultconf().apk_name
+            conf = Config("default.ini")
+            frame = conf.getconf("default").frame
+            first_start = conf.getconf("default").first_start
+            normal_start = conf.getconf("default").normal_start
+            apk_name = conf.getconf("default").apk_name
         else:
             print u"使用命令行输入参数..."
             first_start = sys.argv[1]

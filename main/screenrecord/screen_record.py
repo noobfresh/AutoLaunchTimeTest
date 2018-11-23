@@ -9,8 +9,10 @@ import re
 from uiautomator import device as d
 import sys
 import settings
+from config.configs import Config
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
+
 os.environ.__delitem__('ANDROID_HOME')
 os.environ.__setitem__('ANDROID_HOME', 'C:/Android')
 os.environ.update()
@@ -111,7 +113,7 @@ def startAPP():
     try:
         print u"尝试启动app"
         startAppBySwipe()
-        print "--------start app1"
+        print u"--------start app1"
         d(text='YY').click()
     except:
         print u"启动app失败！"
@@ -126,11 +128,9 @@ def startAPP():
     #         d(text='@YY').click()
     #     except:
     #         print u"启动失败"
-    print u'启动应用'
 
 
 def startAppBySwipe():
-    pos = []
     try:
         pos = d(text="YY").bounds
         print u"start YY"
@@ -147,11 +147,6 @@ def startAppBySwipe():
     start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(int(x) + 1) + " " + str(y) + " 1"
     print start_shell
     os.system(start_shell)
-
-    print u"启动失败"
-
-
-print u'启动应用'
 
 
 # 杀进程
@@ -171,17 +166,25 @@ def uninstallAPK():
     os.system('adb uninstall ' + packageName)
 
 
+def utf8(file_name):
+    return file_name.decode('utf-8')
+
+
 # 注册一些点击事件
 def registerEvent(d):
-    d.watcher('allow').when(text=u'允许').click(text=u'允许')
-    d.watcher('alwaysallow').when(text=u'始终允许').click(text=u'始终允许')
-    d.watcher('stillaz').when(text=u'继续安装').click(text=u'继续安装')
-    d.watcher('az').when(text=u'安装').click(text=u'安装')
-    d.watcher('complete').when(text=u'完成').click(text=u'完成')
-    # d.watcher('start').when(text='YY').click(text='YY')
-    # d.watcher('startA').when(text='@YY').click(text='@YY')
-    d.watcher('sure').when(text=u'确定').click(text=u'确定')
-    d.watcher('hao').when(text=u'好').click(text=u'好')
+    print u"registerEvent"
+    conf = Config("default.ini")
+    event = conf.getconf("common").click_event
+    # print event
+    num = event.split(',')
+    for index in range(0, num.__len__()):
+        key = 'event' + str(index)
+        item = utf8(num[index])
+        print "key = " + key + " and " + "item = " + item
+        d.watcher(key).when(text=item).click(text=item)
+
+    print u"列出所有watchers"
+    print d.watchers
 
 
 # 视频转换成帧
