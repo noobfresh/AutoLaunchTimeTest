@@ -324,7 +324,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
             time.sleep(15)
         endTime = time.time()
         if firstTimes > int(endTime - startTime):
-            print '尚未录制结束'
+            print u'尚未录制结束'
             time.sleep(firstTimes - int(endTime - startTime) + 1)
         pullRecord(first_dir)
         path = os.path.abspath('.')
