@@ -49,7 +49,7 @@ def getDeviceInfo():
 
 # 安装应用
 def installAPK(name):
-    path = os.path.abspath('.')
+    path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
     print path
     os.system("adb install " + name)
@@ -254,6 +254,13 @@ def runwatch(d, data):
         # d.watchers.reset()
         d.watchers.run()
 
+# 通过配置文件获取密码
+def getPwdByConfig(device_name):
+    conf = Config("device.ini")
+    pwd = conf.getconf("OPPOR11Plusk").password
+    print "device_name = " + str(device_name) + " and " + "pwd = " + str(pwd)
+    return pwd
+
 
 # 监听输入密码
 def inputListener(d, data):
@@ -263,7 +270,7 @@ def inputListener(d, data):
              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-                "1111aaaa")
+                getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(458, 1602)
@@ -274,7 +281,7 @@ def inputListener(d, data):
              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-                "yy123456")
+                getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(696, 1793)
@@ -290,7 +297,7 @@ def inputListener(d, data):
         if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
                 timeout=50000):
             d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
-                "yy123456")
+                getPwdByConfig(machineName))
     print 4
 
 
@@ -346,7 +353,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
             time.sleep(12)
         endTime = time.time()
         if firstTimes > int(endTime - startTime):
-            print '尚未录制结束'
+            print u'尚未录制结束'
             time.sleep(firstTimes - int(endTime - startTime) + 1)
         pullRecord(notfirst_dir)
         path = os.path.abspath('.')
