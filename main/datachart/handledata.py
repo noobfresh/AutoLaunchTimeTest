@@ -1,14 +1,13 @@
 # ecoding=utf-8
 import json
 import os
-import sys
 
 from pyExcelerator import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-file_path = os.path.dirname(__file__) + "\\dataresult\\"
+file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
 
 class SheetStruct:

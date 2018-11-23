@@ -4,8 +4,7 @@ import os
 
 from pyecharts import Line, Page, Style
 
-# file_path = os.getcwd() + '\\' + os.path.join('dataresult', '')
-file_path = os.path.dirname(__file__) + "\\dataresult\\"
+file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
 
 class ChartItem:
@@ -99,12 +98,15 @@ def create_line_by_json(json_file_name, title):
 
 
 def main():
-    json_file_name = u"datas.json"
-    phone_type = u"oppo r9s"
-    title = phone_type + u"首次启动耗时"
-    result_file_name = str(u"chart").decode('utf-8')
-    line = [].append(create_line(json_file_name, title))
-    create_page(line, result_file_name)
+    # 生成折线图
+    json_datas = [{"app": "7.11", "datas": [8266.67, 6233.33, 7300, 7266.67, 6766.67]},
+                  {"app": "7.12", "datas": [5600, 5366.67, 5466.67, 5133.33, 4966.67]}]
+    result_name = "chart"
+    chart1 = ChartItem("折线图样本实例", json_datas)
+    chart2 = ChartItem("折线图样本实例", json_datas)
+    chart_items = [chart1, chart2]
+    create_charts(result_name, chart_items)
+    chart_items = [chart1, chart2]
 
 
 if __name__ == '__main__':

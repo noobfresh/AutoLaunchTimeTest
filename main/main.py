@@ -15,7 +15,7 @@ import sys
 
 import settings
 
-user_config = False
+user_config = True
 
 
 # 从参数中读取帧率

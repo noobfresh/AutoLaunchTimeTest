@@ -28,7 +28,7 @@ class Log(object):
 
         self.suffix = '.txt'
         self.log_time = time.strftime("%Y_%m_%d_%H_%M")
-        self.log_path = os.path.dirname(__file__) + "/files/"
+        self.log_path = os.path.dirname(__file__) + os.sep + "files" + os.sep
         self.log_name = self.log_path + "log_" + self.log_time + self.suffix
 
         if not os.path.exists(self.log_path):

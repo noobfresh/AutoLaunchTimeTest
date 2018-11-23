@@ -13,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 
-file_path = os.path.dirname(__file__) + "\\dataresult\\"
+file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
 
 # 同时支持图片和文本附件
