@@ -13,6 +13,7 @@ import settings
 from config.configs import Config
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
+from log.log import MLog
 
 os.environ.__delitem__('ANDROID_HOME')
 os.environ.__setitem__('ANDROID_HOME', 'C:/Android')
@@ -144,7 +145,7 @@ def startAppBySwipe():
     print "----------->"
     print pos
     # offset代表偏移量，方便点中logo中间部分
-    offset = 20
+    offset = 0
     x = pos['left'] + offset
     y = pos['top'] + offset
     start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(int(x) + 1) + " " + str(y) + " 1"
@@ -179,14 +180,15 @@ def registerEvent(d):
     conf = Config("default.ini")
     event = conf.getconf("common").click_event
     # print event
+    MLog.debug("event = " + event)
     num = event.split(',')
     for index in range(0, num.__len__()):
         key = 'event' + str(index)
         item = utf8(num[index])
-        print "key = " + key + " and " + "item = " + item
+        MLog.debug("key = " + key + " and " + "item = " + item)
         d.watcher(key).when(text=item).click(text=item)
 
-    print u"列出所有watchers"
+    MLog.debug(u"列出所有watchers")
     print d.watchers
 
 
@@ -254,10 +256,11 @@ def runwatch(d, data):
         # d.watchers.reset()
         d.watchers.run()
 
+
 # 通过配置文件获取密码
 def getPwdByConfig(device_name):
     conf = Config("device.ini")
-    pwd = conf.getconf("OPPOR11Plusk").password
+    pwd = conf.getconf(device_name).password
     print "device_name = " + str(device_name) + " and " + "pwd = " + str(pwd)
     return pwd
 
@@ -298,7 +301,35 @@ def inputListener(d, data):
                 timeout=50000):
             d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
                 getPwdByConfig(machineName))
+
     print 4
+
+    if machineName == "OPPOA83":
+        MLog.debug("here 5")
+        MLog.debug(getPwdByConfig(machineName))
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
+            timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                getPwdByConfig(machineName))
+            MLog.debug("安装界面")
+            d(text='安装').click()
+
+    print 5
+
+    if machineName == "MI8":
+        MLog.debug("MI8")
+        MLog.debug(getPwdByConfig(machineName))
+        if d(className="android.widget.Button",
+             resourceId="android:id/button2").wait.exists(
+            timeout=50000):
+
+            MLog.debug("安装界面")
+            d.click(50, 2800)
+
+
+    print 6
 
 
 # main函数，线程sleep时间有待商榷
