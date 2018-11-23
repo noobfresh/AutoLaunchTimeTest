@@ -272,15 +272,37 @@ def getPwdByConfig(device_name):
     return pwd
 
 
+def click_with_pos(class_name, res_id, pos_x, pos_y):
+    if d(className=class_name,
+         resourceId=res_id).wait.exists(timeout=50000):
+        d.click(pos_x, pos_y)
+
+
+def click_with_id(class_name, res_id):
+    if d(className=class_name,
+         resourceId=res_id).wait.exists(timeout=50000):
+        d(className=class_name,
+          resourceId=res_id).click()
+
+
+def set_text_with_id(class_name, res_id, text_content):
+    if d(className=class_name,
+         resourceId=res_id).wait.exists(timeout=50000):
+        d(className=class_name,
+          resourceId=res_id).set_text(text_content)
+
+
 # 监听输入密码
 def inputListener(d, data):
     machineName = getDeviceInfo()
     if machineName == "OPPOR11Plusk":
-        if d(className="android.widget.EditText",
-             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
-            d(className="android.widget.EditText",
-              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-                getPwdByConfig(machineName))
+        # if d(className="android.widget.EditText",
+        #      resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+        #     d(className="android.widget.EditText",
+        #       resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+        #         getPwdByConfig(machineName))
+        set_text_with_id("android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
+                         getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(458, 1602)
@@ -313,13 +335,22 @@ def inputListener(d, data):
 
     if machineName == "OPPOA83":
         MLog.debug(getPwdByConfig(machineName))
-        if d(className="android.widget.EditText",
-             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
-            timeout=50000):
-            d(className="android.widget.EditText",
-              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-                getPwdByConfig(machineName))
-            MLog.debug("===input password ====")
+
+        MLog.debug(u"输入密码界面")
+        set_text_with_id("android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
+                         getPwdByConfig(machineName))
+
+        MLog.debug(u"点击安装按钮")
+        click_with_id("android.widget.Button", "android:id/button1")
+
+        MLog.debug(u"点击安装旧版本")
+        click_with_id("android.widget.TextView", "com.android.packageinstaller:id/btn_continue_install_old")
+
+        MLog.debug(u"来至电脑端未知来源，只能自己配[222, 1160]")
+        click_with_pos("android.widget.LinearLayout", "com.android.packageinstaller:id/bottom_button_layout", 222, 1160)
+
+        MLog.debug(u"完成")
+        click_with_id("android.widget.TextView", "com.android.packageinstaller:id/done_button")
 
     print 5
 
@@ -329,8 +360,10 @@ def inputListener(d, data):
         if d(className="android.widget.Button",
              resourceId="android:id/button2").wait.exists(
             timeout=50000):
+            d(className="android.widget.Button",
+              resourceId="android:id/button2").wait.exists(
+                timeout=50000).clck()
             MLog.debug("安装界面")
-            d.click(50, 2800)
 
     print 6
 
@@ -352,7 +385,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         installAPK(apkName)
         time.sleep(30)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
-        #startTime = time.time()
+        # startTime = time.time()
         for index in range(firstLaunchTimes):
             clearData()
             time.sleep(3)
@@ -377,7 +410,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         mkdir(notfirst_dir)
         notfirstTimes = notFirstLaunchTimes * 15
         # screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
-        #startTime = time.time()
+        # startTime = time.time()
         for index in range(notFirstLaunchTimes):
             """
             grantPermission()
