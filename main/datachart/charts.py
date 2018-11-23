@@ -57,7 +57,7 @@ def create_page(lines, result_file_name):
 def create_line(title, line_data):
     # 横竖坐标的大小
     style = Style(
-        width=600, height=400
+        width=800, height=600
     )
 
     chart = Line(title, **style.init_style)
