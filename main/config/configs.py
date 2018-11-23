@@ -22,7 +22,7 @@ class Config(object):
         # 设置conf.ini路径
         current_dir = os.path.dirname(__file__)
         top_one_dir = os.path.dirname(current_dir)
-        file_name = top_one_dir + "\\config\\" + file_name
+        file_name = top_one_dir + "\\config\\files\\" + file_name
         # 实例化ConfigParser对象
         self.config = ConfigParser.ConfigParser()
         self.config.read(file_name)
