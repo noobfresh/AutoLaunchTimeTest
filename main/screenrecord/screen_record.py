@@ -68,8 +68,8 @@ def grantPermission():
 
 
 # 录屏
-def screenRecord(name):
-    subprocess.Popen("adb shell screenrecord --time-limit 20 " + save_dir + name)
+def screenRecord(times, name):
+    subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
     print u'录屏开始'
 
 
@@ -113,6 +113,7 @@ def startAPP():
     try:
         print u"尝试启动app"
         startAppBySwipe()
+        print "--------start app1"
         print u"--------start app1"
         d(text='YY').click()
     except:
@@ -295,53 +296,63 @@ def inputListener(d, data):
 def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     getDeviceInfo()
     global temp_dir
-    firstLaunchTimes = int(firstLaunchTimes) + 1
-    notFirstLaunchTimes = int(notFirstLaunchTimes) + 1
+    firstLaunchTimes = int(firstLaunchTimes)
+    notFirstLaunchTimes = int(notFirstLaunchTimes)
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
     if firstLaunchTimes > 1:
         uninstallAPK()
+        firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
         installAPK(apkName)
         time.sleep(10)
+        screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
+        startTime = time.time()
         for index in range(firstLaunchTimes):
-            screenRecord(first_dir + '/' + str(index) + '.mp4')
             clearData()
             time.sleep(3)
             startAPP()
-            time.sleep(25)
-        time.sleep(20)
+            time.sleep(15)
+        endTime = time.time()
+        if firstTimes > int(endTime - startTime):
+            print '尚未录制结束'
+            time.sleep(firstTimes - int(endTime - startTime) + 1)
         pullRecord(first_dir)
         path = os.path.abspath('.')
         folder = path + '/' + first_dir
         print "====" + folder
         os.chdir(folder)
         killProcess()
-        for index in range(firstLaunchTimes):
-            videoToPhoto(str(first_dir + "_" + str(index)), str(index))
+
+        videoToPhoto(str(first_dir + "_" + "first"), "first")
         os.chdir(path)
 
     if notFirstLaunchTimes > 1:
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
+        notfirstTimes = notFirstLaunchTimes * 15
+        screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
+        startTime = time.time()
         for index in range(notFirstLaunchTimes):
             """
             grantPermission()
             time.sleep(2)
             """
-            screenRecord(notfirst_dir + '/' + str(index) + '.mp4')
+
             killProcess()
             startAPP()
-            time.sleep(25)
-        time.sleep(20)
+            time.sleep(12)
+        endTime = time.time()
+        if firstTimes > int(endTime - startTime):
+            print '尚未录制结束'
+            time.sleep(firstTimes - int(endTime - startTime) + 1)
         pullRecord(notfirst_dir)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
         print "====" + folder
         os.chdir(folder)
         killProcess()
-        for index in range(notFirstLaunchTimes):
-            videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
+        videoToPhoto(str(notfirst_dir + "_" + "notfirst"), "notfirst")
         os.chdir(path)
 
 
@@ -354,8 +365,11 @@ def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
 if __name__ == "__main__":
     thread1 = doInThread(runwatch, d, 0)
     thread2 = doInThread(inputListener, d, 0)
+
+    # 加上下面两行
+    settings._init()
+    settings.set_value("ffmpeg", 30)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
-    # print 1
-    # d.dump("PACM00.xml")
+
 
 # 问题：多设备连接

@@ -4,7 +4,7 @@ from template_match import match_img
 from color_histogram import calculate_by_hists
 
 first_frame_feature = "./feature/vivoX7_launch_feature.jpg"  # 配置项
-threshold = 0.9
+threshold = 0.95
 base_path = "./extract_folder_all/"
 
 
