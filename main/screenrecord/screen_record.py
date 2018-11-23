@@ -365,7 +365,6 @@ if __name__ == "__main__":
     settings._init()
     settings.set_value("ffmpeg", 30)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
-    # print 1
-    # d.dump("PACM00.xml")
+
 
 # 问题：多设备连接
