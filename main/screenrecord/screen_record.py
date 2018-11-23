@@ -28,6 +28,8 @@ temp_dir = 'yy'
 # 手机名称
 machineName = ''
 deviceList = []
+startTime = time.time()
+endTime = time.time()
 
 
 def getDevice(series):
@@ -114,11 +116,11 @@ def checkNameValid(name=None):
 
 
 # 启动应用
-def startAPP(times,video):
+def startAPP(times, video):
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
         print u"尝试启动app"
-        startAppBySwipe(times,video)
+        startAppBySwipe(times, video)
     except:
         print u"启动app失败！"
 
@@ -134,7 +136,8 @@ def startAPP(times,video):
     #         print u"启动失败"
 
 
-def startAppBySwipe(times,video):
+def startAppBySwipe(times, video):
+    global startTime
     try:
         pos = d(text="YY").bounds
         print u"start YY"
@@ -145,6 +148,7 @@ def startAppBySwipe(times,video):
     print "----------->"
     print pos
     # offset代表偏移量，方便点中logo中间部分
+    startTime = time.time()
     screenRecord(times, video)
     time.sleep(2)
     offset = 0
@@ -307,7 +311,6 @@ def inputListener(d, data):
     print 4
 
     if machineName == "OPPOA83":
-        MLog.debug("here 5")
         MLog.debug(getPwdByConfig(machineName))
         if d(className="android.widget.EditText",
              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(
@@ -315,8 +318,7 @@ def inputListener(d, data):
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
                 getPwdByConfig(machineName))
-            MLog.debug("安装界面")
-            d(text='安装').click()
+            MLog.debug("===input password ====")
 
     print 5
 
@@ -326,10 +328,8 @@ def inputListener(d, data):
         if d(className="android.widget.Button",
              resourceId="android:id/button2").wait.exists(
             timeout=50000):
-
             MLog.debug("安装界面")
             d.click(50, 2800)
-
 
     print 6
 
@@ -337,6 +337,8 @@ def inputListener(d, data):
 # main函数，线程sleep时间有待商榷
 def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     getDeviceInfo()
+    global endTime
+    global startTime
     global temp_dir
     firstLaunchTimes = int(firstLaunchTimes)
     notFirstLaunchTimes = int(notFirstLaunchTimes)
@@ -347,9 +349,9 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
         installAPK(apkName)
-        time.sleep(30) #后续改成轮询是否有安装包的包名，有再录屏
-        #screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
-        startTime = time.time()
+        time.sleep(30)  # 后续改成轮询是否有安装包的包名，有再录屏
+        # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
+        #startTime = time.time()
         for index in range(firstLaunchTimes):
             clearData()
             time.sleep(3)
@@ -373,8 +375,8 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
         notfirstTimes = notFirstLaunchTimes * 15
-        #screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
-        startTime = time.time()
+        # screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
+        #startTime = time.time()
         for index in range(notFirstLaunchTimes):
             """
             grantPermission()
@@ -407,10 +409,12 @@ def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
 if __name__ == "__main__":
     thread1 = doInThread(runwatch, d, 0)
     thread2 = doInThread(inputListener, d, 0)
-
+    time.sleep(30)
     # 加上下面两行
     settings._init()
     settings.set_value("ffmpeg", 30)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
+
+    # os.system("adb shell input swipe 633 1448 634 1448 10")
 
 # 问题：多设备连接
