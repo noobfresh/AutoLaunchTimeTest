@@ -330,7 +330,9 @@ def inputListener(d, data):
                 timeout=50000):
             d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
                 getPwdByConfig(machineName))
-
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(458, 1900)
     print 4
 
     if machineName == "OPPOA83":
@@ -354,15 +356,16 @@ def inputListener(d, data):
 
     print 5
 
-#米8没点是因为没插卡
-    # if machineName == "MI8":
-        # MLog.debug("MI8")
-        # MLog.debug(getPwdByConfig(machineName))
-        # if d(className="android.widget.Button", resourceId="android:id/button2").wait.exists(timeout=50000):
-        #     d(className="android.widget.Button", resourceId="android:id/button2").click()
-        #     MLog.debug("安装界面")
+    if machineName == "OPPOA57":
+        set_text_with_id("android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
+                         getPwdByConfig(machineName))
+        if d(className="android.widget.LinearLayout",
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+            d.click(528, 1218)
+
 
     print 6
+
 
 # main函数，线程sleep时间有待商榷
 def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
@@ -439,8 +442,8 @@ def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
 
 if __name__ == "__main__":
     thread1 = doInThread(runwatch, d, 0)
-    thread2 = doInThread(inputListener, d, 0)
     time.sleep(30)
+    thread2 = doInThread(inputListener, d, 0)
     # 加上下面两行
     settings._init()
     settings.set_value("ffmpeg", 30)
