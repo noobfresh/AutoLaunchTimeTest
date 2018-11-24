@@ -55,6 +55,58 @@ def init_normal_style():
     return style
 
 
+def create_detail_sheet_by_json(sheet_name, file_name, title ,json_data):
+    # 创建一个工作簿
+    w = Workbook()
+    # 创建一个工作表
+    ws = w.add_sheet(sheet_name)
+    style = init_normal_style()
+
+    content_size =6000
+
+    ws.col(1).width = content_size
+    ws.col(2).width = content_size
+    ws.col(3).width = content_size
+
+    # ws.write(2, 4, 'content')  2是行 ，4是列 ，content是内容
+    x_offset = 1
+    y_offset = 2
+
+    print json_data
+
+    ws.write_merge(0, 0, 0, len(json_data[0]) - 1, unicode(str(title), 'utf-8'), style)
+
+    # 写标题
+    ws.write(1, 0, u'次数', style)
+    ws.write(1, 1, u'首次耗时', style)
+    ws.write(1, 2, u'非首次耗时', style)
+
+    for index in range(0, json_data.__len__()):
+        # # 写title
+        # if index == 0:
+        #     for i in range(0, len(json_detail[index].keys())):
+        #         ws.write(1, i, json_detail[index].keys()[i], style)
+
+        ws.write(index + y_offset, 0, json_data[index]['time'], style)
+        ws.write(index + y_offset, 1, json_data[index]['first_start'], style)
+        ws.write(index + y_offset, 2, json_data[index]['normal_start'], style)
+
+    file_name = file_path + file_name
+
+    try:
+        if not os.path.exists(file_path):
+            print u"文件路径不存在，现在创建一个..."
+            print file_path
+            os.mkdir(file_path)
+
+        w.save(file_name + '.xls')
+    except IOError:
+        print u"创建文件失败！，异常如下:"
+        print Exception
+    else:
+        print (u"Excel文件生成路径:" + os.path.abspath(file_name))
+
+
 def create_sheet_by_json(sheet_name, file_name, list_data):
     # 创建一个工作簿
     w = Workbook()
@@ -134,10 +186,18 @@ def create_excel(sheet_name, file_name, json_data):
 
 
 def main():
-    sheet_name = "time_cost"
-    file_name = "data_result"
+    sheet_name = "detail_time_cost"
+    file_name = "data_detail"
     json_file_path = "data.json"
-    create_sheet(sheet_name, file_name.decode('utf-8'), json_file_path)
+    # create_sheet(sheet_name, file_name.decode('utf-8'), json_file_path)
+
+    json_detail = [
+        {"time": "1", "first_start": "4444", "normal_start": "3333"},
+        {"time": "2", "first_start": "4444", "normal_start": "3333"},
+        {"time": "3", "first_start": "4444", "normal_start": "3333"},
+    ]
+
+    create_detail_sheet_by_json(sheet_name, file_name, u"oppo r11 耗时统计",json_detail)
 
 
 if __name__ == '__main__':
