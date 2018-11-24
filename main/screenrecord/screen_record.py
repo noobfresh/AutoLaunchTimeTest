@@ -266,8 +266,8 @@ def doInThread(func, *params, **paramMap):
 def runwatch(d, data):
     registerEvent(d)
     while True:
-        if data == 1:
-            return True
+        if len(d.watchers) == 0:
+            registerEvent(d)
         d.watchers.run()
 
 
@@ -369,7 +369,6 @@ def inputListener(d, data):
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(528, 1218)
-
 
     print 6
 
