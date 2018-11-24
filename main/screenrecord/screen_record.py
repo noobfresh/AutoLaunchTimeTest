@@ -119,34 +119,23 @@ def checkNameValid(name=None):
 def startAPP(times, video):
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
-        print u"尝试启动app"
+        MLog.debug(u"尝试启动app")
         startAppBySwipe(times, video)
     except:
-        print u"启动app失败！"
-
-    # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
-    # try:
-    #     print "--------start app1"
-    #     d(text='YY').click()
-    # except:
-    #     try:
-    #         print "--------start app2"
-    #         d(text='@YY').click()
-    #     except:
-    #         print u"启动失败"
+        MLog.debug(u"startAPP:" + u"启动app失败！")
+        sys.exit(-1)
 
 
 def startAppBySwipe(times, video):
     global startTime
     try:
+        MLog.info("startAppBySwipe:" + u"start YY")
         pos = d(text="YY").bounds
-        print u"start YY"
     except:
+        MLog.info("startAppBySwipe:" + u"start @YY")
         pos = d(text="@YY").bounds
-        print u"start @YY"
 
-    print "----------->"
-    print pos
+    MLog.debug("startAppBySwipe:" + pos)
     # offset代表偏移量，方便点中logo中间部分
     startTime = time.time()
     screenRecord(times, video)
@@ -282,6 +271,7 @@ def getPwdByConfig(device_name):
 def click_with_pos(class_name, res_id, pos_x, pos_y):
     if d(className=class_name,
          resourceId=res_id).wait.exists(timeout=50000):
+        MLog.debug("click_with_pos:" + "x = " + pos_x + "  y =" + pos_y)
         d.click(pos_x, pos_y)
 
 
@@ -349,12 +339,6 @@ def inputListener(d, data):
         set_text_with_id("android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
 
-        MLog.debug(u"点击安装按钮")
-        click_with_id("android.widget.Button", "android:id/button1")
-
-        MLog.debug(u"点击安装旧版本")
-        click_with_id("android.widget.TextView", "com.android.packageinstaller:id/btn_continue_install_old")
-
         MLog.debug(u"来至电脑端未知来源，只能自己配[222, 1160]")
         click_with_pos("android.widget.LinearLayout", "com.android.packageinstaller:id/bottom_button_layout", 222, 1160)
 
@@ -370,7 +354,16 @@ def inputListener(d, data):
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(528, 1218)
 
-    print 6
+    if machineName == "vivoX9":
+        MLog.debug("vivoX9")
+        click_with_pos("android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
+
+    if machineName == "vivoX7":
+        MLog.debug("vivoX7")
+        click_with_pos("android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
+
+
+print 6
 
 
 # main函数，线程sleep时间有待商榷
