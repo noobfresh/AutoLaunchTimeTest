@@ -36,6 +36,7 @@ def init_ffmpeg(ffmpeg):
 
 if __name__ == '__main__':
 
+    MLog.debug("test")
     start_time = datetime.datetime.now()
 
     frame = 30
