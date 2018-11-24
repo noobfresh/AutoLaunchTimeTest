@@ -354,19 +354,15 @@ def inputListener(d, data):
 
     print 5
 
-    if machineName == "MI8":
-        MLog.debug("MI8")
-        MLog.debug(getPwdByConfig(machineName))
-        if d(className="android.widget.Button",
-             resourceId="android:id/button2").wait.exists(
-            timeout=50000):
-            d(className="android.widget.Button",
-              resourceId="android:id/button2").wait.exists(
-                timeout=50000).clck()
-            MLog.debug("安装界面")
+#米8没点是因为没插卡
+    # if machineName == "MI8":
+        # MLog.debug("MI8")
+        # MLog.debug(getPwdByConfig(machineName))
+        # if d(className="android.widget.Button", resourceId="android:id/button2").wait.exists(timeout=50000):
+        #     d(className="android.widget.Button", resourceId="android:id/button2").click()
+        #     MLog.debug("安装界面")
 
     print 6
-
 
 # main函数，线程sleep时间有待商榷
 def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
@@ -437,6 +433,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
     thread1 = doInThread(runwatch, d, 0)
     thread2 = doInThread(inputListener, d, 0)
+    time.sleep(30)
     main(firstLaunchTimes, notFirstLaunchTimes, apkName)
 
 
