@@ -1,17 +1,20 @@
 # coding=utf-8
 import datetime
 import re
-import sys
 
-import settings
-from calculate.conclude import new_calculate
 from config.configs import Config
+from calculate.conclude import calculate
+from calculate.conclude import new_calculate
+
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.screen_record import getDeviceInfo
 from screenrecord.screen_record import start_python
+import sys
+
+import settings
 
 user_config = False
 
@@ -80,8 +83,10 @@ if __name__ == '__main__':
     os.chdir(path)
     device_name = getDeviceInfo()
     device_name = re.sub('\s', '', device_name)
-    mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
-    mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)
+    # mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
+    # mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)
+    mean_time1, datas1 = calculate(device_name, device_name + "_first")
+    mean_time2, datas2 = calculate(device_name, device_name + "_notfirst")
     # mean_time2, datas2 = "0", [0]
     end_calculate_time = datetime.datetime.now()
     MLog.debug(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
