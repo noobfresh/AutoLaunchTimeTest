@@ -1,20 +1,17 @@
 # coding=utf-8
 import datetime
 import re
+import sys
 
-from config.configs import Config
-from calculate.conclude import calculate
+import settings
 from calculate.conclude import new_calculate
-
+from config.configs import Config
 from datachart.charts import *
 from datachart.handledata import create_excel
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.screen_record import getDeviceInfo
 from screenrecord.screen_record import start_python
-import sys
-
-import settings
 
 user_config = False
 
