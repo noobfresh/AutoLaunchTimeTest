@@ -268,7 +268,6 @@ def runwatch(d, data):
     while True:
         if data == 1:
             return True
-        # d.watchers.reset()
         d.watchers.run()
 
 
