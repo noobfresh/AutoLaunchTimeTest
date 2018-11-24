@@ -4,6 +4,9 @@ import base_utils
 
 
 # 计算图片的rgb均值
+from log.log import MLog
+
+
 def calculate_pic_rgb(path):
     im = Image.open(path)
     pix = im.load()
@@ -40,7 +43,7 @@ def calculate_repos_rgb(folder):
     mean_r /= length_file
     mean_g /= length_file
     mean_b /= length_file
-    print "the folder mean rgb: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b)
+    MLog.debug("calculate_repos_rgb: the folder mean rgb: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
     return mean_r, mean_g, mean_b
 
 

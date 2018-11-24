@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 
 from base_utils import rename_path
+from log.log import MLog
 
 
 def match_img(img, target_img, values, match_path):
@@ -39,7 +40,7 @@ def match_img(img, target_img, values, match_path):
             feature = img_rgb[y:y + h, x:x + w]
             # 首帧多了很多遍操作。减少到1次
             cv2.imwrite(match_path, feature)
-            print "clip picture success path = " + img
+            MLog.debug("match_img: clip picture success path = " + img)
         # cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 10)  # 有一个是rgb, 最后这个和画笔粗细有关
 
     # 写下来

@@ -1,12 +1,13 @@
 from PIL import Image
 import os
 import base_utils
+from log.log import MLog
 
 
 def clip(path, count):
     for i in range(1, count + 1):
         complete_path = path + base_utils.adapter_num(i) + ".jpg"
-        print complete_path
+        MLog.debug("clip(): the complete path = {}".format(complete_path))
         img = Image.open(complete_path)
         width = img.size[0]
         height = img.size[1]
@@ -24,7 +25,7 @@ def clip(path, count):
 
 
 def clip_specific_pic(path):
-    print path
+    MLog.debug("clip_specific_pic(): the path = {}".format(path))
     img = Image.open(path)
     width = img.size[0]
     height = img.size[1]

@@ -1,5 +1,6 @@
 # coding=utf-8
 import base_utils
+from log.log import MLog
 from rgb import compare_rgb
 from rgb import calculate_repos_rgb
 from template_match import match_img
@@ -31,7 +32,7 @@ def last_frame_find_rgb(length, from_index, real_path, real_feature_path, rgb_fo
             clip_specific_pic(src_file_path)
             if compare_rgb(src_file_path, rgb_folder):
                 return i
-        print src_file_path + " is not last frame"
+        MLog.debug("last_frame_find_rgb: " + src_file_path + " is not last frame")
     return -1
 
 
@@ -46,7 +47,7 @@ def new_last_frame_find_rgb(start_index, length, real_path, real_feature_path, r
 
             degree = calculate_by_hists(last_frame_feature, real_path + feature_name)
             # 这个值是否还可以再调一下？
-            print u"妈的这个东西的degreee = {}".format(str(degree))
+            MLog.debug(u"new_last_frame_find_rgb: color degreee = {}".format(str(degree)))
             if degree < 0.41:
                 continue
 
@@ -54,7 +55,7 @@ def new_last_frame_find_rgb(start_index, length, real_path, real_feature_path, r
             clip_specific_pic(src_file_path)
             if compare_rgb(src_file_path, rgb_folder):
                 return i
-        print src_file_path + " is not last frame"
+        MLog.debug("new_last_frame_find_rgb: " + src_file_path + " is not last frame")
     return -1
 
 

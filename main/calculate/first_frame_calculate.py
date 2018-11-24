@@ -1,5 +1,6 @@
 # coding=utf-8
 import base_utils
+from log.log import MLog
 from template_match import match_img
 from color_histogram import calculate_by_hists
 
@@ -22,7 +23,7 @@ def first_frame_find(length, real_path, real_feature_path):
             # print degree
             if degree > 0.6:
                 return i
-        print src_file_path + " is not first frame"
+        MLog.debug("first_frame_find: " + src_file_path + " is not first frame")
     return -1
 
 
@@ -39,7 +40,7 @@ def new_first_frame_find(start_index, length, real_path, real_feature_path):
             # print degree
             if degree > 0.6:
                 return i
-        print src_file_path + " is not first frame"
+        MLog.debug("new_first_frame_find: " + src_file_path + " is not first frame")
     return -1
 
 

@@ -3,11 +3,13 @@ import os
 
 
 # path 的相关问题，要想办法统一
+from log.log import MLog
+
 
 def count_file(folder):
     length = len(
         [name for name in os.listdir("./" + folder + "/") if os.path.isfile(os.path.join("./" + folder + "/", name))])
-    print length
+    MLog.debug("the folder = {}, which length = {}".format(folder, length))
     return length
 
 
@@ -52,7 +54,7 @@ def rename_files():
         if os.path.isfile(os.path.join(path, file1)) == True:
             new_name = rename(i)
             i += 1
-            print new_name
+            MLog.debug("其实这个方法我是拿来懒得手动改名字的, newname = {}".format(new_name))
             os.rename(os.path.join(path, file1), os.path.join(path, new_name))
             print "ok"
 
