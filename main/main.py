@@ -21,6 +21,7 @@ user_config = False
 
 # 从参数中读取帧率
 def init_ffmpeg(ffmpeg):
+    MLog.debug("我是新分支的一个log")
     settings._init()
     try:
         if (int(ffmpeg) < 0):
