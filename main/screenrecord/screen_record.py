@@ -152,10 +152,16 @@ def startAppBySwipe(times, video):
     screenRecord(times, video)
     time.sleep(2)
     offset = 0
-    x = pos['left'] + offset
-    y = pos['top'] + offset
-    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(int(x) + 10) + " " + str(y) + " 10"
-    print start_shell
+    left = pos['left'] + offset
+    top = pos['top'] + offset
+    right = pos['right']
+    bottom = pos['bottom']
+
+    x = (left + right) >> 1
+    y = (top + bottom) >> 1
+    duration = 10
+    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(y) + " " + str(duration)
+    MLog.info(start_shell)
     os.system(start_shell)
 
 
