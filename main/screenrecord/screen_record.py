@@ -160,7 +160,8 @@ def startAppBySwipe(times, video):
     x = (left + right) >> 1
     y = (top + bottom) >> 1
     duration = 10
-    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(y) + " " + str(duration)
+    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(y) + " " + str(
+        duration)
     MLog.info(start_shell)
     os.system(start_shell)
 
@@ -188,7 +189,8 @@ def utf8(file_name):
 
 # 注册一些点击事件
 def registerEvent(d):
-    print u"registerEvent"
+    d.watchers.remove()
+    print u"registerEvent" + str(d.watchers)
     conf = Config("default.ini")
     event = conf.getconf("common").click_event
     # print event
@@ -348,11 +350,11 @@ def inputListener(d, data):
         set_text_with_id("android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
 
-        MLog.debug(u"点击安装按钮")
-        click_with_id("android.widget.Button", "android:id/button1")
+        # MLog.debug(u"点击安装按钮")
+        # click_with_id("android.widget.Button", "android:id/button1")
 
-        MLog.debug(u"点击安装旧版本")
-        click_with_id("android.widget.TextView", "com.android.packageinstaller:id/btn_continue_install_old")
+        # MLog.debug(u"点击安装旧版本")
+        # click_with_id("android.widget.TextView", "com.android.packageinstaller:id/btn_continue_install_old")
 
         MLog.debug(u"来至电脑端未知来源，只能自己配[222, 1160]")
         click_with_pos("android.widget.LinearLayout", "com.android.packageinstaller:id/bottom_button_layout", 222, 1160)
@@ -368,7 +370,6 @@ def inputListener(d, data):
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(528, 1218)
-
 
     print 6
 
@@ -455,6 +456,6 @@ if __name__ == "__main__":
     settings.set_value("ffmpeg", 30)
     main(sys.argv[1], sys.argv[2], sys.argv[3])
 
-    # os.system("adb shell input swipe 633 1448 634 1448 10")
+    # os.system("adb shell input swipe 192 448 193 448 3000")
 
 # 问题：多设备连接
