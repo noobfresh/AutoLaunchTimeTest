@@ -131,11 +131,12 @@ def startAppBySwipe(times, video):
     try:
         MLog.info("startAppBySwipe:" + u"start YY")
         pos = d(text="YY").bounds
-    except:
+    except Exception:
+        MLog.error("startAppBySwipe:" + str(Exception.message))
         MLog.info("startAppBySwipe:" + u"start @YY")
         pos = d(text="@YY").bounds
 
-    MLog.debug("startAppBySwipe:" + pos)
+    MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
     startTime = time.time()
     screenRecord(times, video)
@@ -271,7 +272,7 @@ def getPwdByConfig(device_name):
 def click_with_pos(class_name, res_id, pos_x, pos_y):
     if d(className=class_name,
          resourceId=res_id).wait.exists(timeout=50000):
-        MLog.debug("click_with_pos:" + "x = " + pos_x + "  y =" + pos_y)
+        MLog.debug("click_with_pos:" + "x = " + str(pos_x) + "  y =" + str(pos_y))
         d.click(pos_x, pos_y)
 
 
@@ -356,10 +357,6 @@ def inputListener(d, data):
 
     if machineName == "vivoX9":
         MLog.debug("vivoX9")
-        click_with_pos("android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
-
-    if machineName == "vivoX7":
-        MLog.debug("vivoX7")
         click_with_pos("android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
 
 
