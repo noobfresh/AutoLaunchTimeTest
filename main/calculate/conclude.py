@@ -11,16 +11,16 @@ import settings
 
 
 def calculate(device_name, name_with_suffix):
-    dir_count = count_dirs("./" + name_with_suffix)
+    dir_count = count_dirs("./screenrecord/" + name_with_suffix)
     real_num = dir_count  # 真实有效数据个数（存在找不到首帧，或者末尾帧的情况，这种情况下，直接抛弃数据）
     mean_time = 0
     datas = []
     rgb_folder = calculate_homepage_rgb()
     MLog.debug("calculate: dir_count = {}".format(dir_count))
-    for i in range(1, dir_count):
+    for i in range(0, dir_count):
         # 取指定目录下的file count
-        file_count = count_file(name_with_suffix + "/" + name_with_suffix + "_" + str(i))
-        real_path = "./" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
+        file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))
+        real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
         real_first_feature_path = "./feature/" + device_name + "_launch_feature.jpg"
         if not exists(real_first_feature_path):
             MLog.debug("calculate: first, there is no adapted feature pic for current Phone")

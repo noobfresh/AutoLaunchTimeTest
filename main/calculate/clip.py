@@ -41,20 +41,5 @@ def clip_specific_pic(path):
 
 
 if __name__ == '__main__':
-    # for i in range(1, 28):
-    #     path = "../homepage/" + base_utils.adapter_num(i) + ".jpg"
-    #     img = Image.open(path)
-    #     width = img.size[0]
-    #     height = img.size[1]
-    #     img = img.crop(
-    #         (
-    #             0,
-    #             300,
-    #             width,
-    #             height - 200
-    #         )
-    #     )
-    #     # os.remove(path)
-    #     img.save("../homepage/" + base_utils.adapter_num(i) + ".jpg")
-    #     print path
+    clip_specific_pic("../screenrecord/MI8_first/MI8_first_0/00475.jpg")
     print 1

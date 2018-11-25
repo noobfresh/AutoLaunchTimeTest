@@ -16,7 +16,7 @@ import sys
 
 import settings
 
-user_config = False
+user_config = True
 
 
 # 从参数中读取帧率
@@ -73,7 +73,6 @@ if __name__ == '__main__':
         start_python(int(first_start), int(normal_start), str(apk_name))
 
     # init_ffmpeg(int(frame))
-
     end_video_2_frame_time = datetime.datetime.now()
     print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
     # ---------------------------- Calculate part ------------------------------#

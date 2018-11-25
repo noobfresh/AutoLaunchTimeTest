@@ -84,6 +84,7 @@ def screenRecord(times, name):
         print "start"
         time.sleep(5)
     else:
+        print(name + "         ----------------------------------                ---------------------------")
         subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
     print u'录屏开始'
 
@@ -346,6 +347,11 @@ def inputListener(d, data):
     print 2
 
     if machineName == "PACM00":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(458, 1900)
@@ -406,10 +412,10 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     if firstLaunchTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots")
-            print "删除 screenshot==="
+            print u"删除 screenshot==="
             path = os.path.abspath('.')
             print path
-            os.chdir(path)
+            os.chdir(path + "/screenrecord")
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
         uninstallAPK()
@@ -468,7 +474,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
             """
 
             killProcess()
-            startAPP(20, notfirst_dir + '/' + 'notfirst.mp4')
+            startAPP(20, notfirst_dir + '/' + str(index) + ".mp4")
             time.sleep(20)
             if machineName == "PACM00":
                 os.system('adb shell service call statusbar 1')

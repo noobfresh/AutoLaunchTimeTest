@@ -61,7 +61,8 @@ def rename_files():
 
 def count_dirs(path):
     num_dirs = 0  # 路径下文件夹数量
-
+    print os.getcwd()
+    print path
     for root, dirs, files in os.walk(path):  # 遍历统计
         for name in dirs:
             num_dirs += 1
