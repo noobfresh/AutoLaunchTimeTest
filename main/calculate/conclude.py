@@ -1,5 +1,6 @@
 # coding=utf-8
 from base_utils import count_dirs, count_file
+from calculate.launching_frame_calculate import find_lanching_end_frame
 from config.configs import Config
 from first_frame_calculate import first_frame_find
 from last_frame_calculate import last_frame_find_rgb
@@ -16,6 +17,7 @@ def calculate(device_name, name_with_suffix):
     real_num = dir_count  # 真实有效数据个数（存在找不到首帧，或者末尾帧的情况，这种情况下，直接抛弃数据）
     mean_time = 0
     datas = []
+    launching_datas = []
     rgb_folder = calculate_homepage_rgb()
     MLog.debug("calculate: dir_count = {}".format(dir_count))
     conf = Config("apk.ini")
@@ -33,29 +35,46 @@ def calculate(device_name, name_with_suffix):
         if first == -1:
             dir_count -= 1
             datas.append(0)
+            launching_datas.append(0)
             MLog.debug("calculate: can't not find first frame")
             continue
+
+        # 中间launching判断
+        real_launching_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
+        # 做了个特殊处理，获取到首帧过后，跳过了半秒的帧数，为了直接就开始计算启动过程中帧
+        launching_index = find_lanching_end_frame(first + int(settings.get_value("ffmpeg")),
+                                                  file_count, real_launching_feature_path, real_path)
+        if launching_index == -1:
+            dir_count -= 1
+            datas.append(0)
+            launching_datas.append(0)
+            MLog.debug("calculate: can't not find launching frame")
+            continue
+        launching_time = (launching_index - first + 1) * (1000 / int(settings.get_value("ffmpeg")))
+        launching_datas.append(launching_time)
         # # 中间会生成多余的照片影响
         real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
         if not exists(real_last_feature_path):
             MLog.debug("calculate: last, there is no adapted feature pic for current Phone")
             real_last_feature_path = "./picrepos/feature/" + feature_dir + "/common_homepage_feature.jpg"
-        last = last_frame_find_rgb(file_count, first, real_path, real_last_feature_path, rgb_folder)
+        last = last_frame_find_rgb(file_count, launching_index, real_path, real_last_feature_path, rgb_folder)
         # 异常处理
         if last == -1:
             dir_count -= 1
             datas.append(0)
+            launching_datas.append(0)
             MLog.debug("calculate: can't not find first frame")
             continue
         MLog.debug(u"帧数 = " + str(settings.get_value("ffmpeg")))
         time = (last - first + 1) * (1000 / int(settings.get_value("ffmpeg")))
         datas.append(time)
-        MLog.info("first frame = {}, last frame = {}, time = {}".format(first, last, time))
+        MLog.info("first frame = {}, last frame = {}， launching end frame = {}, time = {}".format(
+            first, last, launching_index, time))
         mean_time += time
     if dir_count != 0:
         mean_time /= dir_count  # 这个平均时间的逻辑没有考虑到，异常数据的刨除
     MLog.debug("calculate: actually valid count = {}".format(real_num))
-    return mean_time, datas
+    return mean_time, datas, launching_datas
 
 
 # 现在由于只录一整个视频，所以就不去循环

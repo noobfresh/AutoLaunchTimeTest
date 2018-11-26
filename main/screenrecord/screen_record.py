@@ -19,7 +19,7 @@ from log.log import MLog
 from screenrecord.screencap import cap
 
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C://Android/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -145,14 +145,20 @@ def startAPP(times, video):
 
 def getPos(app_name):
     machineName = getDeviceInfo()
+    conf = Config("apk.ini")
+    feature_dir = conf.getconf("yy").feature
     if machineName == "vivoX9":
         MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), "../feature/vivoX9_launch_feature.jpg")
+        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
+    elif machineName == "vivoX7":
+        MLog.info("get pos by cap findLaunchLogo")
+        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
     else:
         MLog.debug("get pos by uiautomator")
         pos = d(text=app_name).bounds
     settings.set_value("pos", pos)
     return pos
+
 
 def startAppBySwipe(times, video):
     global startTime

@@ -81,6 +81,34 @@ def findLaunchLogo(src_path, dst_path):
     return position
 
 
+# 专门来判断是否启动完成（启动页是否加载完）
+def isLaunchingPage(src, target_path):
+    # 加载原始RGB
+    img_rgb = cv2.imread(src)
+    # 创建一个原始图像的灰度版本，所有操作在灰度版本中处理，然后在RGB图像中使用相同坐标还原
+    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+    # 加载将要搜索的图像模板
+    template = cv2.imread(target_path, 0)
+    # 记录图像模板的尺寸，失败原因可能这个图片太大了
+    w, h = template.shape[::-1]
+    # 使用matchTemplate对原始灰度图像和图像模板进行匹配（调接口，这个值可以打印一下，不知道是个什么值）
+    res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)  # 最后这个参数可以试一下调一下
+    # print "what! there is a result = {}".format(res)
+    # 根据外部传参设置阈值
+    # print str(float(res)) + " -------------------------------------"
+    threshold = 0.85
+    # print res >= threshold
+    loc = np.where(res >= threshold)
+
+    # 匹配完成后在原始图像中使用灰度图像的坐标对原始图像进行标记。
+    for pt in zip(*loc[::-1]):
+        x1 = pt[0]
+        y1 = pt[1]
+        if x1 != 0 and y1 != 0:
+            return True
+    return False
+
+
 if __name__ == '__main__':
     image = "../screen.jpg"
     target = "../feature/vivoX9_launch_feature.jpg"
