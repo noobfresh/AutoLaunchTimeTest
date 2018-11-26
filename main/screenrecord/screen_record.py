@@ -147,8 +147,10 @@ def getPos(app_name):
     if machineName == "vivoX9":
         MLog.info("get pos by cap findLaunchLogo")
         pos = findLaunchLogo(cap(), "../feature/vivoX9_launch_feature.jpg")
+    elif machineName == "vivoX7":
+        MLog.info("get pos by cap findLaunchLogo x7")
+        pos = findLaunchLogo(cap(), "../feature/vivoX7_launch_feature.jpg")
     else:
-        MLog.debug("get pos by uiautomator")
         pos = d(text=app_name).bounds
     settings.set_value("pos", pos)
     return pos
