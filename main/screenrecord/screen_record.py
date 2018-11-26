@@ -140,13 +140,17 @@ def startAPP(times, video):
 
 def startAppBySwipe(times, video):
     global startTime
+    conf = Config("default.ini")
+    app_name = conf.getconf("default").app_name
+
     try:
-        MLog.info("startAppBySwipe:" + u"start YY")
-        pos = d(text="YY").bounds
-    except Exception:
-        MLog.error("startAppBySwipe:" + str(Exception))
-        MLog.info("startAppBySwipe:" + u"start @YY")
-        pos = d(text="@YY").bounds
+        MLog.info("startAppBySwipe:" + u"try start app ,name = ", app_name)
+        pos = d(text=app_name).bounds
+    except Exception, e:
+        MLog.info(repr(e))
+        app_name = "@" + app_name
+        MLog.info("startAppBySwipe:" + u"try start app,name = ", app_name)
+        pos = d(text=app_name).bounds
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
@@ -216,7 +220,7 @@ def videoToPhoto(dirname, index):
         print str(curPath) + "-------------"
 
         srcPath = os.path.join(os.path.dirname(curPath), "Screenshots")
-        print srcPath+"1111111111"
+        print srcPath + "1111111111"
         count = 0
         # for filename in os.listdir(srcPath):
         os.chdir(srcPath)
@@ -281,21 +285,12 @@ def doInThread(func, *params, **paramMap):
     ft.start()
     return ft
 
-def getWatchNum():
-    conf = Config("default.ini")
-    event = conf.getconf("common").click_event
-    # print event
-    MLog.debug("event = " + event)
-    num = event.split(',')
-    return len(num)
-
 
 # 运行点击事件
 def runwatch(d, data):
     registerEvent(d)
-    num=getWatchNum()
     while True:
-        if len(d.watchers) != num:
+        if len(d.watchers) == 0:
             registerEvent(d)
         d.watchers.run()
 
@@ -437,7 +432,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
-            if machineName=="PACM00":
+            if machineName == "PACM00":
                 uninstallAPK()
                 installAPK(apkName)
                 time.sleep(15)
