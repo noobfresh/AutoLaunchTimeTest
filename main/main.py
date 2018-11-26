@@ -7,7 +7,7 @@ from calculate.conclude import calculate
 from calculate.conclude import new_calculate
 
 from datachart.charts import *
-from datachart.handledata import create_excel
+from datachart.handledata import create_excel, create_detail_sheet_by_json
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.screen_record import getDeviceInfo
@@ -129,14 +129,25 @@ if __name__ == '__main__':
     # 生成折线图
     result_name = "chart"
     chart1 = ChartItem(device_name + "首次启动耗时", json_datas)
-    # chart2 = ChartItem(device_name + "非首次启动耗时", json_datas)
     chart_items = [chart1]
 
     create_charts(result_name, chart_items)
 
+    sheet_name = "detail_time_cost"
+    file_name = "data_detail"
+    json_file_path = "data.json"
+
+    json_detail = []
+    for i in range(1, len(datas1) + 1):
+        dict_temp = {"time": str(i), "first_start": str(datas1[i-1]), "normal_start" : str(datas2[i-1])}
+        json_detail.append(dict_temp)
+    print json.dumps(json_detail)
+    create_detail_sheet_by_json(sheet_name, file_name, device_name + u" 耗时统计", json_detail)
+
     sendEmailWithDefaultConfig()
 
     print json.dumps(json_data)
+
     end_time = datetime.datetime.now()
     print "all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
         end_time - start_time,

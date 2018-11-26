@@ -281,12 +281,21 @@ def doInThread(func, *params, **paramMap):
     ft.start()
     return ft
 
+def getWatchNum():
+    conf = Config("default.ini")
+    event = conf.getconf("common").click_event
+    # print event
+    MLog.debug("event = " + event)
+    num = event.split(',')
+    return len(num)
+
 
 # 运行点击事件
 def runwatch(d, data):
     registerEvent(d)
+    num=getWatchNum()
     while True:
-        if len(d.watchers) == 0:
+        if len(d.watchers) != num:
             registerEvent(d)
         d.watchers.run()
 
