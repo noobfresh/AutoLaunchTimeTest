@@ -36,6 +36,7 @@ def make_log_patch():
     suffix = '.zip'
     prefix = "log"
     file_output = file_path + os.sep + prefix + time.strftime("_%Y_%m_%d") + suffix
+    make_patch(file_path, file_output)
     return file_output
 
 
