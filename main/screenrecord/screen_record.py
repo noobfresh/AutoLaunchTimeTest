@@ -437,8 +437,13 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
-            clearData()
-            time.sleep(3)
+            if machineName=="PACM00":
+                uninstallAPK()
+                installAPK(apkName)
+                time.sleep(15)
+            else:
+                clearData()
+                time.sleep(3)
             startAPP(20, first_dir + '/' + str(index) + '.mp4')
             time.sleep(20)
             if machineName == "PACM00":
