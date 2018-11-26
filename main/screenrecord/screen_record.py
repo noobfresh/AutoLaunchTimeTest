@@ -12,12 +12,14 @@ from uiautomator import Device
 from uiautomator import device as d
 
 import settings
+from calculate.template_match import findLaunchLogo
 from config.configs import Config
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 from log.log import MLog
+from screenrecord.screencap import cap
 
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C://Android/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -28,7 +30,7 @@ packageName = package
 save_dir = '/sdcard/screenrecord/'
 
 # 这个要换成设备名称
-temp_dir = ''
+temp_dir = 'yy'
 # 手机名称
 machineName = ''
 deviceList = []
@@ -56,9 +58,9 @@ def getDeviceInfo():
 
 # 安装应用
 def installAPK(name):
-    # path = os.path.dirname(__file__) + "\\"
-    # os.chdir(path)
-    # print path
+    path = os.path.dirname(__file__) + "\\"
+    os.chdir(path)
+    print path
     os.system("adb install " + name)
     print u'安装成功'
 
@@ -94,8 +96,6 @@ def screenRecord(times, name):
 
 # 数据上传
 def pullRecord(name):
-    curPath = os.getcwd()
-    print u"数据上传" + curPath
     if machineName == "PACM00":
         os.system("adb pull " + name)
     else:
@@ -109,9 +109,8 @@ def mkdir(name):
     os.system('adb shell rm -rf ' + save_dir + name)
     os.system('adb shell mkdir -p ' + save_dir + name)
     print u'SD卡文件夹创建成功'
-    path = os.path.dirname(__file__) + "\\"
+    path = os.path.abspath('.')
     os.chdir(path)
-    print u'创建文件夹' + path
     if os.path.exists(name):
         shutil.rmtree(name)
     print name
@@ -143,6 +142,16 @@ def startAPP(times, video):
         MLog.debug(u"startAPP:" + u"启动app失败！")
         sys.exit(-1)
 
+def getPos(app_name):
+    machineName = getDeviceInfo()
+    if machineName == "vivoX9":
+        MLog.info("get pos by cap findLaunchLogo")
+        pos = findLaunchLogo(cap(), "../feature/vivoX9_launch_feature.jpg")
+    else:
+        MLog.debug("get pos by uiautomator")
+        pos = d(text=app_name).bounds
+    settings.set_value("pos", pos)
+    return pos
 
 def startAppBySwipe(times, video):
     global startTime
@@ -150,28 +159,14 @@ def startAppBySwipe(times, video):
     app_name = conf.getconf("default").app_name
 
     try:
-
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
         pos = settings.get_value("pos", None)
         if pos is None:
-            machineName = getDeviceInfo()
-            if machineName == "vivox9":
-
-            else:
-                pos = d(text=app_name).bounds
-
-            settings.set_value("pos", pos)
+            pos = getPos(app_name)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
-        MLog.info("startAppBySwipe:" + u"try start app,name = " + app_name)
-        machineName = getDeviceInfo()
-        if machineName == "vivox9":
-            findLaunchLogo
-        else:
-            pos = d(text=app_name).bounds
-
-        settings.set_value("pos", pos)
+        pos = getPos(app_name)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
@@ -228,6 +223,7 @@ def registerEvent(d):
         item = utf8(num[index])
         MLog.debug("key = " + key + " and " + "item = " + item)
         d.watcher(key).when(text=item).click(text=item)
+
     MLog.debug(u"列出所有watchers")
     print d.watchers
 
@@ -457,21 +453,13 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
-        if machineName != "PACM00":
-            installAPK(apkName)
-            time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
+        installAPK(apkName)
+        time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
-            if machineName == "PACM00":
-                uninstallAPK()
-                time.sleep(2)
-                installAPK(apkName)
-                time.sleep(15)
-                doInThread(inputListener, d, 0)
-            else:
-                clearData()
-                time.sleep(3)
+            clearData()
+            time.sleep(3)
             startAPP(20, first_dir + '/' + str(index) + '.mp4')
             time.sleep(20)
             if machineName == "PACM00":
@@ -481,7 +469,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(10)
+        time.sleep(20)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:
@@ -498,10 +486,10 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     if notFirstLaunchTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots")
-            print u"删除 screenshot==="
+            print "删除 screenshot==="
             path = os.path.abspath('.')
             print path
-            os.chdir(path + "/screenrecord")
+            os.chdir(path)
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
 
@@ -526,7 +514,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(10)
+        time.sleep(20)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:
