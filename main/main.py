@@ -122,9 +122,9 @@ if __name__ == '__main__':
     print json.dumps(json_data)
 
     # 生成excel表格
-    sheet_name = "time_cost"
-    file_name = "data_result"
-    create_excel(sheet_name, file_name, json_data)
+    # sheet_name = "time_cost"
+    # file_name = "data_result"
+    # create_excel(sheet_name, file_name, json_data)
 
     # 生成折线图
     result_name = "chart"
