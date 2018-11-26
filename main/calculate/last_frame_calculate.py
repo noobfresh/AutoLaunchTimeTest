@@ -24,8 +24,9 @@ def last_frame_find_rgb(length, from_index, real_path, real_feature_path, rgb_fo
             # 认为这一帧还在加载中；反之，则认为当前为加载完成帧
 
             degree = calculate_by_hists(last_frame_feature, real_path + feature_name)
+            print "degree = {}    -----------------------------".format(degree)
             # 这个值是否还可以再调一下？
-            if degree < 0.55:
+            if degree < 0.46:
                 continue
 
             # 识别到才裁剪

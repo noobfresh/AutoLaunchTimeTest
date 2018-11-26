@@ -48,9 +48,42 @@ def match_img(img, target_img, values, match_path):
     # print "i have written it down"
 
 
+# 提供vivoX9 找不到启动坐标使用
+def findLaunchLogo(src_path, dst_path):
+    # 加载原始RGB
+    img_rgb = cv2.imread(src_path)
+    # 创建一个原始图像的灰度版本，所有操作在灰度版本中处理，然后在RGB图像中使用相同坐标还原
+    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+    # 加载将要搜索的图像模板
+    template = cv2.imread(dst_path, 0)
+    # 记录图像模板的尺寸，失败原因可能这个图片太大了
+    w, h = template.shape[::-1]
+    # 使用matchTemplate对原始灰度图像和图像模板进行匹配（调接口，这个值可以打印一下，不知道是个什么值）
+    res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)  # 最后这个参数可以试一下调一下
+    # print "what! there is a result = {}".format(res)
+    # 根据外部传参设置阈值
+    threshold = 0.9
+    # print res >= threshold
+    loc = np.where(res >= threshold)
+
+    x1 = 0
+    y1 = 0
+    x2 = 0
+    y2 = 0
+    # 匹配完成后在原始图像中使用灰度图像的坐标对原始图像进行标记。
+    for pt in zip(*loc[::-1]):
+        x1 = pt[0]
+        y1 = pt[1]
+        if x1 != 0 and y1 != 0:
+            x2 = x1 + w
+            y2 = y1 + h
+    position = {'left': x1, 'top': y1, 'right': x2, 'bottom': y2}
+    return position
+
+
 if __name__ == '__main__':
-    image = "./homepage_test/1829.jpg"
-    target = "./homepage_test/homepage_feature.jpg"
+    image = "../screen.jpg"
+    target = "../feature/vivoX9_launch_feature.jpg"
     value = 0.9
-    match_img(image, target, value, "aaaaaaaaaa")
+    match_img(image, target, value, "aaaaaaaaaa.jpg")
 
