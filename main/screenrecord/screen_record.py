@@ -152,14 +152,23 @@ def startAppBySwipe(times, video):
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
         pos = settings.get_value("pos", None)
         if pos is None:
-            pos = d(text=app_name).bounds
-            settings.set_value("pos", pos)
+            machineName = getDeviceInfo()
+            if machineName == "vivox9":
 
+            else:
+                pos = d(text=app_name).bounds
+
+            settings.set_value("pos", pos)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
         MLog.info("startAppBySwipe:" + u"try start app,name = " + app_name)
-        pos = d(text=app_name).bounds
+        machineName = getDeviceInfo()
+        if machineName == "vivox9":
+            findLaunchLogo
+        else:
+            pos = d(text=app_name).bounds
+
         settings.set_value("pos", pos)
 
     MLog.debug("startAppBySwipe:" + str(pos))
