@@ -71,7 +71,7 @@ if __name__ == '__main__':
         print "apk = " + str(apk_name) + " ,first_start = " \
               + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame)
         init_ffmpeg(int(frame))
-        start_python(int(first_start), int(normal_start), str(apk_name))
+        # start_python(int(first_start), int(normal_start), str(apk_name))
 
     # init_ffmpeg(int(frame))
     end_video_2_frame_time = datetime.datetime.now()
@@ -139,10 +139,10 @@ if __name__ == '__main__':
 
     json_detail = []
     for i in range(1, len(datas1) + 1):
-        dict_temp = {"time": str(i), "first_start": str(datas1[i-1]), "normal_start" : str(datas2[i-1])}
+        dict_temp = {"time": str(i), "first_start": str(datas1[i-1]), "normal_start": str(datas2[i-1])}
         json_detail.append(dict_temp)
     print json.dumps(json_detail)
-    create_detail_sheet_by_json(sheet_name, file_name, device_name + u" 耗时统计", json_detail)
+    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail)
 
     sendEmailWithDefaultConfig()
 

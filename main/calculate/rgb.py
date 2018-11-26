@@ -4,6 +4,7 @@ import base_utils
 
 
 # 计算图片的rgb均值
+from config.configs import Config
 from log.log import MLog
 
 
@@ -29,12 +30,14 @@ def calculate_pic_rgb(path):
     return mean_r, mean_g, mean_b
 
 
-def calculate_repos_rgb(folder):
-    path = "./" + folder + "/"
+def calculate_repos_rgb():
+    conf = Config("apk.ini")
+    homepage_dir = conf.getconf("yy").feature
+    path = "./picrepos/homepage/" + homepage_dir + "/"
     mean_r = 0
     mean_g = 0
     mean_b = 0
-    length_file = base_utils.count_file(folder)
+    length_file = base_utils.count_file("picrepos/homepage/" + homepage_dir)
     for i in range(1, length_file+1):
         rgb = calculate_pic_rgb(path + base_utils.adapter_num(i) + ".jpg")
         mean_r += rgb[0]
@@ -48,7 +51,7 @@ def calculate_repos_rgb(folder):
 
 
 def calculate_homepage_rgb():
-    rgb_folder = calculate_repos_rgb("homepage")
+    rgb_folder = calculate_repos_rgb()
     return rgb_folder
 
 

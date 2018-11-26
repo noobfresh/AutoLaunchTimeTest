@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-out_path = os.path.dirname(__file__) + os.sep + "cap.png"
+out_path = os.path.dirname(__file__) + os.sep + "cap.jpg"
 
 
 class Screenshot():  # 截取手机屏幕并保存到电脑

@@ -1,5 +1,6 @@
 # coding=utf-8
 from base_utils import count_dirs, count_file
+from config.configs import Config
 from first_frame_calculate import first_frame_find
 from last_frame_calculate import last_frame_find_rgb
 from first_frame_calculate import new_first_frame_find
@@ -17,14 +18,16 @@ def calculate(device_name, name_with_suffix):
     datas = []
     rgb_folder = calculate_homepage_rgb()
     MLog.debug("calculate: dir_count = {}".format(dir_count))
+    conf = Config("apk.ini")
+    feature_dir = conf.getconf("yy").feature
     for i in range(0, dir_count):
         # 取指定目录下的file count
         file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))
         real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
-        real_first_feature_path = "./feature/" + device_name + "_launch_feature.jpg"
+        real_first_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
         if not exists(real_first_feature_path):
             MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
-            real_first_feature_path = "./feature/common_launch_feature.jpg"
+            real_first_feature_path = "./picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
         first = first_frame_find(file_count, real_path, real_first_feature_path)
         # 异常处理
         if first == -1:
@@ -33,10 +36,10 @@ def calculate(device_name, name_with_suffix):
             MLog.debug("calculate: can't not find first frame")
             continue
         # # 中间会生成多余的照片影响
-        real_last_feature_path = "./feature/" + device_name + "_homepage_feature.jpg"
+        real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
         if not exists(real_last_feature_path):
             MLog.debug("calculate: last, there is no adapted feature pic for current Phone")
-            real_last_feature_path = "./feature/common_homepage_feature.jpg"
+            real_last_feature_path = "./picrepos/feature/" + feature_dir + "/common_homepage_feature.jpg"
         last = last_frame_find_rgb(file_count, first, real_path, real_last_feature_path, rgb_folder)
         # 异常处理
         if last == -1:

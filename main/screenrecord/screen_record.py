@@ -19,7 +19,7 @@ from log.log import MLog
 from screenrecord.screencap import cap
 
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C://Android/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -109,8 +109,9 @@ def mkdir(name):
     os.system('adb shell rm -rf ' + save_dir + name)
     os.system('adb shell mkdir -p ' + save_dir + name)
     print u'SD卡文件夹创建成功'
-    path = os.path.abspath('.')
+    path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
+    print u'创建文件夹' + path
     if os.path.exists(name):
         shutil.rmtree(name)
     print name
@@ -453,13 +454,21 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
-        installAPK(apkName)
-        time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
+        if machineName != "PACM00":
+            installAPK(apkName)
+            time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
-            clearData()
-            time.sleep(3)
+            if machineName == "PACM00":
+                uninstallAPK()
+                time.sleep(2)
+                installAPK(apkName)
+                time.sleep(15)
+                doInThread(inputListener, d, 0)
+            else:
+                clearData()
+                time.sleep(3)
             startAPP(20, first_dir + '/' + str(index) + '.mp4')
             time.sleep(20)
             if machineName == "PACM00":
@@ -469,7 +478,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(20)
+        time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:
@@ -486,7 +495,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     if notFirstLaunchTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots")
-            print "删除 screenshot==="
+            print u"删除 screenshot==="
             path = os.path.abspath('.')
             print path
             os.chdir(path)
@@ -514,7 +523,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(20)
+        time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:

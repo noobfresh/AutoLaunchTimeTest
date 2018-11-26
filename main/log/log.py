@@ -39,7 +39,7 @@ class Log(object):
         print "日志地址: " + self.log_name
         fh = logging.FileHandler(self.log_name, 'a')  # 追加模式  这个是python2的
         # fh = logging.FileHandler(self.log_name, 'a', encoding='utf-8')  # 这个是python3的
-        fh.setLevel(logging.INFO)
+        fh.setLevel(logging.DEBUG)
 
         # 再创建一个handler，用于输出到控制台
         ch = logging.StreamHandler()
