@@ -20,10 +20,14 @@ os.environ.__delitem__('ANDROID_HOME')
 os.environ.__setitem__('ANDROID_HOME', 'C://Android/')
 os.environ.update()
 
+conf = Config("default.ini")
+package = conf.getconf("default").package
+
 # 常量初始化
-apkName = 'yy.apk'
-packageName = 'com.duowan.mobile'
+packageName = package
 save_dir = '/sdcard/screenrecord/'
+
+
 # 这个要换成设备名称
 temp_dir = ''
 # 手机名称
@@ -143,13 +147,23 @@ def startAPP(times, video):
 
 def startAppBySwipe(times, video):
     global startTime
+    conf = Config("default.ini")
+    app_name = conf.getconf("default").app_name
+
     try:
-        MLog.info("startAppBySwipe:" + u"start YY")
-        pos = d(text="YY").bounds
-    except Exception:
-        MLog.error("startAppBySwipe:" + str(Exception))
-        MLog.info("startAppBySwipe:" + u"start @YY")
-        pos = d(text="@YY").bounds
+
+        MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
+        pos = settings.get_value("pos", None)
+        if pos is None:
+            pos = d(text=app_name).bounds
+            settings.set_value("pos", pos)
+
+    except Exception, e:
+        MLog.info(repr(e))
+        app_name = "@" + app_name
+        MLog.info("startAppBySwipe:" + u"try start app,name = " + app_name)
+        pos = d(text=app_name).bounds
+        settings.set_value("pos", pos)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
