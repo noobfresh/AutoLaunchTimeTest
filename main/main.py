@@ -21,6 +21,7 @@ user_config = True
 
 # 从参数中读取帧率
 def init_ffmpeg(ffmpeg):
+    os.system('adb shell pm clear com.github.uiautomator')
     settings._init()
     try:
         if (int(ffmpeg) < 0):
