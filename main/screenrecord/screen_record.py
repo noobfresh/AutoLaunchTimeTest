@@ -27,7 +27,6 @@ package = conf.getconf("default").package
 packageName = package
 save_dir = '/sdcard/screenrecord/'
 
-
 # 这个要换成设备名称
 temp_dir = ''
 # 手机名称
@@ -57,9 +56,9 @@ def getDeviceInfo():
 
 # 安装应用
 def installAPK(name):
-    #path = os.path.dirname(__file__) + "\\"
-    #os.chdir(path)
-    #print path
+    # path = os.path.dirname(__file__) + "\\"
+    # os.chdir(path)
+    # print path
     os.system("adb install " + name)
     print u'安装成功'
 
@@ -112,7 +111,7 @@ def mkdir(name):
     print u'SD卡文件夹创建成功'
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
-    print u'创建文件夹'+ path
+    print u'创建文件夹' + path
     if os.path.exists(name):
         shutil.rmtree(name)
     print name
@@ -449,8 +448,9 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
-        installAPK(apkName)
-        time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
+        if machineName != "PACM00":
+            installAPK(apkName)
+            time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
@@ -459,6 +459,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
                 time.sleep(2)
                 installAPK(apkName)
                 time.sleep(15)
+                doInThread(inputListener, d, 0)
             else:
                 clearData()
                 time.sleep(3)
@@ -471,7 +472,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(20)
+        time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:
@@ -516,7 +517,7 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
         # if firstTimes > int(endTime - startTime):
         #     print u'尚未录制结束'
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
-        time.sleep(20)
+        time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots")
         else:
