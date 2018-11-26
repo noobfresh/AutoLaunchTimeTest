@@ -132,7 +132,8 @@ def startAPP(times, video):
     try:
         MLog.debug(u"尝试启动app")
         startAppBySwipe(times, video)
-    except:
+    except Exception, e:
+        print repr(e)
         MLog.debug(u"startAPP:" + u"启动app失败！")
         sys.exit(-1)
 
