@@ -1,4 +1,5 @@
 # ecoding=utf-8
+import collections
 import json
 import os
 
@@ -49,34 +50,41 @@ def init_normal_style():
 
 # 创建详细数据excel表格
 def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_list):
+    if json_data is None:
+        MLog.error(u"json == None, return !")
+        raise Exception(u"Invalid json_data! json_data is None")
+    if len(json_data[0].keys()) != len(title_list):
+        MLog.error(u"title's len ! = jsondata[0].keys() ,return!")
+        raise Exception(u"Invalid args! title's length need equls jsondata[0].keys() length")
+
     # 创建一个工作簿
     w = Workbook()
     # 创建一个工作表
     ws = w.add_sheet(sheet_name)
     style = init_normal_style()
 
+    # 调整单元格宽度，先调20个够用
     content_size = 6000
-
     for i in range(0, 20):
         ws.col(i).width = content_size
 
-    x_offset = 1
-    y_offset = 2
+    # 表格偏移量
+    x_offset = 0
+    y_offset = 0
 
     MLog.debug(str(json_data))
 
-    ws.write_merge(0, 0, 0, len(json_data[0]) - 1, unicode(str(title), 'utf-8'), style)
+    ws.write_merge(y_offset, y_offset, x_offset, x_offset + len(json_data[0]) - 1, unicode(str(title), 'utf-8'), style)
 
-    for index in range(0, json_data.__len__()):
-        # # 写title
-        # if index == 0:
-        for i in range(0, len(json_data[index].keys())):
-            key = json_data[index].keys()[i]
+    for index in range(0, len(json_data)):
+        cur = 0
+        for key, v in title_list.items():
             if index == 0:
                 # 写标题
-                ws.write(1, i, title_list[key], style)
+                ws.write(y_offset + 1, x_offset + cur, title_list[key], style)
             # 写内容
-            ws.write(index + y_offset, i, json_data[index][key], style)
+            ws.write(index + y_offset + 2, x_offset + cur, json_data[index][key], style)
+            cur += 1
 
     file_name = file_path + file_name
 
@@ -114,9 +122,16 @@ def main():
     data = [{"first_start": "7.17", "phone": "OPPO R9s", "app": "7.11.1", "home": "0.15", "normal_start": "5.65"},
             {"first_start": "7.17", "phone": "OPPO R9s", "app": "7.11.1", "home": "0.15", "normal_start": "5.65"}]
 
-    title_list2 = {"phone": u"机型", "app": u"应用", "first_start": u"非首次启动耗时", "normal_start": u"首页耗时", "home": u"首页加载"}
+    # title_list2 = {"phone": u"机型", "app": u"应用", "first_start": u"非首次启动耗时", "normal_start": u"首次启动", "home": u"首页加载"}
 
-    create_detail_sheet_by_json(sheet_name, file_name, title, data, title_list2)
+    d1 = collections.OrderedDict()  # 将普通字典转换为有序字典
+    d1['phone'] = u"机型"
+    d1['app'] = u"应用"
+    d1['first_start'] = u"非首次启动耗时"
+    d1['normal_start'] = u"首次启动"
+    d1['home'] = u"首页耗时"
+
+    create_detail_sheet_by_json(sheet_name, file_name, title, data, d1)
 
 
 if __name__ == '__main__':
