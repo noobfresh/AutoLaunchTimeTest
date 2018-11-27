@@ -78,7 +78,7 @@ def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_l
 
     for index in range(0, len(json_data)):
         cur = 0
-        for key, v in title_list.items():
+        for key, value in title_list.items():
             if index == 0:
                 # 写标题
                 ws.write(y_offset + 1, x_offset + cur, title_list[key], style)
