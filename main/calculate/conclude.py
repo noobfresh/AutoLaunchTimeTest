@@ -21,7 +21,9 @@ def calculate(device_name, name_with_suffix):
     rgb_folder = calculate_homepage_rgb()
     MLog.debug("calculate: dir_count = {}".format(dir_count))
     conf = Config("apk.ini")
-    feature_dir = conf.getconf("yy").feature
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    feature_dir = conf.getconf(app_key).feature
     for i in range(0, dir_count):
         # 取指定目录下的file count
         file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))

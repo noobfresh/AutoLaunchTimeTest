@@ -1,4 +1,5 @@
 # coding=utf-8
+import collections
 import datetime
 import re
 import sys
@@ -176,15 +177,18 @@ if __name__ == '__main__':
                      "g": str(datas2[i-1] - launchingdatas2[i-1])}
         json_detail.append(dict_temp)
     print json.dumps(json_detail)
-    title_list = {"a": u"次数",
-                  "b": u"首次启动总耗时",
-                  "c": u"首次启动耗时",
-                  "d": u"首次启动首页加载耗时",
-                  "e": u"非首次启动总耗时",
-                  "f": u"非首次启动耗时",
-                  "g": u"非首次启动首页加载耗时"}
-    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, title_list)
-
+    dict1 = collections.OrderedDict()
+    dict1["a"] = u"次数"
+    dict1["b"] = u"首次启动总耗时"
+    dict1["c"] = u"首次启动耗时"
+    dict1["d"] = u"首次启动首页加载耗时"
+    dict1["e"] = u"非首次启动总耗时"
+    dict1["f"] = u"非首次启动耗时"
+    dict1["g"] = u"非首次启动首页加载耗时"
+    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
+    print json.dumps(json_detail)
+    print json.dumps(dict1)
+    print "--------------------------------------------------------"
     json_detail2 = []
     dict_avg = {
                   "a": avg_list(datas1),
@@ -194,15 +198,18 @@ if __name__ == '__main__':
                   "e": avg_list(launchingdatas2),
                   "f": avg_list(datas2) - avg_list(launchingdatas2)}
     json_detail2.append(dict_avg)
-    title_list2 = {
-                  "a": u"平均首次启动总耗时",
-                  "b": u"平均首次启动耗时",
-                  "c": u"平均首次启动首页加载耗时",
-                  "d": u"平均非首次启动总耗时",
-                  "e": u"平均非首次启动耗时",
-                  "f": u"平均非首次启动首页加载耗时"}
+    dict2 = collections.OrderedDict()
+    dict2["a"] = u"平均首次启动总耗时"
+    dict2["b"] = u"平均首次启动耗时"
+    dict2["c"] = u"平均首次启动首页加载耗时"
+    dict2["d"] = u"平均非首次启动总耗时"
+    dict2["e"] = u"平均非首次启动耗时"
+    dict2["f"] = u"平均非首次启动首页加载耗时"
+    print json.dumps(json_detail2)
+    print json.dumps(dict2)
+    print "--------------------------------------------------------"
     create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
-                                json_detail2, title_list2)
+                                json_detail2, dict2)
 
     sendEmailWithDefaultConfig()
 

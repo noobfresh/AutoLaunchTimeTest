@@ -26,7 +26,7 @@ def last_frame_find_rgb(length, from_index, real_path, real_feature_path, rgb_fo
             degree = calculate_by_hists(real_feature_path, real_path + feature_name)
             print "degree = {}    -----------------------------".format(degree)
             # 这个值是否还可以再调一下？
-            if degree < 0.75:
+            if degree < 0.50:
                 continue
 
             # 识别到才裁剪

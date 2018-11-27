@@ -146,7 +146,9 @@ def startAPP(times, video):
 def getPos(app_name):
     machineName = getDeviceInfo()
     conf = Config("apk.ini")
-    feature_dir = conf.getconf("yy").feature
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    feature_dir = conf.getconf(str(app_key)).feature
     if machineName == "vivoX9":
         MLog.info("get pos by cap findLaunchLogo")
         pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
