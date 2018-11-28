@@ -1,4 +1,5 @@
 # coding:utf-8
+import codecs
 import os
 import ConfigParser
 
@@ -24,8 +25,10 @@ class Config(object):
         top_one_dir = os.path.dirname(current_dir)
         file_name = top_one_dir + os.sep + "config" + os.sep + "files" + os.sep + file_name
         # 实例化ConfigParser对象
+        # self.config = ConfigParser.ConfigParser()
+        # self.config.read(file_name)
         self.config = ConfigParser.ConfigParser()
-        self.config.read(file_name)
+        self.config.readfp(codecs.open(file_name, "r", "utf-8-sig"))
         # 根据section把key、value写入字典
         for section in self.config.sections():
             setattr(self, section, Dictionary())
