@@ -1,28 +1,34 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import subprocess
-import time
-import shutil
-import threading
 import re
+import shutil
+import subprocess
+import sys
+import threading
+import time
+
 from uiautomator import Device
 from uiautomator import device as d
-import sys
-import settings
-from config.configs import Config
 
+import settings
+from calculate.template_match import findLaunchLogo
+from config.configs import Config
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 from log.log import MLog
+from screenrecord.screencap import cap
 
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Android')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
+conf = Config("default.ini")
+package = conf.getconf("default").package
+
 # 常量初始化
-apkName = 'yy.apk'
-packageName = 'com.duowan.mobile'
+packageName = package
 save_dir = '/sdcard/screenrecord/'
+
 # 这个要换成设备名称
 temp_dir = 'yy'
 # 手机名称
@@ -77,15 +83,25 @@ def grantPermission():
 
 # 录屏
 def screenRecord(times, name):
-    subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
+    if machineName == "PACM00":
+        os.system('adb shell service call statusbar 1')
+        d(text="开始录屏").click()
+        print "start"
+        time.sleep(5)
+    else:
+        print(name + "         ----------------------------------                ---------------------------")
+        subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
     print u'录屏开始'
 
 
 # 数据上传
 def pullRecord(name):
-    print save_dir + name
-    os.system('adb pull ' + save_dir + name)
-    print u'数据上传成功'
+    if machineName == "PACM00":
+        os.system("adb pull " + name)
+    else:
+        print save_dir + name
+        os.system('adb pull ' + save_dir + name)
+        print u'数据上传成功'
 
 
 # 创建文件夹
@@ -93,8 +109,9 @@ def mkdir(name):
     os.system('adb shell rm -rf ' + save_dir + name)
     os.system('adb shell mkdir -p ' + save_dir + name)
     print u'SD卡文件夹创建成功'
-    path = os.path.abspath('.')
+    path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
+    print u'创建文件夹' + path
     if os.path.exists(name):
         shutil.rmtree(name)
     print name
@@ -121,20 +138,44 @@ def startAPP(times, video):
     try:
         MLog.debug(u"尝试启动app")
         startAppBySwipe(times, video)
-    except:
+    except Exception, e:
+        print repr(e)
         MLog.debug(u"startAPP:" + u"启动app失败！")
         sys.exit(-1)
+
+def getPos(app_name):
+    machineName = getDeviceInfo()
+    conf = Config("apk.ini")
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    feature_dir = conf.getconf(str(app_key)).feature
+    if machineName == "vivoX9":
+        MLog.info("get pos by cap findLaunchLogo")
+        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
+    elif machineName == "vivoX7":
+        MLog.info("get pos by cap findLaunchLogo")
+        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
+    else:
+        MLog.debug("get pos by uiautomator")
+        pos = d(text=app_name).bounds
+    settings.set_value("pos", pos)
+    return pos
 
 
 def startAppBySwipe(times, video):
     global startTime
+    conf = Config("default.ini")
+    app_name = conf.getconf("default").app_name
+
     try:
-        MLog.info("startAppBySwipe:" + u"start YY")
-        pos = d(text="YY").bounds
-    except Exception:
-        MLog.error("startAppBySwipe:" + str(Exception.message))
-        MLog.info("startAppBySwipe:" + u"start @YY")
-        pos = d(text="@YY").bounds
+        MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
+        pos = settings.get_value("pos", None)
+        if pos is None:
+            pos = getPos(app_name)
+    except Exception, e:
+        MLog.info(repr(e))
+        app_name = "@" + app_name
+        pos = getPos(app_name)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
@@ -200,6 +241,24 @@ def registerEvent(d):
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
 def videoToPhoto(dirname, index):
     curPath = os.getcwd()
+    if machineName == "PACM00":
+        print str(curPath) + "-------------"
+
+        srcPath = os.path.join(os.path.dirname(curPath), "Screenshots")
+        print srcPath + "1111111111"
+        count = 0
+        # for filename in os.listdir(srcPath):
+        os.chdir(srcPath)
+
+        for root, dirs, files in os.walk(srcPath):  # 遍历统计
+            for file in files:
+                print os.path.abspath(file)
+                shutil.copyfile(file, curPath + "/" + str(count) + ".mp4")
+                count += 1
+        # shutil.copytree(os.path.join(os.path.dirname(curPath), "Screenshots"), curPath)
+        # rename_mp4_files(curPath)
+        os.chdir(curPath)
+
     print '+++++++++++++' + curPath
     if os.path.isdir(dirname):
         # os.removedirs(dirname)
@@ -252,11 +311,21 @@ def doInThread(func, *params, **paramMap):
     return ft
 
 
+def getWatchNum():
+    conf = Config("default.ini")
+    event = conf.getconf("common").click_event
+    # print event
+    MLog.debug("event = " + event)
+    num = event.split(',')
+    return len(num)
+
+
 # 运行点击事件
 def runwatch(d, data):
     registerEvent(d)
+    num = getWatchNum()
     while True:
-        if len(d.watchers) == 0:
+        if len(d.watchers) != num:
             registerEvent(d)
         d.watchers.run()
 
@@ -318,6 +387,11 @@ def inputListener(d, data):
     print 2
 
     if machineName == "PACM00":
+        if d(className="android.widget.EditText",
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+            d(className="android.widget.EditText",
+              resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
+                getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
             d.click(458, 1900)
@@ -358,9 +432,11 @@ def inputListener(d, data):
     if machineName == "vivoX9":
         MLog.debug("vivoX9")
         click_with_pos("android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
+    print 6
 
 
-print 6
+def removeDirs(dir):
+    os.system('adb shell rm -rf ' + dir)
 
 
 # main函数，线程sleep时间有待商榷
@@ -372,38 +448,71 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
     firstLaunchTimes = int(firstLaunchTimes)
     notFirstLaunchTimes = int(notFirstLaunchTimes)
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
+
     if firstLaunchTimes > 0:
+        if machineName == "PACM00":
+            removeDirs("/sdcard/DCIM/Screenshots")
+            print u"删除 screenshot==="
+            path = os.path.abspath('.')
+            print path
+            os.chdir(path + "/screenrecord")
+            if os.path.exists("Screenshots"):
+                shutil.rmtree("Screenshots")
         uninstallAPK()
-        firstTimes = firstLaunchTimes * 20
+        # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir)
-        installAPK(apkName)
-        time.sleep(30)  # 后续改成轮询是否有安装包的包名，有再录屏
+        if machineName != "PACM00":
+            installAPK(apkName)
+            time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
-            clearData()
-            time.sleep(3)
-            startAPP(firstTimes, first_dir + '/' + 'first.mp4')
+            if machineName == "PACM00":
+                uninstallAPK()
+                time.sleep(2)
+                installAPK(apkName)
+                time.sleep(15)
+                doInThread(inputListener, d, 0)
+            else:
+                clearData()
+                time.sleep(3)
+            startAPP(20, first_dir + '/' + str(index) + '.mp4')
             time.sleep(20)
-        endTime = time.time()
-        if firstTimes > int(endTime - startTime):
-            print u'尚未录制结束'
-            time.sleep(firstTimes - int(endTime - startTime) + 1)
-        pullRecord(first_dir)
+            if machineName == "PACM00":
+                os.system('adb shell service call statusbar 1')
+                d(text="停止录屏").click()
+        # endTime = time.time()
+        # if firstTimes > int(endTime - startTime):
+        #     print u'尚未录制结束'
+        #     time.sleep(firstTimes - int(endTime - startTime) + 1)
+        time.sleep(10)
+        if machineName == "PACM00":
+            pullRecord("/sdcard/DCIM/Screenshots")
+        else:
+            pullRecord(first_dir)
         path = os.path.abspath('.')
         folder = path + '/' + first_dir
         print "====" + folder
         os.chdir(folder)
         killProcess()
-
-        videoToPhoto(str(first_dir + "_" + "first"), "first")
+        for index in range(firstLaunchTimes):
+            videoToPhoto(str(first_dir + "_" + str(index)), str(index))
         os.chdir(path)
 
     if notFirstLaunchTimes > 0:
+        if machineName == "PACM00":
+            removeDirs("/sdcard/DCIM/Screenshots")
+            print u"删除 screenshot==="
+            path = os.path.abspath('.')
+            print path
+            os.chdir(path)
+            if os.path.exists("Screenshots"):
+                shutil.rmtree("Screenshots")
+
         notfirst_dir = temp_dir + "_notfirst"
         mkdir(notfirst_dir)
-        notfirstTimes = notFirstLaunchTimes * 15
+        # notfirstTimes = notFirstLaunchTimes * 15
         # screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
         # startTime = time.time()
         for index in range(notFirstLaunchTimes):
@@ -413,19 +522,27 @@ def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
             """
 
             killProcess()
-            startAPP(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
+            startAPP(20, notfirst_dir + '/' + str(index) + ".mp4")
             time.sleep(20)
-        endTime = time.time()
-        if firstTimes > int(endTime - startTime):
-            print u'尚未录制结束'
-            time.sleep(firstTimes - int(endTime - startTime) + 1)
-        pullRecord(notfirst_dir)
+            if machineName == "PACM00":
+                os.system('adb shell service call statusbar 1')
+                d(text="停止录屏").click()
+        # endTime = time.time()
+        # if firstTimes > int(endTime - startTime):
+        #     print u'尚未录制结束'
+        #     time.sleep(firstTimes - int(endTime - startTime) + 1)
+        time.sleep(10)
+        if machineName == "PACM00":
+            pullRecord("/sdcard/DCIM/Screenshots")
+        else:
+            pullRecord(notfirst_dir)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
         print "====" + folder
         os.chdir(folder)
         killProcess()
-        videoToPhoto(str(notfirst_dir + "_" + "notfirst"), "notfirst")
+        for index in range(notFirstLaunchTimes):
+            videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
         os.chdir(path)
 
 

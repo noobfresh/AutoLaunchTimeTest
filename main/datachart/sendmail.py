@@ -6,6 +6,7 @@ import codecs
 #   调用方式：python sendmail.py 发件人 发件人密码 收件人列表(逗号隔开) 标题 邮件正文文件 邮件类型(html,plain) 邮件附件(可选)
 import os
 import smtplib
+import time
 from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
@@ -13,7 +14,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 
-file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
+from log.fileutil import make_patch, make_log_patch
+
+chart_data_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
 
 # 同时支持图片和文本附件
@@ -55,8 +58,8 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     # 设定附件信息
     if not patchFileList is None:
         for patchFile in patchFileList:
-            print u"附件:" + (file_path + patchFile)
-            with codecs.open(file_path + patchFile, 'rb') as f:
+            print u"附件:"  + patchFile
+            with codecs.open(patchFile, 'rb') as f:
                 patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
                 msgPatch = MIMEBase('text', 'txt', filename=patchFileName)
@@ -106,10 +109,18 @@ def sendEmailWithDefaultConfig():
     content = u"首页启动时间数据分析详见附件："
     contentType = u"application/octet-stream"
     try:
+
+        log_file = make_log_patch()
+
         patchFile = []
-        for root, dirs, files in os.walk(file_path):
-            patchFile = files
         print u"收集邮件附件："
+        for files in os.walk(chart_data_path):
+            for f in files[2]:
+                new_file_path = files[0] +f
+                patchFile.append(new_file_path)
+
+        patchFile.append(log_file)
+
         print patchFile
 
     except Exception, e:

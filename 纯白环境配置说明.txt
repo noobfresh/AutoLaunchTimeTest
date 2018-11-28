@@ -1,0 +1,22 @@
+1 -> 进入目录下insatall文件夹
+
+2 -> 在当前文件夹解压platform-tools, ffmpeg-xxxxxxxxx，不用新增文件夹
+
+3 -> 双击安装python-2.7.12, 直接默认执行，无脑完成
+
+4 -> 双击执行 autobat.bat，进行默认的环境变量配置。使用管理员权限打开
+
+5 -> 双击执行 pipinstall.bat，安装python库
+
+6 -> 系统内环境变量ANDROID_HOME的路径值，还需要手动换到 screen_record.py中，13行附近，将字符串内的值更改为前面取得的那个
+
+7 -> 返回上层目录，进入main目录，双击执行main.py文件，然后根据命令行提示完成输出
+		（注：测试包，请放在在main目录下）
+
+8 -> 根据输入执行后，等待执行结束，会在当前目录下，datachart/dataresult目录中
+	输出启动速度结果文件。
+
+-----opencv 补充安装
+在install 目录下，双击opencv-3.1.0，将opencv内容解压到某文件夹下，并将解压出来的文件夹中的cv2.pyd放入Python的安装路径下lib/site-package/目录下，以此完成opencv的安装
+
+ANDROID_HOME配置， 需配置platform-tools 上一层的目录

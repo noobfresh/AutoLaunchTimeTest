@@ -1,23 +1,16 @@
 # ecoding=utf-8
+import collections
 import json
 import os
 
 from pyExcelerator import *
 
+from log.log import MLog
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
-
-
-class SheetStruct:
-
-    def __init__(self, phone, app, first_start, start, home):
-        self.app = app
-        self.phone = phone
-        self.home = home
-        self.first_start = first_start
-        self.start = start
 
 
 def utf8(file_name):
@@ -55,43 +48,46 @@ def init_normal_style():
     return style
 
 
-def create_sheet_by_json(sheet_name, file_name, list_data):
+# 创建详细数据excel表格
+def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_list):
+    if json_data is None:
+        MLog.error(u"json == None, return !")
+        raise Exception(u"Invalid json_data! json_data is None")
+    if len(json_data[0].keys()) != len(title_list):
+        MLog.error(u"title's len ! = jsondata[0].keys() ,return!")
+        raise Exception(u"Invalid args! title's length need equls jsondata[0].keys() length")
+
     # 创建一个工作簿
     w = Workbook()
     # 创建一个工作表
     ws = w.add_sheet(sheet_name)
-    # ws.write(2, 4, 'content')  2是行 ，4是列 ，content是内容
-
-    startX = 2
-    startY = 1
-
-    title_size = 8000
-    content_size = 6000
-
-    ########################################
     style = init_normal_style()
-    ws.col(0).width = title_size
-    ws.col(1).width = content_size
-    ws.col(2).width = content_size
-    ws.col(3).width = content_size
-    ws.col(4).width = content_size
-    #######################################
 
-    titles = [u"机型", u"版本", u"首次启动耗时（s）", u"非首次启动耗时（s）"]
-    for index in range(0, titles.__len__()):
-        # ws.write_merge(startY, startY + 1, index, index, unicode(str(titles[index]), 'utf-8'), style)
-        ws.write(startY + 1, index, unicode(str(titles[index]), 'utf-8'), style)
+    # 调整单元格宽度，先调20个够用
+    content_size = 6000
+    for i in range(0, 20):
+        ws.col(i).width = content_size
 
-    # ws.write_merge(startY + 2, startY + 2 + list_data.__len__() - 1, 0, 0, list_data[0].phone, style)
-    ws.write(startY + 2, 0, list_data[0].phone, style)
+    # 表格偏移量
+    x_offset = 0
+    y_offset = 0
 
-    for i in range(0, list_data.__len__()):
-        ws.write(startY + i + 2, startX - 1 + 0, list_data[i].app, style)
-        ws.write(startY + i + 2, startX - 1 + 1, list_data[i].first_start, style)
-        ws.write(startY + i + 2, startX - 1 + 2, list_data[i].start, style)
-        # ws.write(startY + i + 2, startX - 1 + 3, list_data[i].home, style)
+    MLog.debug(str(json_data))
+
+    ws.write_merge(y_offset, y_offset, x_offset, x_offset + len(json_data[0]) - 1, unicode(str(title), 'utf-8'), style)
+
+    for index in range(0, len(json_data)):
+        cur = 0
+        for key, value in title_list.items():
+            if index == 0:
+                # 写标题
+                ws.write(y_offset + 1, x_offset + cur, title_list[key], style)
+            # 写内容
+            ws.write(index + y_offset + 2, x_offset + cur, json_data[index][key], style)
+            cur += 1
 
     file_name = file_path + file_name
+
     try:
         if not os.path.exists(file_path):
             print u"文件路径不存在，现在创建一个..."
@@ -106,38 +102,36 @@ def create_sheet_by_json(sheet_name, file_name, list_data):
         print (u"Excel文件生成路径:" + os.path.abspath(file_name))
 
 
-def create_sheet(sheet_name, file_name, json_file_path):
-    if not os.path.exists(json_file_path):
-        print u"创建表格失败：" + json_file_path + u"不存在"
-        return
-
-    with open(json_file_path, 'r') as f:
-        # 顺序保证下
-        content = f.read()
-        text = content.decode("utf-8-sig").encode("utf-8")
-        json_object = json.loads(text)
-
-    data_list = []
-    print u"开始执行写入数据到excel..."
-    for data in json_object:
-        print data
-        item = SheetStruct(data['phone'], data['app'], data['first_start'], data['start'], data['first_start'])
-        data_list.append(item)
-
-    create_sheet_by_json(sheet_name, file_name, data_list)
-
-
-def create_excel(sheet_name, file_name, json_data):
-    json_file_path = "excel_datas.json"
-    write_json(json_data, json_file_path)
-    create_sheet(sheet_name, utf8(file_name), json_file_path)
-
-
 def main():
-    sheet_name = "time_cost"
-    file_name = "data_result"
-    json_file_path = "data.json"
-    create_sheet(sheet_name, file_name.decode('utf-8'), json_file_path)
+    file_name = u"耗时详情"
+    sheet_name = "detail_time_cost"
+    title = u"oppo r11 耗时统计"
+
+    json_detail = [
+        {"count": "1", "first_start": "4444", "normal_start": "3333", "home_start": "4444"},
+        {"count": "2", "first_start": "4444", "normal_start": "3333", "home_start": "4444"},
+        {"count": "3", "first_start": "4444", "normal_start": "3333", "home_start": "4444"},
+    ]
+
+    title_list = {"count": u"次数", "first_start": u"首次启动耗时", "normal_start": u"非首次启动耗时", "home_start": u"首页耗时"}
+
+    create_detail_sheet_by_json(sheet_name, file_name, title, json_detail, title_list)
+
+    ############# 下面是平均耗时
+    file_name = u"平均结果"
+    data = [{"first_start": "7.17", "phone": "OPPO R9s", "app": "7.11.1", "home": "0.15", "normal_start": "5.65"},
+            {"first_start": "7.17", "phone": "OPPO R9s", "app": "7.11.1", "home": "0.15", "normal_start": "5.65"}]
+
+    # title_list2 = {"phone": u"机型", "app": u"应用", "first_start": u"非首次启动耗时", "normal_start": u"首次启动", "home": u"首页加载"}
+
+    d1 = collections.OrderedDict()  # 将普通字典转换为有序字典
+    d1['phone'] = u"机型"
+    d1['app'] = u"应用"
+    d1['first_start'] = u"非首次启动耗时"
+    d1['normal_start'] = u"首次启动"
+    d1['home'] = u"首页耗时"
+
+    create_detail_sheet_by_json(sheet_name, file_name, title, data, d1)
 
 
 if __name__ == '__main__':

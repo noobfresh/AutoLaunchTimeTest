@@ -1,0 +1,19 @@
+针对懂配置环境的同志：
+
+1 -> 进入install目录，解压platform-tools， ffmpeg-20181016-b2adc31-win64-static，及安装python-2.7.12.amd64
+
+2 -> 配置路径，普通情况下，可以通过autobat.bat，若后面执行异常，则可以自己手动配置下，
+将C:\Python27，C:\Python27\Scripts及当前解压出来ffmpeg-20181016-b2adc31-win64-static/bin目录添加到系统环境变量Path中。
+
+3 -> 配置ADB路径，新增环境变量 ANDROID_HOME，其内容为解压出来的 platform-tools目录
+
+4 -> 如果是已经配置过adb，python的同志，则将上面说到还没配置的路径，再添加下。ADB路径，需新增一个ANDROID_HOME的环境变量。
+
+5 -> 执行 pipinstall.bat，安装python库
+
+5 -> 进入main目录下，打开screen_record.py，在13行附近，将前面配置的ANDROID_HOME路径，替换一下代码里的路径。然后保存关闭。
+
+6 -> 连上手机，然后执行main目录下的main.py即可
+
+7 —> 根据输入执行后，等待执行结束，会在当前目录下，datachart/dataresult目录中
+	输出启动速度结果文件。
