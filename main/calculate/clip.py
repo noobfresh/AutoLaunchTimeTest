@@ -40,6 +40,22 @@ def clip_specific_pic(path):
     img.save(path)
 
 
+def clip_generate_flag(path1, path2):
+    MLog.debug("clip_specific_pic(): the path = {}".format(path1))
+    img = Image.open(path1)
+    width = img.size[0]
+    height = img.size[1]
+    img = img.crop(
+        (
+            0,
+            300,
+            width,
+            height - 200
+        )
+    )
+    img.save(path2)
+
+
 if __name__ == '__main__':
     clip_specific_pic("../screenrecord/MI8_first/MI8_first_0/00475.jpg")
     print 1

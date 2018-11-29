@@ -44,7 +44,7 @@ def calculate(device_name, name_with_suffix):
         # 中间launching判断
         real_launching_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
         # 做了个特殊处理，获取到首帧过后，跳过了半秒的帧数，为了直接就开始计算启动过程中帧
-        launching_index = find_lanching_end_frame(first + int(settings.get_value("ffmpeg")),
+        launching_index = find_lanching_end_frame(first + int(settings.get_value("ffmpeg")) * 3 / 4,
                                                   file_count, real_launching_feature_path, real_path)
         if launching_index == -1:
             dir_count -= 1
@@ -52,7 +52,7 @@ def calculate(device_name, name_with_suffix):
             launching_datas.append(0)
             MLog.debug("calculate: can't not find launching frame")
             continue
-        launching_time = (launching_index - first + 1) * (1000 / int(settings.get_value("ffmpeg")))
+        launching_time = int((launching_index - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
         launching_datas.append(launching_time)
         # # 中间会生成多余的照片影响
         real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
@@ -68,7 +68,7 @@ def calculate(device_name, name_with_suffix):
             MLog.debug("calculate: can't not find first frame")
             continue
         MLog.debug(u"帧数 = " + str(settings.get_value("ffmpeg")))
-        time = (last - first + 1) * (1000 / int(settings.get_value("ffmpeg")))
+        time = int((last - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
         datas.append(time)
         MLog.info("first frame = {}, last frame = {}， launching end frame = {}, time = {}".format(
             first, last, launching_index, time))

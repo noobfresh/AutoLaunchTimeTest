@@ -1,4 +1,5 @@
 from calculate import base_utils
+from calculate.clip import clip_generate_flag
 from calculate.template_match import isLaunchingPage
 from log.log import MLog
 
@@ -13,5 +14,7 @@ def find_lanching_end_frame(start_index, length, feature_path, folder_path):
             continue
         else:
             MLog.debug("find_lanching_end_frame: " + src_file_path + " is not launching frame!!!!")
+            clip_generate_flag(folder_path + base_utils.adapter_num(i-1) + ".jpg",
+                               folder_path + base_utils.adapter_num(i - 1) + "_feature.jpg")
             return i - 1
     return -1

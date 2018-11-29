@@ -33,6 +33,7 @@ def init_ffmpeg(ffmpeg):
     print u"帧数 = " + str(settings.get_value("ffmpeg"))
 
 
+# 去掉最低最高取平均
 def avg_list(list):
     nsum = 0
     count = 0
@@ -42,6 +43,13 @@ def avg_list(list):
             count += 1
     if count == 0:
         return 0
+    if count < 4:
+        return nsum / count
+    highest = max(list)
+    lowest = min(list)
+    nsum -= highest
+    nsum -= lowest
+    count -= 2
     return nsum / count
 
 
@@ -102,15 +110,6 @@ if __name__ == '__main__':
     MLog.debug(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
-
-    json_data = [{
-        "phone": device_name,
-        "app": "7.11.1",
-        "first_start": mean_time1,
-        "start": mean_time2,
-        "home": ""
-    }]
-
     if len(datas1) > len(datas2):
         for i in range(len(datas1) - len(datas2)):
             datas2.append(0)
@@ -124,6 +123,20 @@ if __name__ == '__main__':
     elif len(launchingdatas2) > len(launchingdatas1):
         for i in range(len(launchingdatas2) - len(launchingdatas1)):
             launchingdatas1.append(0)
+
+    if len(datas1) > len(launchingdatas1):
+        for i in range(len(datas1) - len(launchingdatas1)):
+            launchingdatas1.append(0)
+    elif len(launchingdatas1) > len(datas1):
+        for i in range(len(launchingdatas1) - len(datas1)):
+            datas1.append(0)
+
+    if len(datas2) > len(launchingdatas2):
+        for i in range(len(datas2) - len(launchingdatas2)):
+            launchingdatas2.append(0)
+    elif len(launchingdatas2) > len(datas2):
+        for i in range(len(launchingdatas2) - len(datas2)):
+            datas2.append(0)
 
     json_datas = [
         {
@@ -147,12 +160,10 @@ if __name__ == '__main__':
         }
     ]
 
-    print json.dumps(json_data)
-
-    # 生成excel表格
-    # sheet_name = "time_cost"
-    # file_name = "data_result"
-    # create_excel(sheet_name, file_name, json_data)
+    MLog.info(json.dumps(datas1))
+    MLog.info(json.dumps(launchingdatas1))
+    MLog.info(json.dumps(datas2))
+    MLog.info(json.dumps(launchingdatas2))
 
     # 生成折线图
     result_name = "chart"
@@ -176,7 +187,7 @@ if __name__ == '__main__':
                      "f": str(launchingdatas2[i-1]),
                      "g": str(datas2[i-1] - launchingdatas2[i-1])}
         json_detail.append(dict_temp)
-    print json.dumps(json_detail)
+    MLog.info(json.dumps(json_detail))
     dict1 = collections.OrderedDict()
     dict1["a"] = u"次数"
     dict1["b"] = u"首次启动总耗时"
@@ -186,8 +197,8 @@ if __name__ == '__main__':
     dict1["f"] = u"非首次启动耗时"
     dict1["g"] = u"非首次启动首页加载耗时"
     create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
-    print json.dumps(json_detail)
-    print json.dumps(dict1)
+    MLog.info(json.dumps(json_detail))
+    MLog.info(json.dumps(dict1))
     print "--------------------------------------------------------"
     json_detail2 = []
     dict_avg = {
@@ -205,15 +216,13 @@ if __name__ == '__main__':
     dict2["d"] = u"平均非首次启动总耗时"
     dict2["e"] = u"平均非首次启动耗时"
     dict2["f"] = u"平均非首次启动首页加载耗时"
-    print json.dumps(json_detail2)
-    print json.dumps(dict2)
+    MLog.info(json.dumps(json_detail2))
+    MLog.info(json.dumps(dict2))
     print "--------------------------------------------------------"
     create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
                                 json_detail2, dict2)
 
     sendEmailWithDefaultConfig()
-
-    print json.dumps(json_data)
 
     end_time = datetime.datetime.now()
     print "all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(

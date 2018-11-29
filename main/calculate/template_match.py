@@ -62,7 +62,7 @@ def findLaunchLogo(src_path, dst_path):
     res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)  # 最后这个参数可以试一下调一下
     # print "what! there is a result = {}".format(res)
     # 根据外部传参设置阈值
-    threshold = 0.9
+    threshold = 0.95
     # print res >= threshold
     loc = np.where(res >= threshold)
 
@@ -96,7 +96,7 @@ def isLaunchingPage(src, target_path):
     # print "what! there is a result = {}".format(res)
     # 根据外部传参设置阈值
     # print str(float(res)) + " -------------------------------------"
-    threshold = 0.85
+    threshold = 0.9955
     # print res >= threshold
     loc = np.where(res >= threshold)
 

@@ -9,7 +9,7 @@ from clip import clip_specific_pic
 
 
 last_frame_feature = "./feature/vivoX7_homepage_feature.jpg"
-threshold = 0.92  # 准确率测试
+threshold = 0.94  # 准确率测试
 base_path = "./extract_folder_all/"
 demo_path = "./homepage/"
 
@@ -26,7 +26,7 @@ def last_frame_find_rgb(length, from_index, real_path, real_feature_path, rgb_fo
             degree = calculate_by_hists(real_feature_path, real_path + feature_name)
             print "degree = {}    -----------------------------".format(degree)
             # 这个值是否还可以再调一下？
-            if degree < 0.50:
+            if degree < 0.53:
                 continue
 
             # 识别到才裁剪

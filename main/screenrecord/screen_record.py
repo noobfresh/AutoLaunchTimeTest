@@ -91,6 +91,7 @@ def screenRecord(times, name):
     else:
         print(name + "         ----------------------------------                ---------------------------")
         subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
+    doInThread(get_mem_cpu, d, 0)
     print u'录屏开始'
 
 
@@ -328,6 +329,15 @@ def runwatch(d, data):
         if len(d.watchers) != num:
             registerEvent(d)
         d.watchers.run()
+
+
+def get_mem_cpu(d, data):
+    for i in range(0, 3):
+        r = os.popen("adb shell top -n 1")
+        text = r.read()
+        r.close()
+        MLog.info(text[0:1000])
+        time.sleep(5)
 
 
 # 通过配置文件获取密码
