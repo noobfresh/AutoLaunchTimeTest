@@ -1,0 +1,83 @@
+# -*- coding: UTF-8 -*-
+
+import os
+import time
+import shutil
+import subprocess
+import settings
+from sub_thread import doInThread
+from log.log import MLog
+from device_info import getDeviceInfo
+
+machineName = getDeviceInfo()
+save_dir = '/sdcard/screenrecord/'
+
+
+# 录屏
+def screenRecord(d, times, name):
+    if machineName == "PACM00":
+        os.system('adb shell service call statusbar 1')
+        d(text="开始录屏").click()
+        print "start"
+        time.sleep(5)
+    else:
+        print(name + "         ----------------------------------                ---------------------------")
+        subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
+    doInThread(get_mem_cpu, d, 0)
+    print u'录屏开始'
+
+
+# 数据上传
+def pullRecord(name):
+    if machineName == "PACM00":
+        os.system("adb pull " + name)
+    else:
+        print save_dir + name
+        os.system('adb pull ' + save_dir + name)
+        print u'数据上传成功'
+
+
+# 视频转换成帧
+# ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
+def videoToPhoto(dirname, index):
+    curPath = os.getcwd()
+    if machineName == "PACM00":
+        print str(curPath) + "-------------"
+
+        srcPath = os.path.join(os.path.dirname(curPath), "Screenshots")
+        print srcPath + "1111111111"
+        count = 0
+        # for filename in os.listdir(srcPath):
+        os.chdir(srcPath)
+
+        for root, dirs, files in os.walk(srcPath):  # 遍历统计
+            for file in files:
+                print os.path.abspath(file)
+                shutil.copyfile(file, curPath + "/" + str(count) + ".mp4")
+                count += 1
+        # shutil.copytree(os.path.join(os.path.dirname(curPath), "Screenshots"), curPath)
+        # rename_mp4_files(curPath)
+        os.chdir(curPath)
+
+    print '+++++++++++++' + curPath
+    if os.path.isdir(dirname):
+        # os.removedirs(dirname)
+        shutil.rmtree(dirname)
+    os.makedirs(dirname)
+    chagePath = curPath + '/' + dirname
+    print '+++++++++++++' + chagePath
+    os.chdir(chagePath)
+    print u"帧数 = " + str(settings.get_value("ffmpeg"))
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
+        settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
+    subprocess.call(strcmd, shell=True)
+    os.chdir(curPath)
+
+
+def get_mem_cpu(d, data):
+    for i in range(0, 3):
+        r = os.popen("adb shell top -n 1")
+        text = r.read()
+        r.close()
+        MLog.info(text[0:1000])
+        time.sleep(5)
