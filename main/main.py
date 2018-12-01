@@ -86,14 +86,14 @@ if __name__ == '__main__':
 
     finally:
         # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
-        print "apk = " + str(apk_name) + " ,first_start = " \
-              + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame)
+        MLog.info("apk = " + str(apk_name) + " ,first_start = " \
+              + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame))
         init_ffmpeg(int(frame))
         start_python(int(first_start), int(normal_start), str(apk_name))
 
     # init_ffmpeg(int(frame))
     end_video_2_frame_time = datetime.datetime.now()
-    print u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time)
+    MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
     # ---------------------------- Calculate part ------------------------------#
     #
     # 生成好照片
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     mean_time2, datas2, launchingdatas2 = calculate(device_name, device_name + "_notfirst")
     # mean_time2, datas2 = "0", [0]
     end_calculate_time = datetime.datetime.now()
-    MLog.debug(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
+    MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
     if len(datas1) > len(datas2):
@@ -225,10 +225,10 @@ if __name__ == '__main__':
     sendEmailWithDefaultConfig()
 
     end_time = datetime.datetime.now()
-    print "all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
+    MLog.info("all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
         end_time - start_time,
         end_video_2_frame_time - start_time,
         end_calculate_time - end_video_2_frame_time,
-        end_time - end_calculate_time)
+        end_time - end_calculate_time))
     # 强行结束
     os._exit(0)
