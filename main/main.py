@@ -11,8 +11,8 @@ from datachart.charts import *
 from datachart.handledata import create_detail_sheet_by_json
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
-from screenrecord.screen_record import getDeviceInfo
-from screenrecord.screen_record import start_python
+from screenrecord.device_info import getDeviceInfo
+from screenrecord.screen_record_main import start_python
 
 user_config = True
 

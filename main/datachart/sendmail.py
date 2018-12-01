@@ -14,7 +14,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 
+from config.configs import Config
 from log.fileutil import make_patch, make_log_patch
+from screenrecord.device_info import getDeviceInfo
 
 chart_data_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
@@ -58,7 +60,7 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     # 设定附件信息
     if not patchFileList is None:
         for patchFile in patchFileList:
-            print u"附件:"  + patchFile
+            print u"附件:" + patchFile
             with codecs.open(patchFile, 'rb') as f:
                 patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
@@ -105,8 +107,10 @@ def sendEmailWithDefaultConfig():
     user = u"1146751867@qq.com"
     password = u"lcqctgdcbvklghde"
     to_users = u"191131464@qq.com, pengyangfan@yy.com,weiyi1@yy.com"
-    subject = u"首页启动时间数据分析"
-    content = u"首页启动时间数据分析详见附件："
+    conf = Config("default.ini")
+    apk_name = conf.getconf("default").apk_name
+    subject = getDeviceInfo() + apk_name + u"启动时间数据分析"
+    content = u"数据分析详见附件："
     contentType = u"application/octet-stream"
     try:
 
@@ -116,7 +120,7 @@ def sendEmailWithDefaultConfig():
         print u"收集邮件附件："
         for files in os.walk(chart_data_path):
             for f in files[2]:
-                new_file_path = files[0] +f
+                new_file_path = files[0] + f
                 patchFile.append(new_file_path)
 
         patchFile.append(log_file)
