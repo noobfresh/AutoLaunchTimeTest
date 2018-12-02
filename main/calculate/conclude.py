@@ -198,7 +198,18 @@ def new_new_calculate(device_name, name_with_suffix):
                                                                   real_launching_feature_path,
                                                                   real_last_feature_path, rgb_folder)
         MLog.debug(u"帧数 = " + str(settings.get_value("ffmpeg")))
-        time = int((last - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
+        if launching_index == -1:
+            launching_time = 0
+            MLog.info("can not find launching end frame !!!!")
+        else:
+            launching_time = int((launching_index - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
+        launching_datas.append(launching_time)
+
+        if last == -1:
+            time = 0
+            MLog.info("can not find last frame !!!!")
+        else:
+            time = int((last - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
         datas.append(time)
         MLog.info("first frame = {}, last frame = {}， launching end frame = {}, time = {}".format(
             first, last, launching_index, time))

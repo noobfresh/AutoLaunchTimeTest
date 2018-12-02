@@ -91,7 +91,7 @@ def last_and_launching_frame_find_rgb(length, from_index, real_path, real_launch
                 degree = calculate_by_hists(real_last_feature_path, real_path + feature_name)
                 print "degree = {}    -----------------------------".format(degree)
                 # 这个值是否还可以再调一下？这个值太难取了，有些手机的帧很模糊，有些手机又特别清楚
-                if degree < 0.61:
+                if degree < 0.65:
                     continue
 
                 # 识别到才裁剪
