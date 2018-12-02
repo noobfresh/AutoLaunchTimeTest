@@ -5,7 +5,7 @@ import re
 import sys
 
 import settings
-from calculate.conclude import calculate
+from calculate.conclude import calculate, new_new_calculate
 from config.configs import Config
 from datachart.charts import *
 from datachart.handledata import create_detail_sheet_by_json
@@ -103,8 +103,8 @@ if __name__ == '__main__':
     device_name = re.sub('\s', '', device_name)
     # mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
     # mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)
-    mean_time1, datas1, launchingdatas1 = calculate(device_name, device_name + "_first")
-    mean_time2, datas2, launchingdatas2 = calculate(device_name, device_name + "_notfirst")
+    mean_time1, datas1, launchingdatas1 = new_new_calculate(device_name, device_name + "_first")
+    mean_time2, datas2, launchingdatas2 = new_new_calculate(device_name, device_name + "_notfirst")
     # mean_time2, datas2 = "0", [0]
     end_calculate_time = datetime.datetime.now()
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))

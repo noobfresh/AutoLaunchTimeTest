@@ -32,9 +32,9 @@ def clip_specific_pic(path):
     img = img.crop(
         (
             0,
-            300,
+            400,
             width,
-            height - 200
+            height - 350
         )
     )
     img.save(path)
