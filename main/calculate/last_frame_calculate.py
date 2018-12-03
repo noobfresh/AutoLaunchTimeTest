@@ -142,7 +142,7 @@ def huya_first_find_frame(length, from_index, real_path, real_launching_feature_
                 degree = calculate_by_hists(real_last_feature_path, real_path + feature_name)
                 print "degree = {}    -----------------------------".format(degree)
                 # 这个值是否还可以再调一下？这个值太难取了，有些手机的帧很模糊，有些手机又特别清楚
-                if degree < 0.74:
+                if degree < 0.735:
                     continue
 
                 # 识别到才裁剪
