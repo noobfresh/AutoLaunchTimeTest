@@ -89,7 +89,7 @@ if __name__ == '__main__':
         MLog.info("apk = " + str(apk_name) + " ,first_start = " \
               + str(first_start) + " ,normal_start = " + str(normal_start) + " ,frame = " + str(frame))
         init_ffmpeg(int(frame))
-        # start_python(int(first_start), int(normal_start), str(apk_name))
+        start_python(int(first_start), int(normal_start), str(apk_name))
 
     # init_ffmpeg(int(frame))
     end_video_2_frame_time = datetime.datetime.now()
