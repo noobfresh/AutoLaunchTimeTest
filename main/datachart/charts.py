@@ -97,16 +97,63 @@ def create_line_by_json(json_file_name, title):
     return create_line(title, line_data)
 
 
-def main():
-    # 生成折线图
-    json_datas = [{"app": "7.11", "datas": [8266.67, 6233.33, 7300, 7266.67, 6766.67]},
-                  {"app": "7.12", "datas": [5600, 5366.67, 5466.67, 5133.33, 4966.67]}]
+def create_from_file():
+    print u"通过读取json文件生成图表数据..."
+
+    lst = []
+    src = os.path.dirname(__file__) + os.sep + "jsonfile"
+    for item in os.listdir(src):
+        item = item.decode('GB2312')
+        path = os.path.join(src, item)
+        if os.path.splitext(path)[1] == '.json':
+            lst.append(path)
+            print "add " + path
+
+    chart_items = []
     result_name = "chart"
-    chart1 = ChartItem("折线图样本实例", json_datas)
-    chart2 = ChartItem("折线图样本实例", json_datas)
-    chart_items = [chart1, chart2]
+    for file in lst:
+        with open(file, 'r') as load_f:
+            data = json.load(load_f)
+            base_name = os.path.basename(file)
+            # 去掉后缀
+            file_name = os.path.splitext(base_name)[0]
+            chart = ChartItem(file_name, data)
+            chart_items.append(chart)
+
     create_charts(result_name, chart_items)
-    chart_items = [chart1, chart2]
+
+
+def create_by_json():
+
+    # 生成折线图
+    a83_json_data1 = [{"app": "7.11", "datas": [14500, 13266, 12600, 12633, 12300, 11333, 12166, 11700]},
+                      {"app": "7.12", "datas": [11366, 11533, 11100, 9500, 10933, 10700, 10566, 11400]},
+                      {"app": "7.14", "datas": [4866, 4733, 4600, 4800, 4633, 4800, 4766, 4566]},
+                      {"app": "huya", "datas": [6966, 6566, 5933, 5833, 7166, 7400, 5800, 7133]}]
+
+    a83_json_data2 = [{"app": "7.11", "datas": [8600, 9066, 8233, 8200, 9533, 8400, 8300, 8400]},
+                      {"app": "7.12", "datas": [8200, 7666, 7000, 7866, 7900, 7233, 7366, 7466]},
+                      {"app": "7.14", "datas": [2380, 2380, 2360, 2380, 2360, 2340, 2380, 2380]},
+                      {"app": "huya", "datas": [1633, 1700, 1600, 1666, 1733, 1633, 1633, 1666]}]
+
+    a83_json_data3 = [{"app": "7.11", "datas": [133, 133, 133, 134, 200, 134, 133, 133]},
+                      {"app": "7.12", "datas": [133, 167, 167, 133, 134, 167, 200, 166]},
+                      {"app": "7.14", "datas": [200, 166, 200, 200, 167, 167, 166, 167]},
+                      {"app": "huya", "datas": [200, 166, 300, 200, 333, 166, 200, 200]}
+                      ]
+
+    phone = "红米5Plus"
+    result_name = "chart"
+    chart1 = ChartItem(phone + "首次启动总耗时", a83_json_data1)
+    chart2 = ChartItem(phone + "非首次启动总耗时", a83_json_data2)
+    chart3 = ChartItem(phone + "首页加载耗时", a83_json_data3)
+    chart_items = [chart1, chart2, chart3]
+
+    create_charts(result_name, chart_items)
+
+
+def main():
+    create_from_file()
 
 
 if __name__ == '__main__':
