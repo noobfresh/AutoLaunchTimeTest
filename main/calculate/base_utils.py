@@ -8,7 +8,7 @@ from log.log import MLog
 
 def count_file(folder):
     length = len(
-        [name for name in os.listdir("./" + folder + "/") if os.path.isfile(os.path.join("./" + folder + "/", name))])
+        [name for name in os.listdir(folder + "/") if os.path.isfile(os.path.join(folder + "/", name))])
     MLog.debug("the folder = {}, which length = {}".format(folder, length))
     return length
 

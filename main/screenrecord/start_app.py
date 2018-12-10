@@ -11,6 +11,9 @@ import os
 from device_info import getDeviceInfo
 from video_related import screenRecord
 
+conf = Config("default.ini")
+path = conf.getconf("default").feature_path
+
 
 # 启动应用
 def startAPP(d, times, video, sernum, machineName):
@@ -33,11 +36,11 @@ def startAppBySwipe(d, times, video, sernum, machineName):
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
         pos = settings.get_value("pos", None)
         if pos is None:
-            pos = getPos(d, app_name,sernum)
+            pos = getPos(d, app_name, sernum)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
-        pos = getPos(d, app_name,sernum)
+        pos = getPos(d, app_name, sernum)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
@@ -69,10 +72,10 @@ def getPos(d, app_name, sernum):
     feature_dir = conf.getconf(str(app_key)).feature
     if machineName == "vivoX9":
         MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
+        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
     elif machineName == "vivoX7":
         MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), "../picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
+        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
     else:
         MLog.debug("get pos by uiautomator")
         pos = d(text=app_name).bounds

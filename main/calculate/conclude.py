@@ -1,4 +1,6 @@
 # coding=utf-8
+import os
+
 from base_utils import count_dirs, count_file
 from calculate.launching_frame_calculate import find_lanching_end_frame
 from config.configs import Config
@@ -10,6 +12,9 @@ from log.log import MLog
 from rgb import calculate_homepage_rgb
 from os.path import exists
 import settings
+
+conf = Config("default.ini")
+path = conf.getconf("default").feature_path
 
 
 def calculate(device_name, name_with_suffix):
@@ -28,10 +33,10 @@ def calculate(device_name, name_with_suffix):
         # 取指定目录下的file count
         file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))
         real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
-        real_first_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
+        real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
         if not exists(real_first_feature_path):
             MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
-            real_first_feature_path = "./picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
+            real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
         first = first_frame_find(file_count, real_path, real_first_feature_path)
         # 异常处理
         if first == -1:
@@ -42,7 +47,7 @@ def calculate(device_name, name_with_suffix):
             continue
 
         # 中间launching判断
-        real_launching_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
+        real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
         # 做了个特殊处理，获取到首帧过后，跳过了半秒的帧数，为了直接就开始计算启动过程中帧
         # 以上这个操作直接放弃，因为实测很容易出事
         # 找到首帧后不跳，然后不断用启动页的特征图去找，开始肯定是找不到的，所以开始的找不到都不要放弃，
@@ -60,10 +65,10 @@ def calculate(device_name, name_with_suffix):
         launching_time = int((launching_index - first + 1) * (1000 / float(settings.get_value("ffmpeg"))))
         launching_datas.append(launching_time)
         # # 中间会生成多余的照片影响
-        real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
+        real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
         if not exists(real_last_feature_path):
             MLog.debug("calculate: last, there is no adapted feature pic for current Phone")
-            real_last_feature_path = "./picrepos/feature/" + feature_dir + "/common_homepage_feature.jpg"
+            real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/common_homepage_feature.jpg"
         last = last_frame_find_rgb(file_count, launching_index, real_path, real_last_feature_path, rgb_folder)
         # 异常处理
         if last == -1:
@@ -98,19 +103,20 @@ def new_calculate(device_name, name_with_suffix, is_first, input_num):
     rgb_folder = calculate_homepage_rgb()
     image_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + suffix)
     # 首帧特征图地址
-    real_first_feature_path = "./feature/" + device_name + "_launch_feature.jpg"
+    real_first_feature_path = path + "/feature/" + device_name + "_launch_feature.jpg"
     if not exists(real_first_feature_path):
         MLog.debug("new_calculate: first, there is no adapted feature pic for current Phone")
-        real_first_feature_path = "./feature/common_launch_feature.jpg"
+        real_first_feature_path = path + "/feature/common_launch_feature.jpg"
     # 末帧特征图地址
-    real_last_feature_path = "./feature/" + device_name + "_homepage_feature.jpg"
+    real_last_feature_path = path + "/feature/" + device_name + "_homepage_feature.jpg"
     if not exists(real_last_feature_path):
         MLog.debug("new_calculate: last, there is no adapted feature pic for current Phone")
-        real_last_feature_path = "./feature/common_homepage_feature.jpg"
+        real_last_feature_path = path + "/feature/common_homepage_feature.jpg"
 
     first_frame = new_first_frame_find(1, image_count, real_dir_path, real_first_feature_path)
     while first_frame > 0:
-        last_frame = new_last_frame_find_rgb(first_frame, image_count, real_dir_path, real_last_feature_path, rgb_folder)
+        last_frame = new_last_frame_find_rgb(first_frame, image_count, real_dir_path, real_last_feature_path,
+                                             rgb_folder)
         if last_frame == -1:
             MLog.debug("new_calculate: i have not found last frame")
             break
@@ -148,10 +154,10 @@ def new_new_calculate(device_name, name_with_suffix):
         # 取指定目录下的file count
         file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))
         real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
-        real_first_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
+        real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
         if not exists(real_first_feature_path):
             MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
-            real_first_feature_path = "./picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
+            real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
         first = first_frame_find(file_count, real_path, real_first_feature_path)
         # 异常处理
         if first == -1:
@@ -162,9 +168,9 @@ def new_new_calculate(device_name, name_with_suffix):
             continue
 
         # 中间launching判断
-        real_launching_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
+        real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
 
-        real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
+        real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
 
         launching_index, last = last_and_launching_frame_find_rgb(file_count, first, real_path,
                                                                   real_launching_feature_path,
@@ -208,10 +214,10 @@ def huya_first_calculate(device_name, name_with_suffix):
         # 取指定目录下的file count
         file_count = count_file("screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i))
         real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(i) + "/"
-        real_first_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
+        real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
         if not exists(real_first_feature_path):
             MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
-            real_first_feature_path = "./picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
+            real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/common_launch_feature.jpg"
         first = first_frame_find(file_count, real_path, real_first_feature_path)
         # 异常处理
         if first == -1:
@@ -222,9 +228,9 @@ def huya_first_calculate(device_name, name_with_suffix):
             continue
 
         # 中间launching判断
-        real_launching_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
+        real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
 
-        real_last_feature_path = "./picrepos/feature/" + feature_dir + "/" + device_name + "_first_homepage_feature.jpg"
+        real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_first_homepage_feature.jpg"
 
         launching_index, last = huya_first_find_frame(file_count, first, real_path, real_launching_feature_path,
                                                       real_last_feature_path, rgb_folder)
@@ -249,4 +255,3 @@ def huya_first_calculate(device_name, name_with_suffix):
         mean_time /= dir_count  # 这个平均时间的逻辑没有考虑到，异常数据的刨除
     MLog.debug("calculate: actually valid count = {}".format(real_num))
     return mean_time, datas, launching_datas
-

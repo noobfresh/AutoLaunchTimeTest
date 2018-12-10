@@ -203,9 +203,9 @@ if __name__ == '__main__':
     dict1["e"] = u"非首次启动总耗时"
     dict1["f"] = u"非首次启动耗时"
     dict1["g"] = u"非首次启动首页加载耗时"
-    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
     MLog.info(json.dumps(json_detail))
     MLog.info(json.dumps(dict1))
+    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
     print "--------------------------------------------------------"
     json_detail2 = []
     dict_avg = {
