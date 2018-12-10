@@ -50,6 +50,16 @@ def create_page(lines, result_file_name):
 
     print u"开始生成图表..."
     print u"图表生成路径:" + file_name
+
+    try:
+        if not os.path.exists(file_path):
+            print file_path + u",目录不存在，现在创建一个..."
+            os.mkdir(file_path)
+
+    except IOError:
+        print u"创建文件失败！，异常如下:"
+        print Exception
+
     page.render(file_name.decode('utf-8'))
 
 
@@ -123,8 +133,36 @@ def create_from_file():
     create_charts(result_name, chart_items)
 
 
-def create_by_json():
+# 通过每条线的file.json文件生成图表
+def create_from_file_per(src, title):
+    print u"通过读取json文件生成图表数据..."
 
+    lst = []
+    for item in os.listdir(src):
+        item = item.decode('GB2312')
+        path = os.path.join(src, item)
+        if os.path.splitext(path)[1] == '.json':
+            lst.append(path)
+            print "add " + path
+
+    lines = []
+    chart_items = []
+    result_name = "chart"
+    for file in lst:
+        print "file = " + file
+        with open(file, 'r') as f:
+            line = json.load(f)
+            lines.append(line)
+    print lines
+
+    file_name = title
+    chart = ChartItem(file_name, lines)
+    chart_items.append(chart)
+
+    create_charts(result_name, chart_items)
+
+
+def create_by_jsons(jsons, titles):
     # 生成折线图
     a83_json_data1 = [{"app": "7.11", "datas": [14500, 13266, 12600, 12633, 12300, 11333, 12166, 11700]},
                       {"app": "7.12", "datas": [11366, 11533, 11100, 9500, 10933, 10700, 10566, 11400]},
@@ -153,6 +191,7 @@ def create_by_json():
 
 
 def main():
+    # create_from_src()
     create_from_file()
 
 

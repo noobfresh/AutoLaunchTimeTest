@@ -55,7 +55,7 @@ def avg_list(list):
 
 if __name__ == '__main__':
 
-    MLog.debug("test")
+    MLog.debug(u"程序启动...")
     start_time = datetime.datetime.now()
 
     frame = 30
