@@ -2,7 +2,6 @@
 
 import sys
 from uiautomator import Device
-from uiautomator import device as d
 from register_event import *
 from start_app import startAPP
 from file_related import *
@@ -21,50 +20,57 @@ conf = Config("default.ini")
 save_dir = '/sdcard/screenrecord/'
 
 # 这个要换成设备名称
-temp_dir = getDeviceInfo()
+# temp_dir = ''
 # 手机名称
 deviceList = []
-machineName = ''
+serial = []
 
-def getDevice(series):
+
+def getDevice():
     global deviceList
-    for index in range(len(series)):
-        deviceList[index] = Device(series[index])
+    global serial
+    conf = Config("default.ini")
+    event = conf.getconf("serial").serial_number
+    serial = event.split(',')
+    print serial
+    for index in range(len(serial)):
+        deviceList.append(Device(serial[index]))
+
 
 # 首次启动
-def firstLaunch(firstLaunchTimes, apkName):
+def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
     if firstLaunchTimes > 0:
         if machineName == "PACM00":
-            removeDirs("/sdcard/DCIM/Screenshots")
+            removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
             path = os.path.abspath('.')
             print path
-            os.chdir(path + "/screenrecord")
+            os.chdir(path)
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
-        uninstallAPK()
+        uninstallAPK(sernum)
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
-        mkdir(first_dir)
+        mkdir(first_dir, sernum)
         if machineName != "PACM00":
-            installAPK(apkName)
+            installAPK(apkName, sernum)
             time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
             if machineName == "PACM00":
-                uninstallAPK()
+                uninstallAPK(sernum)
                 time.sleep(2)
-                installAPK(apkName)
+                installAPK(apkName, sernum)
                 time.sleep(15)
-                doInThread(inputListener, d, 0)
+                doInThread(inputListener, d, 0, sernum)
             else:
-                clearData()
+                clearData(sernum)
                 time.sleep(3)
-            startAPP(d, 20, first_dir + '/' + str(index) + '.mp4')
-            time.sleep(20)
+            startAPP(d, 15, first_dir + '/' + str(index) + '.mp4', sernum, machineName)
+            time.sleep(15)
             if machineName == "PACM00":
-                os.system('adb shell service call statusbar 1')
+                os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
         # endTime = time.time()
         # if firstTimes > int(endTime - startTime):
@@ -72,24 +78,24 @@ def firstLaunch(firstLaunchTimes, apkName):
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
         time.sleep(10)
         if machineName == "PACM00":
-            pullRecord("/sdcard/DCIM/Screenshots")
+            pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)
         else:
-            pullRecord(first_dir)
+            pullRecord(first_dir, sernum, machineName)
         path = os.path.abspath('.')
         folder = path + '/' + first_dir
         print "====" + folder
         os.chdir(folder)
-        killProcess()
+        killProcess(sernum)
         for index in range(firstLaunchTimes):
-            videoToPhoto(str(first_dir + "_" + str(index)), str(index))
+            videoToPhoto(str(first_dir + "_" + str(index)), str(index), machineName)
         os.chdir(path)
 
 
 # 非首次启动
-def notFirstLaunch(notFirstLaunchTimes):
+def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
     if notFirstLaunchTimes > 0:
         if machineName == "PACM00":
-            removeDirs("/sdcard/DCIM/Screenshots")
+            removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
             path = os.path.abspath('.')
             print path
@@ -98,7 +104,7 @@ def notFirstLaunch(notFirstLaunchTimes):
                 shutil.rmtree("Screenshots")
 
         notfirst_dir = temp_dir + "_notfirst"
-        mkdir(notfirst_dir)
+        mkdir(notfirst_dir, sernum)
         # notfirstTimes = notFirstLaunchTimes * 15
         # screenRecord(notfirstTimes, notfirst_dir + '/' + 'notfirst.mp4')
         # startTime = time.time()
@@ -108,11 +114,11 @@ def notFirstLaunch(notFirstLaunchTimes):
             time.sleep(2)
             """
 
-            killProcess()
-            startAPP(d, 20, notfirst_dir + '/' + str(index) + ".mp4")
-            time.sleep(20)
+            killProcess(sernum)
+            startAPP(d, 15, notfirst_dir + '/' + str(index) + ".mp4", sernum, machineName)
+            time.sleep(15)
             if machineName == "PACM00":
-                os.system('adb shell service call statusbar 1')
+                os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
         # endTime = time.time()
         # if firstTimes > int(endTime - startTime):
@@ -120,46 +126,61 @@ def notFirstLaunch(notFirstLaunchTimes):
         #     time.sleep(firstTimes - int(endTime - startTime) + 1)
         time.sleep(10)
         if machineName == "PACM00":
-            pullRecord("/sdcard/DCIM/Screenshots")
+            pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)
         else:
-            pullRecord(notfirst_dir)
+            pullRecord(notfirst_dir, sernum, machineName)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
         print "====" + folder
         os.chdir(folder)
-        killProcess()
+        killProcess(sernum)
         for index in range(notFirstLaunchTimes):
-            videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index))
+            videoToPhoto(str(notfirst_dir + "_" + str(index)), str(index), machineName)
         os.chdir(path)
 
 
 # main函数，线程sleep时间有待商榷
-def main(firstLaunchTimes, notFirstLaunchTimes, apkName):
-    global machineName
-    machineName = getDeviceInfo()
+def main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum):
+    machineName = getDeviceInfo(sernum)
     firstLaunchTimes = int(firstLaunchTimes)
     notFirstLaunchTimes = int(notFirstLaunchTimes)
     print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
-    firstLaunch(firstLaunchTimes, apkName)
-    notFirstLaunch(notFirstLaunchTimes)
+    firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName)
+    notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
 
 
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
+    # for index in range(len(deviceList)):
+    # getDevice()
+    # for index in range(len(deviceList)):
+    d = deviceList[index]
+    serNum = serial[index]
+    print serNum + "444444444444"
+    temp_dir = getDeviceInfo(serNum)
     d.wakeup()
     thread1 = doInThread(runwatch, d, 0)
-    thread2 = doInThread(inputListener, d, 0)
     time.sleep(30)
-    main(firstLaunchTimes, notFirstLaunchTimes, apkName)
+    thread2 = doInThread(inputListener, d, 0, serNum)
+    # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
+    main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
 
 
 if __name__ == "__main__":
-    thread1 = doInThread(runwatch, d, 0)
-    time.sleep(30)
-    thread2 = doInThread(inputListener, d, 0)
-    # 加上下面两行
-    settings._init()
-    settings.set_value("ffmpeg", 30)
-    main(sys.argv[1], sys.argv[2], sys.argv[3])
+    getDevice()
+    for index in range(len(deviceList)):
+        d = deviceList[index]
+        serNum = serial[index]
+        print serNum + "444444444444"
+        temp_dir = getDeviceInfo(serNum)
+        d.wakeup()
+        thread1 = doInThread(runwatch, d, 0)
+        time.sleep(30)
+        thread2 = doInThread(inputListener, d, 0, serNum)
+        # 加上下面两行
+        settings._init()
+        settings.set_value("ffmpeg", 30)
+        # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
+        main(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
 
     # os.system("adb shell input swipe 633 1448 634 1448 10")
 

@@ -6,40 +6,37 @@ import shutil
 import subprocess
 import settings
 from sub_thread import doInThread
-from log.log import MLog
-from device_info import getDeviceInfo
 
-machineName = getDeviceInfo()
 save_dir = '/sdcard/screenrecord/'
 
 
 # 录屏
-def screenRecord(d, times, name):
+def screenRecord(d, times, name, sernum, machineName):
     if machineName == "PACM00":
-        os.system('adb shell service call statusbar 1')
+        os.system('adb -s ' + sernum + ' shell service call statusbar 1')
         d(text="开始录屏").click()
         print "start"
         time.sleep(5)
     else:
         print(name + "         ----------------------------------                ---------------------------")
-        subprocess.Popen("adb shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
+        subprocess.Popen("adb -s " + sernum + " shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
     doInThread(get_mem_cpu, d, 0)
     print u'录屏开始'
 
 
 # 数据上传
-def pullRecord(name):
+def pullRecord(name, sernum, machineName):
     if machineName == "PACM00":
-        os.system("adb pull " + name)
+        os.system("adb -s " + sernum + "  pull " + name)
     else:
         print save_dir + name
-        os.system('adb pull ' + save_dir + name)
+        os.system("adb -s " + sernum + "  pull " + save_dir + name)
         print u'数据上传成功'
 
 
 # 视频转换成帧
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
-def videoToPhoto(dirname, index):
+def videoToPhoto(dirname, index, machineName):
     curPath = os.getcwd()
     if machineName == "PACM00":
         print str(curPath) + "-------------"
@@ -75,9 +72,10 @@ def videoToPhoto(dirname, index):
 
 
 def get_mem_cpu(d, data):
-    for i in range(0, 3):
-        r = os.popen("adb shell top -n 1")
-        text = r.read()
-        r.close()
-        MLog.info(text[0:1000])
-        time.sleep(5)
+    # for i in range(0, 3):
+    #     r = os.popen("adb shell top -n 1")
+    #     text = r.read()
+    #     r.close()
+    #     MLog.info(text[0:1000])
+    #     time.sleep(5)
+    print 1

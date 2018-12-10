@@ -8,9 +8,9 @@ save_dir = '/sdcard/screenrecord/'
 
 
 # 创建文件夹
-def mkdir(name):
-    os.system('adb shell rm -rf ' + save_dir + name)
-    os.system('adb shell mkdir -p ' + save_dir + name)
+def mkdir(name, sernum):
+    os.system('adb -s ' + sernum + ' shell rm -rf ' + save_dir + name)
+    os.system('adb -s' + sernum + ' shell mkdir -p ' + save_dir + name)
     print u'SD卡文件夹创建成功'
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
@@ -35,5 +35,5 @@ def checkNameValid(name=None):
     return name
 
 
-def removeDirs(dir):
-    os.system('adb shell rm -rf ' + dir)
+def removeDirs(dir, sernum):
+    os.system('adb  -s ' + sernum + ' shell rm -rf ' + dir)

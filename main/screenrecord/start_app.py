@@ -11,19 +11,20 @@ import os
 from device_info import getDeviceInfo
 from video_related import screenRecord
 
+
 # 启动应用
-def startAPP(d, times, video):
+def startAPP(d, times, video, sernum, machineName):
     # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
         MLog.debug(u"尝试启动app")
-        startAppBySwipe(d, times, video)
+        startAppBySwipe(d, times, video, sernum, machineName)
     except Exception, e:
         print repr(e)
         MLog.debug(u"startAPP:" + u"启动app失败！")
         sys.exit(-1)
 
 
-def startAppBySwipe(d, times, video):
+def startAppBySwipe(d, times, video, sernum, machineName):
     global startTime
     conf = Config("default.ini")
     app_name = conf.getconf("default").app_name
@@ -32,16 +33,16 @@ def startAppBySwipe(d, times, video):
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
         pos = settings.get_value("pos", None)
         if pos is None:
-            pos = getPos(d, app_name)
+            pos = getPos(d, app_name,sernum)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
-        pos = getPos(d, app_name)
+        pos = getPos(d, app_name,sernum)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
     startTime = time.time()
-    screenRecord(d, times, video)
+    screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     offset = 0
     left = pos['left'] + offset
@@ -52,15 +53,16 @@ def startAppBySwipe(d, times, video):
     x = (left + right) >> 1
     y = (top + bottom) >> 1
     duration = 10
-    start_shell = "adb shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(y) + " " + str(
+    start_shell = "adb -s " + sernum + "  shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(
+        y) + " " + str(
         duration)
     MLog.info(start_shell)
     os.system(start_shell)
 
 
 # 某些特定手机点不到，通过图片匹配去点击
-def getPos(d, app_name):
-    machineName = getDeviceInfo()
+def getPos(d, app_name, sernum):
+    machineName = getDeviceInfo(sernum)
     conf = Config("apk.ini")
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app

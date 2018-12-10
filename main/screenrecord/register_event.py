@@ -35,8 +35,8 @@ def set_text_with_id(d, class_name, res_id, text_content):
 
 
 # 监听输入密码,特殊的点击事件
-def inputListener(d, data):
-    machineName = getDeviceInfo()
+def inputListener(d, data, serialNum):
+    machineName = getDeviceInfo(serialNum)
     print 'register_event' + machineName
     if machineName == "OPPOR11Plusk":
         # if d(className="android.widget.EditText",
@@ -121,9 +121,10 @@ def registerEvent(d):
     # print event
     MLog.debug("event = " + event)
     num = event.split(',')
+    print num
     for index in range(len(num)):
         key = 'event' + str(index)
-        item = utf8(num[index])
+        item = num[index]
         MLog.debug("key = " + key + " and " + "item = " + item)
         d.watcher(key).when(text=item).click(text=item)
 
