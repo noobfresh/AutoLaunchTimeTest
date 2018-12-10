@@ -50,6 +50,16 @@ def create_page(lines, result_file_name):
 
     print u"开始生成图表..."
     print u"图表生成路径:" + file_name
+
+    try:
+        if not os.path.exists(file_path):
+            print file_path + u",目录不存在，现在创建一个..."
+            os.mkdir(file_path)
+
+    except IOError:
+        print u"创建文件失败！，异常如下:"
+        print Exception
+
     page.render(file_name.decode('utf-8'))
 
 
@@ -178,6 +188,7 @@ def create_by_jsons(jsons, titles):
     chart_items = [chart1, chart2, chart3]
 
     create_charts(result_name, chart_items)
+
 
 def main():
     # create_from_src()
