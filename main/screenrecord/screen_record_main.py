@@ -8,6 +8,8 @@ from file_related import *
 from app_stop_related import *
 from video_related import *
 from device_info import getDeviceInfo
+from multiprocessing import Pool
+from multiprocessing import Process
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
@@ -23,18 +25,31 @@ save_dir = '/sdcard/screenrecord/'
 # temp_dir = ''
 # 手机名称
 deviceList = []
+# 序列号
 serial = []
 
 
-def getDevice():
+# def getDevice():
+#     global deviceList
+#     global serial
+#     conf = Config("default.ini")
+#     event = conf.getconf("serial").serial_number
+#     serial = event.split(',')
+#     print serial
+#     for index in range(len(serial)):
+#         deviceList.append(Device(serial[index]))
+
+
+def getDevices():
+    devices = subprocess.Popen('adb devices'.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
     global deviceList
     global serial
-    conf = Config("default.ini")
-    event = conf.getconf("serial").serial_number
-    serial = event.split(',')
+    for item in devices.split():
+        filters = ['list', 'of', 'device', 'devices', 'attached']
+        if item.lower() not in filters:
+            serial.append(item)
+            deviceList.append(Device(item))
     print serial
-    for index in range(len(serial)):
-        deviceList.append(Device(serial[index]))
 
 
 # 首次启动
@@ -49,12 +64,13 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
         uninstallAPK(sernum)
+        print 'executing uninstall' + sernum
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir, sernum)
         if machineName != "PACM00":
             installAPK(apkName, sernum)
-            time.sleep(15)  # 后续改成轮询是否有安装包的包名，有再录屏
+            time.sleep(40)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
@@ -140,48 +156,51 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
 
 
 # main函数，线程sleep时间有待商榷
-def main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum):
+def screenmain(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum):
+    d.wakeup()
+    doInThread(runwatch, d, 0)
+    doInThread(inputListener, d, 0, serNum)
+    time.sleep(30)
     machineName = getDeviceInfo(sernum)
     firstLaunchTimes = int(firstLaunchTimes)
     notFirstLaunchTimes = int(notFirstLaunchTimes)
-    print "times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes), str(notFirstLaunchTimes), apkName)
+    print "===screen record main ====times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes),
+                                                                                    str(notFirstLaunchTimes), apkName)
     firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName)
     notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
+    print 'ddddddddddddddddddddddddddddddd'
 
 
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
     # for index in range(len(deviceList)):
-    getDevice()
+    getDevices()
+    p = Pool();
     for index in range(len(deviceList)):
         d = deviceList[index]
         serNum = serial[index]
         print serNum + "444444444444"
         temp_dir = getDeviceInfo(serNum)
-        d.wakeup()
-        thread1 = doInThread(runwatch, d, 0)
-        time.sleep(30)
-        thread2 = doInThread(inputListener, d, 0, serNum)
-        # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
-        main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
+
+        # main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
+        p.apply_async(screenmain, args=(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
 
 
 if __name__ == "__main__":
-    getDevice()
+    getDevices()
+    p = Pool(5)
     for index in range(len(deviceList)):
         d = deviceList[index]
         serNum = serial[index]
-        print serNum + "444444444444"
+        print serNum + "444444444444" + sys.argv[1] + " " + sys.argv[2]
         temp_dir = getDeviceInfo(serNum)
-        d.wakeup()
-        thread1 = doInThread(runwatch, d, 0)
-        time.sleep(30)
-        thread2 = doInThread(inputListener, d, 0, serNum)
+        # d.wakeup()
+        # thread1 = doInThread(runwatch, d, 0)
+        # thread2 = doInThread(inputListener, d, 0, serNum)
+        # time.sleep(30)
         # 加上下面两行
         settings._init()
         settings.set_value("ffmpeg", 30)
-        # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
-        main(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
-
-    # os.system("adb shell input swipe 633 1448 634 1448 10")
-
-# 问题：多设备连接
+        # main(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
+        p.apply_async(screenmain, args=(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum,))
+    p.close()
+    p.join()
