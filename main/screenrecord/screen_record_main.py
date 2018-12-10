@@ -151,18 +151,18 @@ def main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum):
 
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
     # for index in range(len(deviceList)):
-    # getDevice()
-    # for index in range(len(deviceList)):
-    d = deviceList[index]
-    serNum = serial[index]
-    print serNum + "444444444444"
-    temp_dir = getDeviceInfo(serNum)
-    d.wakeup()
-    thread1 = doInThread(runwatch, d, 0)
-    time.sleep(30)
-    thread2 = doInThread(inputListener, d, 0, serNum)
-    # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
-    main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
+    getDevice()
+    for index in range(len(deviceList)):
+        d = deviceList[index]
+        serNum = serial[index]
+        print serNum + "444444444444"
+        temp_dir = getDeviceInfo(serNum)
+        d.wakeup()
+        thread1 = doInThread(runwatch, d, 0)
+        time.sleep(30)
+        thread2 = doInThread(inputListener, d, 0, serNum)
+        # thread3 = doInThread(main, d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
+        main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
 
 
 if __name__ == "__main__":
