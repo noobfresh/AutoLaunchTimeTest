@@ -30,4 +30,4 @@ def clearData(sernum):
 
 # 卸载应用
 def uninstallAPK(sernum):
-    os.system('adb -s' + sernum + '  uninstall ' + packageName)
+    os.system('adb -s ' + sernum + '  uninstall ' + packageName)
