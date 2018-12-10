@@ -99,7 +99,10 @@ if __name__ == '__main__':
     # 生成好照片
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
-    device_name = getDeviceInfo()
+    conf = Config("default.ini")
+    event = conf.getconf("serial").serial_number
+    serial = event.split(',')
+    device_name = getDeviceInfo(serial[0])
     device_name = re.sub('\s', '', device_name)
     # mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
     # mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)

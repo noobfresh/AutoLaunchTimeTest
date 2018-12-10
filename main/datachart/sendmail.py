@@ -109,7 +109,10 @@ def sendEmailWithDefaultConfig():
     to_users = u"191131464@qq.com, pengyangfan@yy.com,weiyi1@yy.com"
     conf = Config("default.ini")
     apk_name = conf.getconf("default").apk_name
-    subject = getDeviceInfo() + apk_name + u"启动时间数据分析"
+    conf = Config("default.ini")
+    event = conf.getconf("serial").serial_number
+    serial = event.split(',')
+    subject = getDeviceInfo(serial[0]) + apk_name + u"启动时间数据分析"
     content = u"数据分析详见附件："
     contentType = u"application/octet-stream"
     try:
