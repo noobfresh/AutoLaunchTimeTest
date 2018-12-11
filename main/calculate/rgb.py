@@ -62,9 +62,19 @@ def compare_rgb(path, rgb_folder):
     rgb_pic = calculate_pic_rgb(path)
     # 主要就是怎么比这几个值了，要根据哪个值为准呢
     # 当前我决定取，rgb每个值都差了15 以上，则认为还没加载完成，这个值取啥一样是个难点
-    if rgb_pic[0] > rgb_folder[0] + 20:
-        if rgb_pic[1] > rgb_folder[1] + 20:
-            if rgb_pic[2] > rgb_folder[2] + 20:
+    r_threshold = 20
+    g_threshold = 20
+    b_threshold = 20
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    if app_key == "momo":
+        r_threshold = 10
+        g_threshold = 10
+        b_threshold = 10
+
+    if rgb_pic[0] > rgb_folder[0] + r_threshold:
+        if rgb_pic[1] > rgb_folder[1] + g_threshold:
+            if rgb_pic[2] > rgb_folder[2] + b_threshold:
                 return False
     return True
 
