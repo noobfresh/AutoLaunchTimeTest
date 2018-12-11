@@ -6,6 +6,7 @@ import os
 from pyExcelerator import *
 
 from log.log import MLog
+from uitl.fileUtil import checkSrcVialdAndAutoCreate
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -88,18 +89,9 @@ def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_l
 
     file_name = file_path + file_name
 
-    try:
-        if not os.path.exists(file_path):
-            print u"文件路径不存在，现在创建一个..."
-            print file_path
-            os.mkdir(file_path)
-
-        w.save(file_name + '.xls')
-    except IOError:
-        print u"创建文件失败！，异常如下:"
-        print Exception
-    else:
-        print (u"Excel文件生成路径:" + os.path.abspath(file_name))
+    checkSrcVialdAndAutoCreate(file_path)
+    w.save(file_name + '.xls')
+    MLog.debug(u"handledata create_detail_sheet_by_json: Excel文件生成路径:" + os.path.abspath(file_name))
 
 
 def main():

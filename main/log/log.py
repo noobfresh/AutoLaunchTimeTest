@@ -36,7 +36,7 @@ class Log(object):
             print self.log_path
             os.mkdir(self.log_path)
 
-        print "日志地址: " + self.log_name
+        print u"日志地址: " + self.log_name
         fh = logging.FileHandler(self.log_name, 'a')  # 追加模式  这个是python2的
         # fh = logging.FileHandler(self.log_name, 'a', encoding='utf-8')  # 这个是python3的
         fh.setLevel(logging.DEBUG)
