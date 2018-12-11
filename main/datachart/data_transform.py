@@ -4,6 +4,7 @@ import os
 
 from datachart.charts import create_charts, ChartItem
 from log.log import MLog
+from uitl.fileUtil import fileExist
 
 json_file_path = os.path.dirname(__file__) + os.sep + "files" + os.sep
 
@@ -19,8 +20,7 @@ def json_file_to_type(types, apks):
 
     for type in types:
         src = json_file_path + type
-        if not os.path.exists(src):
-            MLog.error(u"文件夹: '" + type + u"' 不存在!")
+        if not fileExist(src):
             return
 
         lines = []
@@ -48,14 +48,13 @@ def json_file_to_charts(type, device, apks):
         except Exception, e:
             MLog.error(u"打开文件失败" + file)
             MLog.error(u"e = " + repr(e))
-
             print lines
     return ChartItem(device + type, lines)
 
 
 # 通过每幅图的file.json文件生成图表，src代表目录
 def create_from_file_per(src, title, show_avg):
-    print u"通过读取json文件生成图表数据..."
+    MLog.debug(u"data_transform create_from_file_per: 通过读取json文件生成图表数据")
 
     # 子目录或文件
     lst = []
@@ -83,7 +82,7 @@ def create_from_file_per(src, title, show_avg):
 
 
 def create_chart_from_file(show_avg=False):
-    print u"通过读取json文件生成图表数据..."
+    MLog.debug(u"data_transform create_chart_from_file: 通过读取json文件生成图表数据")
 
     lst = []
     src = os.path.dirname(__file__) + os.sep + "jsonfile"
@@ -92,7 +91,7 @@ def create_chart_from_file(show_avg=False):
         path = os.path.join(src, item)
         if os.path.splitext(path)[1] == '.json':
             lst.append(path)
-            print "add " + path
+            MLog.debug(u"data_transform create_chart_from_file: add " + path)
 
     chart_items = []
     result_name = "chart"

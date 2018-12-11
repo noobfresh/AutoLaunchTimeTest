@@ -5,6 +5,7 @@ import os
 from pyecharts import Line, Page, Style
 
 from log.log import MLog
+from uitl.fileUtil import checkSrcVialdAndAutoCreate
 
 file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
@@ -55,15 +56,8 @@ def create_page(lines, result_file_name):
     MLog.debug(u"create_page: 开始生成图表...")
     MLog.debug(u"create_page: 图表生成路径:" + file_name)
 
-    try:
-        if not os.path.exists(file_path):
-            MLog.debug(u"create_page: 目录不存在，现在创建一个...")
-            os.mkdir(file_path)
-
-    except Exception, e:
-        MLog.error(u"create_page: 创建文件失败！，异常如下:" + repr(e))
-    finally:
-        page.render(file_name.decode('utf-8'))
+    checkSrcVialdAndAutoCreate(file_path)
+    page.render(file_name.decode('utf-8'))
 
 
 def create_line(title, line_data, show_avg):

@@ -16,6 +16,7 @@ from email.utils import parseaddr, formataddr
 
 from config.configs import Config
 from log.fileutil import make_patch, make_log_patch
+from log.log import MLog
 from screenrecord.device_info import getDeviceInfo
 
 chart_data_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
@@ -40,7 +41,7 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     passwd = authInfo.get('password')
 
     if not (server and user and passwd):
-        print 'incomplete login info, exit now'
+        MLog.debug(u"sendmail sendEmail: incomplete login info, exit now!")
         return
 
     # 设定root信息
@@ -59,8 +60,9 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
 
     # 设定附件信息
     if not patchFileList is None:
+        MLog.debug(u"sendmail sendEmail: 打包附件:")
         for patchFile in patchFileList:
-            print u"附件:" + patchFile
+            print patchFile
             with codecs.open(patchFile, 'rb') as f:
                 patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
@@ -89,9 +91,9 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
         smtp.login(user, passwd)
         smtp.sendmail(strFrom, toAddList, msgRoot.as_string())
         smtp.quit()
-        print u"邮件发送成功!"
+        MLog.debug(u"sendmail sendEmail: 邮件发送成功!")
     except Exception, e:
-        print u"失败：" + str(e)
+        MLog.error(u"sendmail sendEmail: 邮件发送失败! e = " + repr(e))
 
 
 def getContent(filename):
@@ -120,7 +122,7 @@ def sendEmailWithDefaultConfig():
         log_file = make_log_patch()
 
         patchFile = []
-        print u"收集邮件附件："
+        MLog.debug(u"sendmail sendEmailWithDefaultConfig: 收集邮件附件:")
         for files in os.walk(chart_data_path):
             for f in files[2]:
                 new_file_path = files[0] + f
@@ -128,10 +130,10 @@ def sendEmailWithDefaultConfig():
 
         patchFile.append(log_file)
 
-        print patchFile
+        MLog.debug(u"sendmail sendEmailWithDefaultConfig: " + str(patchFile))
 
     except Exception, e:
-        print u"收集附件失败：" + e
+        MLog.error(u"sendmail sendEmailWithDefaultConfig: 收集附件失败! e = " + repr(e))
         patchFile = None
 
     authInfo = {}
@@ -140,9 +142,6 @@ def sendEmailWithDefaultConfig():
     authInfo['password'] = password
     fromAdd = user
     toAdd = to_users
-
-    # with codecs.open(contentFile.encode("UTF-8"), 'r', 'utf-8') as fp:
-    #         content = fp.read()
 
     sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType, patchFile)
 

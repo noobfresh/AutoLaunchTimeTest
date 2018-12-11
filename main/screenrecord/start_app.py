@@ -9,6 +9,7 @@ import time
 from config.configs import Config
 import os
 from device_info import getDeviceInfo
+from uitl.baseUtil import sysExit
 from video_related import screenRecord
 
 conf = Config("default.ini")
@@ -22,9 +23,8 @@ def startAPP(d, times, video, sernum, machineName):
         MLog.debug(u"尝试启动app")
         startAppBySwipe(d, times, video, sernum, machineName)
     except Exception, e:
-        print repr(e)
-        MLog.debug(u"startAPP:" + u"启动app失败！")
-        sys.exit(-1)
+        MLog.debug(u"startAPP:" + u"启动app失败! e = " + repr(e))
+        sysExit(u"程序退出,原因:启动app失败!")
 
 
 def startAppBySwipe(d, times, video, sernum, machineName):
