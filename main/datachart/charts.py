@@ -38,9 +38,8 @@ def write_json(json_data, json_file_name):
 # 创建一幅图
 def create_charts(result_name, chart_items):
     lines = []
-    json_file_name = 'chart_data.json'
     for item in chart_items:
-        lines.append(create_line_by_json(json_file_name, item.title))
+        lines.append(create_line_by_param(item.json_data, item.title))
 
     create_page(lines, result_name)
 
@@ -82,9 +81,22 @@ def create_line(title, line_data, show_avg):
     return chart
 
 
+# 直接通过传入json创建折线
+def create_line_by_param(json_object, title, show_avg=False):
+    line_data = []
+    for data in json_object:
+        v = data['datas']
+        app = data['app']
+        line = LineData(v, app)
+        line_data.append(line)
+
+    return create_line(title, line_data, show_avg)
+
+
+# 通过读取json文件创建折线
 def create_line_by_json(json_file_name, title, show_avg=False):
     if not os.path.exists(json_file_name):
-        print u"创建表格失败：" + json_file_name + u"不存在"
+        print u"json 文件读取失败! ," + json_file_name + u"不存在"
         return
 
     with open(json_file_name, 'r') as f:
