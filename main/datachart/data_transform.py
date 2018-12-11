@@ -53,8 +53,62 @@ def json_file_to_charts(type, device, apks):
     return ChartItem(device + type, lines)
 
 
-if __name__ == '__main__':
+# 通过每幅图的file.json文件生成图表，src代表目录
+def create_from_file_per(src, title, show_avg):
+    print u"通过读取json文件生成图表数据..."
 
+    # 子目录或文件
+    lst = []
+    for item in os.listdir(src):
+        item = item.decode('GB2312')
+        path = os.path.join(src, item)
+        if os.path.splitext(path)[1] == '.json':
+            lst.append(path)
+            MLog.debug(u"create_from_file_per: add path " + path)
+
+    lines = []
+    chart_items = []
+    result_name = "chart"
+    for file in lst:
+        MLog.debug(u"create_from_file_per: file = " + file)
+        with open(file, 'r') as f:
+            line = json.load(f)
+            lines.append(line)
+    print lines
+
+    file_name = title
+    chart = ChartItem(file_name, lines, show_avg)
+    chart_items.append(chart)
+    create_charts(result_name, chart_items)
+
+
+def create_chart_from_file(show_avg=False):
+    print u"通过读取json文件生成图表数据..."
+
+    lst = []
+    src = os.path.dirname(__file__) + os.sep + "jsonfile"
+    for item in os.listdir(src):
+        item = item.decode('GB2312')
+        path = os.path.join(src, item)
+        if os.path.splitext(path)[1] == '.json':
+            lst.append(path)
+            print "add " + path
+
+    chart_items = []
+    result_name = "chart"
+    for file in lst:
+        with open(file, 'r') as load_f:
+            data = json.load(load_f)
+            base_name = os.path.basename(file)
+            # 去掉后缀
+            file_name = os.path.splitext(base_name)[0]
+            chart = ChartItem(file_name, data, show_avg)
+            chart_items.append(chart)
+
+    create_charts(result_name, chart_items)
+
+
+if __name__ == '__main__':
     device = u"Oppo_A37"
     type = [u"非首次启动总耗时"]
     apks = [u"7.11", u"7.12", u"7.14"]
@@ -64,3 +118,5 @@ if __name__ == '__main__':
 
     # 生成指定type,指定机型，指定apks的图表
     # json_file_to_charts(type, device, apks)
+
+    create_chart_from_file()
