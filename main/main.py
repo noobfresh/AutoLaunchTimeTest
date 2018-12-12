@@ -5,7 +5,7 @@ import re
 import sys
 
 import settings
-from calculate.conclude import calculate, new_new_calculate, huya_first_calculate
+from calculate.conclude import multi_huya_calculate, multi_normal_calculate
 from config.configs import Config
 from datachart.charts import *
 from datachart.handledata import create_detail_sheet_by_json
@@ -96,81 +96,66 @@ if __name__ == '__main__':
     MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
     # ---------------------------- Calculate part ------------------------------#
     #
-    # 生成好照片
+    # 主动切换一下cmd的当前路径
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
     conf = Config("default.ini")
     event = conf.getconf("serial").serial_number
     serial = event.split(',')
-    device_name = getDeviceInfo(serial[0])
+    device_name = getDeviceInfo(serial[0])  # device name 看看韦总到时候怎么处理，把这一个干掉，我这边的操作其实很多余
     device_name = re.sub('\s', '', device_name)
-    # mean_time1, datas1 = new_calculate(device_name, device_name + "_first", True, first_start)
-    # mean_time2, datas2 = new_calculate(device_name, device_name + "_notfirst", False, normal_start)
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
-    if app_key == "huya":
-        mean_time1, datas1, launchingdatas1 = huya_first_calculate(device_name, device_name + "_first")
+    if app_key == "huya" or app_key == "momo":
+        first_launch_result = multi_huya_calculate(device_name)
     else:
-        mean_time1, datas1, launchingdatas1 = new_new_calculate(device_name, device_name + "_first")
-    mean_time2, datas2, launchingdatas2 = new_new_calculate(device_name, device_name + "_notfirst")
+        first_launch_result = multi_normal_calculate(device_name, "first")
+    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
+    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    # 算平均值啥的
+    total_datas1 = []
+    launching_datas1 = []
+    homepage_datas1 = []
+    for i in range(0, len(first_launch_result)):
+        total_datas1.append(first_launch_result[i][4])
+        launching_datas1.append(first_launch_result[i][5])
+        homepage_datas1.append(first_launch_result[i][6])
+    total_datas2 = []
+    launching_datas2 = []
+    homepage_datas2 = []
+    for i in range(0, len(normal_launch_result)):
+        total_datas2.append(normal_launch_result[i][4])
+        launching_datas2.append(normal_launch_result[i][5])
+        homepage_datas2.append(normal_launch_result[i][6])
     end_calculate_time = datetime.datetime.now()
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
-    if len(datas1) > len(datas2):
-        for i in range(len(datas1) - len(datas2)):
-            datas2.append(0)
-    elif len(datas2) > len(datas1):
-        for i in range(len(datas2) - len(datas1)):
-            datas1.append(0)
-
-    if len(launchingdatas1) > len(launchingdatas2):
-        for i in range(len(launchingdatas1) - len(launchingdatas2)):
-            launchingdatas2.append(0)
-    elif len(launchingdatas2) > len(launchingdatas1):
-        for i in range(len(launchingdatas2) - len(launchingdatas1)):
-            launchingdatas1.append(0)
-
-    if len(datas1) > len(launchingdatas1):
-        for i in range(len(datas1) - len(launchingdatas1)):
-            launchingdatas1.append(0)
-    elif len(launchingdatas1) > len(datas1):
-        for i in range(len(launchingdatas1) - len(datas1)):
-            datas1.append(0)
-
-    if len(datas2) > len(launchingdatas2):
-        for i in range(len(datas2) - len(launchingdatas2)):
-            launchingdatas2.append(0)
-    elif len(launchingdatas2) > len(datas2):
-        for i in range(len(launchingdatas2) - len(datas2)):
-            datas2.append(0)
 
     json_datas = [
         {
             "app": apk_name + "首次启动总耗时",
-            "datas": datas1
+            "datas": total_datas1
         },
         {
             "app": apk_name + "首次启动耗时",
-            "datas": launchingdatas1
+            "datas": launching_datas1
         }
     ]
 
     json_datas2 = [
         {
             "app": apk_name + "非首次启动总耗时",
-            "datas": datas2
+            "datas": total_datas2
         },
         {
             "app": apk_name + "非首次启动耗时",
-            "datas": launchingdatas2
+            "datas": launching_datas2
         }
     ]
 
-    MLog.info(json.dumps(datas1))
-    MLog.info(json.dumps(launchingdatas1))
-    MLog.info(json.dumps(datas2))
-    MLog.info(json.dumps(launchingdatas2))
+    MLog.info(json.dumps(json_datas))
+    MLog.info(json.dumps(json_datas2))
 
     # 生成折线图
     result_name = "chart"
@@ -185,14 +170,14 @@ if __name__ == '__main__':
     json_file_path = "data.json"
 
     json_detail = []
-    for i in range(1, len(datas1) + 1):
+    for i in range(1, len(total_datas1) + 1):
         dict_temp = {"a": str(i),
-                     "b": str(datas1[i-1]),
-                     "c": str(launchingdatas1[i-1]),
-                     "d": str(datas1[i-1] - launchingdatas1[i-1]),
-                     "e": str(datas2[i-1]),
-                     "f": str(launchingdatas2[i-1]),
-                     "g": str(datas2[i-1] - launchingdatas2[i-1])}
+                     "b": str(total_datas1[i-1]),
+                     "c": str(launching_datas1[i-1]),
+                     "d": str(homepage_datas1[i-1]),
+                     "e": str(total_datas2[i-1]),
+                     "f": str(launching_datas2[i-1]),
+                     "g": str(homepage_datas2[i-1])}
         json_detail.append(dict_temp)
     MLog.info(json.dumps(json_detail))
     dict1 = collections.OrderedDict()
@@ -209,12 +194,12 @@ if __name__ == '__main__':
     print "--------------------------------------------------------"
     json_detail2 = []
     dict_avg = {
-                  "a": avg_list(datas1),
-                  "b": avg_list(launchingdatas1),
-                  "c": avg_list(datas1) - avg_list(launchingdatas1),
-                  "d": avg_list(datas2),
-                  "e": avg_list(launchingdatas2),
-                  "f": avg_list(datas2) - avg_list(launchingdatas2)}
+                  "a": avg_list(total_datas1),
+                  "b": avg_list(launching_datas1),
+                  "c": avg_list(homepage_datas1),
+                  "d": avg_list(total_datas2),
+                  "e": avg_list(launching_datas2),
+                  "f": avg_list(homepage_datas2)}
     json_detail2.append(dict_avg)
     dict2 = collections.OrderedDict()
     dict2["a"] = u"平均首次启动总耗时"

@@ -69,14 +69,20 @@ def compare_rgb(path, rgb_folder):
     b_threshold = 20
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
+    # 陌陌由于白色部分过于多，因此把上限范围弄小点
     if app_key == "momo":
         r_threshold = 10
         g_threshold = 10
         b_threshold = 10
 
+    # 除了上限，还要加个下限，预防启动黑了的情况
     if rgb_pic[0] > rgb_folder[0] + r_threshold:
         if rgb_pic[1] > rgb_folder[1] + g_threshold:
             if rgb_pic[2] > rgb_folder[2] + b_threshold:
+                return False
+    if rgb_pic[0] < rgb_folder[0] - 50:
+        if rgb_pic[1] < rgb_folder[1] - 50:
+            if rgb_pic[2] < rgb_folder[2] - 50:
                 return False
     return True
 

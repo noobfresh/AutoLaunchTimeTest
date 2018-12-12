@@ -1,3 +1,4 @@
+# coding=utf-8
 from PIL import Image
 import os
 import base_utils
@@ -24,20 +25,23 @@ def clip(path, count):
         # print base_utils.rename_path(path, i)
 
 
-def clip_specific_pic(path):
+def clip_specific_pic(path, dst_path):
     MLog.debug("clip_specific_pic(): the path = {}".format(path))
     img = Image.open(path)
     width = img.size[0]
     height = img.size[1]
+    # 上面部分裁剪 20%， 下面部分裁剪18%
+    top_margin = int(height * 0.2)
+    bottom_margin = int(height * 0.18)
     img = img.crop(
         (
             0,
-            400,
+            top_margin,
             width,
-            height - 350
+            height - bottom_margin
         )
     )
-    img.save(path)
+    img.save(dst_path)
 
 
 def clip_generate_flag(path1, path2):
