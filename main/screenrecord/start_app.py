@@ -32,7 +32,7 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
     try:
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
-        pos = settings.get_value("pos", None)
+        pos = settings.get_value(sernum + "pos", None)
         if pos is None:
             pos = getPos(d, app_name, sernum)
     except Exception, e:
@@ -67,14 +67,17 @@ def getPos(d, app_name, sernum):
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
     feature_dir = conf.getconf(str(app_key)).feature
-    if machineName == "vivoX9":
-        MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
-    elif machineName == "vivoX7":
-        MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
-    else:
-        MLog.debug("get pos by uiautomator")
-        pos = d(text=app_name).bounds
-    settings.set_value("pos", pos)
+    # if machineName == "vivoX9":
+    MLog.info("get pos by cap findLaunchLogo")
+    img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_launch_feature.jpg"
+    MLog.info(u"start_app getPos: img_path = " + img_path)
+    pos = findLaunchLogo(cap(sernum), img_path)
+    MLog.debug(u"start_app getPos:" + str(pos))
+    # elif machineName == "vivoX7":
+    #     MLog.info("get pos by cap findLaunchLogo")
+    #     pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
+    # else:
+    #     MLog.debug("get pos by uiautomator")
+    #     pos = d(text=app_name).bounds
+    settings.set_value(sernum + "pos", pos)
     return pos

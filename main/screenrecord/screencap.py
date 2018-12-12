@@ -37,10 +37,11 @@ class Screenshot():  # 截取手机屏幕并保存到电脑
         print(stderr)
 
 
-def cap():
-    cmd1 = r"adb shell /system/bin/screencap -p /sdcard/cap.jpg"  # 命令1：在手机上截图cap.png为图片名
+def cap(sernum):
+    img_name = sernum + "_cap.jpg"
+    cmd1 = r"adb -s " + sernum + " shell /system/bin/screencap -p /sdcard/" + img_name  # 命令1：在手机上截图cap.png为图片名
     # cmd2 = r"adb pull /sdcard/cap.png ."  # 命令2：将图片保存到电脑
-    cmd2 = r"adb pull /sdcard/cap.jpg " + out_path
+    cmd2 = r"adb -s " + sernum + " pull /sdcard/" + img_name + " " + out_path
     screen = Screenshot()
     screen.screen(cmd1)
     screen.saveComputer(cmd2)
