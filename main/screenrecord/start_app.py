@@ -2,7 +2,6 @@
 
 from calculate.template_match import findLaunchLogo
 from screenrecord.screencap import cap
-import sys
 from log.log import MLog
 import settings
 import time
@@ -43,7 +42,6 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
-    startTime = time.time()
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     offset = 0
