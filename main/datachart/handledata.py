@@ -1,6 +1,5 @@
 # ecoding=utf-8
 import collections
-import json
 import os
 
 from pyExcelerator import *
@@ -12,16 +11,6 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
-
-
-def utf8(file_name):
-    return file_name.decode('utf-8')
-
-
-def write_json(json_data, json_file_name):
-    fileObject = open(json_file_name, 'w')
-    fileObject.write(json.dumps(json_data))
-    fileObject.close()
 
 
 def init_normal_style():
@@ -92,6 +81,10 @@ def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_l
     checkSrcVialdAndAutoCreate(file_path)
     w.save(file_name + '.xls')
     MLog.debug(u"handledata create_detail_sheet_by_json: Excel文件生成路径:" + os.path.abspath(file_name))
+
+
+def transform():
+    print u"将数据装换成任意你想要的"
 
 
 def main():
