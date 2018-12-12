@@ -28,7 +28,6 @@ def startAPP(d, times, video, sernum, machineName):
 
 
 def startAppBySwipe(d, times, video, sernum, machineName):
-    global startTime
     conf = Config("default.ini")
     app_name = conf.getconf("default").app_name
 
