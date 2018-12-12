@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from calculate.template_match import findLaunchLogo
-from screenrecord.screencap import cap
+
 from log.log import MLog
 import settings
 import time
@@ -9,6 +9,7 @@ from config.configs import Config
 import os
 from device_info import getDeviceInfo
 from uitl.baseUtil import sysExit
+from uitl.fileUtil import checkSrcVialdAndAutoCreate
 from video_related import screenRecord
 
 conf = Config("default.ini")
@@ -81,3 +82,14 @@ def getPos(d, app_name, sernum):
     #     pos = d(text=app_name).bounds
     settings.set_value(sernum + "pos", pos)
     return pos
+
+
+def cap(sernum):
+    out_path = os.path.dirname(__file__) + os.sep + "cap" + os.sep
+    img_name = sernum + "_cap.jpg"
+    cmd1 = r"adb -s " + sernum + " shell /system/bin/screencap -p /sdcard/" + img_name
+    cmd2 = r"adb -s " + sernum + " pull /sdcard/" + img_name + " " + out_path + img_name
+    checkSrcVialdAndAutoCreate('./cap/')
+    os.system(cmd1)
+    os.system(cmd2)
+    return out_path + img_name
