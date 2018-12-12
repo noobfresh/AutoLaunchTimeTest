@@ -9,5 +9,5 @@ from file_related import checkNameValid
 def getDeviceInfo(serialnum):
     deviceName = os.popen('adb -s  ' + serialnum + ' shell getprop ro.product.model').read()
     validName = checkNameValid(deviceName)
-    print "machine name = {}".format(deviceName)
+    print "machine name = {}".format(validName)
     return validName
