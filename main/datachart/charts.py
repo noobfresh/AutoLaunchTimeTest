@@ -1,10 +1,10 @@
 # encoding: utf-8
-import json
 import os
 
 from pyecharts import Line, Page, Style
 
 from log.log import MLog
+from uitl.baseUtil import read_json
 from uitl.fileUtil import checkSrcVialdAndAutoCreate
 
 file_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
@@ -23,16 +23,6 @@ class LineData:
     def __init__(self, data, phone_type):
         self.phone_type = phone_type
         self.dataList = data
-
-
-def utf8(file_name):
-    return file_name.decode('utf-8')
-
-
-def write_json(json_data, json_file_name):
-    fileObject = open(json_file_name, 'w')
-    fileObject.write(json.dumps(json_data))
-    fileObject.close()
 
 
 # 创建一幅图
@@ -59,7 +49,8 @@ def create_page(lines, result_file_name):
     page.render(file_name.decode('utf-8'))
 
 
-def create_line(title, line_data, show_avg):
+# 创建真正图中的线
+def create_line(title, line_data, show_avg, attr=None):
     # 横竖坐标的大小
     style = Style(
         width=800, height=600
@@ -67,11 +58,12 @@ def create_line(title, line_data, show_avg):
 
     chart = Line(title, **style.init_style)
 
-    attr = []
-    size = line_data[0].dataList.__len__()
-    for i in range(1, size + 1):
-        cur = u"第 " + str(i) + u" 次"
-        attr.append(cur)
+    if attr is None:
+        attr = []
+        size = len(line_data[0].dataList)
+        for i in range(1, size + 1):
+            cur = u"第 " + str(i) + u" 次"
+            attr.append(cur)
 
     for data in line_data:
         if show_avg is True:
@@ -81,7 +73,7 @@ def create_line(title, line_data, show_avg):
     return chart
 
 
-# 直接通过传入json创建折线
+# 直接通过传入json_object创建折线
 def create_line_by_param(json_object, title, show_avg=False):
     line_data = []
     for data in json_object:
@@ -99,26 +91,16 @@ def create_line_by_json(json_file_name, title, show_avg=False):
         print u"json 文件读取失败! ," + json_file_name + u"不存在"
         return
 
-    with open(json_file_name, 'r') as f:
-        # 顺序保证下
-        content = f.read()
-        text = content.decode("utf-8-sig").encode("utf-8")
-        json_object = json.loads(text)
-
-    line_data = []
-    for data in json_object:
-        v = data['datas']
-        app = data['app']
-        line = LineData(v, app)
-        line_data.append(line)
-
-    return create_line(title, line_data, show_avg)
+    return create_line_by_param(read_json(json_file_name), title, show_avg)
 
 
 def main():
     json_data = "data.json"
     title = "title"
-    create_line_by_json(json_data, title)
+    result_file_name = "test"
+    lines = []
+    lines.append(create_line_by_json(json_data, title))
+    create_page(lines, result_file_name)
 
 
 if __name__ == '__main__':
