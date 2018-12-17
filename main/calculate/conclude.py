@@ -104,8 +104,8 @@ def multi_huya_calculate_parts(params):
     launching_index, last = huya_first_find_frame(file_count, first, real_path,
                                                   real_launching_feature_path,
                                                   real_last_feature_path, rgb_folder)  # 虎牙的计算也就只有这句不一样吊
-    frame_value = settings.get_value("ffmpeg")
-    # frame_value = 50
+    # frame_value = settings.get_value("ffmpeg")
+    frame_value = 50
     total_time = int((last - first + 1) * (1000 / float(frame_value)))
     launching_time = int((launching_index - first + 1) * (1000 / float(frame_value)))
     return dir_index, first, launching_index, last, total_time, launching_time, total_time - launching_time

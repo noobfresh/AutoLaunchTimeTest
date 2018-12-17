@@ -8,6 +8,7 @@ import settings
 from calculate.conclude import multi_huya_calculate, multi_normal_calculate
 from config.configs import Config
 from datachart.charts import *
+from datachart.data_center import write_data_to_file
 from datachart.handledata import create_detail_sheet_by_json
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
@@ -131,88 +132,71 @@ if __name__ == '__main__':
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
-
-    json_datas = [
-        {
-            "app": apk_name + "首次启动总耗时",
+    apk_name = apk_name.split(".apk")[0]
+    print apk_name + "   *****************************"
+    json_datas1 = {
+            "app": apk_name,
             "datas": total_datas1
-        },
-        {
-            "app": apk_name + "首次启动耗时",
-            "datas": launching_datas1
         }
-    ]
 
-    json_datas2 = [
-        {
+    json_datas2 = {
             "app": apk_name + "非首次启动总耗时",
             "datas": total_datas2
-        },
-        {
-            "app": apk_name + "非首次启动耗时",
-            "datas": launching_datas2
         }
-    ]
 
-    MLog.info(json.dumps(json_datas))
+    MLog.info(json.dumps(json_datas1))
     MLog.info(json.dumps(json_datas2))
+    write_data_to_file(u"首次启动总耗时", device_name, apk_name, json_datas1)
+    write_data_to_file(u"非首次启动总耗时", device_name, apk_name, json_datas2)
 
-    # 生成折线图
-    result_name = "chart"
-    chart1 = ChartItem(device_name + " 首次启动耗时", json_datas)
-    chart2 = ChartItem(device_name + " 非首次启动耗时", json_datas2)
-    chart_items = [chart1, chart2]
-
-    create_charts(result_name, chart_items)
-
-    sheet_name = "detail_time_cost"
-    file_name = "data_detail"
-    json_file_path = "data.json"
-
-    json_detail = []
-    for i in range(1, len(total_datas1) + 1):
-        dict_temp = {"a": str(i),
-                     "b": str(total_datas1[i-1]),
-                     "c": str(launching_datas1[i-1]),
-                     "d": str(homepage_datas1[i-1]),
-                     "e": str(total_datas2[i-1]),
-                     "f": str(launching_datas2[i-1]),
-                     "g": str(homepage_datas2[i-1])}
-        json_detail.append(dict_temp)
-    MLog.info(json.dumps(json_detail))
-    dict1 = collections.OrderedDict()
-    dict1["a"] = u"次数"
-    dict1["b"] = u"首次启动总耗时"
-    dict1["c"] = u"首次启动耗时"
-    dict1["d"] = u"首次启动首页加载耗时"
-    dict1["e"] = u"非首次启动总耗时"
-    dict1["f"] = u"非首次启动耗时"
-    dict1["g"] = u"非首次启动首页加载耗时"
-    MLog.info(json.dumps(json_detail))
-    MLog.info(json.dumps(dict1))
-    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
-    print "--------------------------------------------------------"
-    json_detail2 = []
-    dict_avg = {
-                  "a": avg_list(total_datas1),
-                  "b": avg_list(launching_datas1),
-                  "c": avg_list(homepage_datas1),
-                  "d": avg_list(total_datas2),
-                  "e": avg_list(launching_datas2),
-                  "f": avg_list(homepage_datas2)}
-    json_detail2.append(dict_avg)
-    dict2 = collections.OrderedDict()
-    dict2["a"] = u"平均首次启动总耗时"
-    dict2["b"] = u"平均首次启动耗时"
-    dict2["c"] = u"平均首次启动首页加载耗时"
-    dict2["d"] = u"平均非首次启动总耗时"
-    dict2["e"] = u"平均非首次启动耗时"
-    dict2["f"] = u"平均非首次启动首页加载耗时"
-    MLog.info(json.dumps(json_detail2))
-    MLog.info(json.dumps(dict2))
-    print "--------------------------------------------------------"
-    create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
-                                json_detail2, dict2)
+    # sheet_name = "detail_time_cost"
+    # file_name = "data_detail"
+    # json_file_path = "data.json"
+    #
+    # json_detail = []
+    # for i in range(1, len(total_datas1) + 1):
+    #     dict_temp = {"a": str(i),
+    #                  "b": str(total_datas1[i-1]),
+    #                  "c": str(launching_datas1[i-1]),
+    #                  "d": str(homepage_datas1[i-1]),
+    #                  "e": str(total_datas2[i-1]),
+    #                  "f": str(launching_datas2[i-1]),
+    #                  "g": str(homepage_datas2[i-1])}
+    #     json_detail.append(dict_temp)
+    # MLog.info(json.dumps(json_detail))
+    # dict1 = collections.OrderedDict()
+    # dict1["a"] = u"次数"
+    # dict1["b"] = u"首次启动总耗时"
+    # dict1["c"] = u"首次启动耗时"
+    # dict1["d"] = u"首次启动首页加载耗时"
+    # dict1["e"] = u"非首次启动总耗时"
+    # dict1["f"] = u"非首次启动耗时"
+    # dict1["g"] = u"非首次启动首页加载耗时"
+    # MLog.info(json.dumps(json_detail))
+    # MLog.info(json.dumps(dict1))
+    # create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
+    # print "--------------------------------------------------------"
+    # json_detail2 = []
+    # dict_avg = {
+    #               "a": avg_list(total_datas1),
+    #               "b": avg_list(launching_datas1),
+    #               "c": avg_list(homepage_datas1),
+    #               "d": avg_list(total_datas2),
+    #               "e": avg_list(launching_datas2),
+    #               "f": avg_list(homepage_datas2)}
+    # json_detail2.append(dict_avg)
+    # dict2 = collections.OrderedDict()
+    # dict2["a"] = u"平均首次启动总耗时"
+    # dict2["b"] = u"平均首次启动耗时"
+    # dict2["c"] = u"平均首次启动首页加载耗时"
+    # dict2["d"] = u"平均非首次启动总耗时"
+    # dict2["e"] = u"平均非首次启动耗时"
+    # dict2["f"] = u"平均非首次启动首页加载耗时"
+    # MLog.info(json.dumps(json_detail2))
+    # MLog.info(json.dumps(dict2))
+    # print "--------------------------------------------------------"
+    # create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
+    #                             json_detail2, dict2)
 
     sendEmailWithDefaultConfig()
 
