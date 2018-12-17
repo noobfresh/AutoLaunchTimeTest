@@ -24,6 +24,7 @@ def calculate_pic_rgb(path):
             mean_r += r
             mean_g += g
             mean_b += b
+            print "r = {}, g = {}, b = {}".format(r, g, b)
 
     mean_r /= (width * height)
     mean_g /= (width * height)
@@ -87,6 +88,39 @@ def compare_rgb(path, rgb_folder):
     return True
 
 
+def test(path):
+    im = Image.open(path)
+    pix = im.load()
+    width = im.size[0]
+    height = im.size[1]
+    # 想办法如何 以 滑动窗口的形式计算 窗口大小50*50
+    count = 0
+    just_count = 0
+    for x in range(0, width / 25):
+        for y in range(0, height / 25):
+            # 继续for
+            start_x = x * 25
+            start_y = y * 25
+            mean_r = 0
+            mean_g = 0
+            mean_b = 0
+            for temp_x in range(start_x, start_x + 25):
+                for temp_y in range(start_y, start_y + 25):
+                    r, g, b = pix[x, y]
+                    mean_r += r
+                    mean_g += g
+                    mean_b += b
+            mean_r /= 625
+            mean_g /= 625
+            mean_b /= 625
+            just_count += 1
+            print "r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b)
+            if mean_r == 238 and mean_g == 238 and mean_b == 238:
+                count += 1
+    print count
+    print just_count
+
+
 if __name__ == '__main__':
-    # calculate_repos_rgb("homepage")
-    calculate_pic_rgb("./extract_folder_all/116.jpg")
+    calculate_pic_rgb("F:\\test3.jpg")
+    # test("F:\\test3.jpg")
