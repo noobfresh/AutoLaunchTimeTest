@@ -1,8 +1,9 @@
 # ecoding=utf-8
 import os
 
-from datachart.charts import write_json
+
 from log.log import MLog
+from uitl.baseUtil import write_json
 from uitl.fileUtil import checkSrcVialdAndAutoCreate
 
 file_path = os.path.dirname(__file__) + os.sep + u"files" + os.sep

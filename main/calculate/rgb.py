@@ -28,7 +28,7 @@ def calculate_pic_rgb(path):
     mean_r /= (width * height)
     mean_g /= (width * height)
     mean_b /= (width * height)
-    MLog.debug("mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
+    # MLog.debug("mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
     return mean_r, mean_g, mean_b
 
 
