@@ -81,12 +81,12 @@ def create_from_file_per(src, title, show_avg):
 
 
 if __name__ == '__main__':
-    device = u"Oppo_A37"
+    device = u"vivoX21A"
     type = u"非首次启动总耗时"
 
     types = [type, u"首次启动总耗时"]
-    devices = [device, "Vivo_X21", "Vivo_X9"]
-    apks = [u"7.11", u"7.12", u"7.14"]
+    devices = [device]
+    apks = [u"71416", u"71404"]
 
     # 生成当前type下所有,所有机型指定apks的图表
     json_file_to_type(types, devices, apks)
