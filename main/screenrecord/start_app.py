@@ -45,7 +45,7 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
-
+    screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     offset = 0
     left = pos['left'] + offset
