@@ -33,17 +33,19 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
     try:
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
+        # d(text=app_name).click()
         pos = settings.get_value(sernum + "pos", None)
         if pos is None:
             pos = getPos(d, app_name, sernum)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
+        # d(text=app_name).click()
         pos = getPos(d, app_name, sernum)
 
     MLog.debug("startAppBySwipe:" + str(pos))
     # offset代表偏移量，方便点中logo中间部分
-    screenRecord(d, times, video, sernum, machineName)
+
     time.sleep(2)
     offset = 0
     left = pos['left'] + offset
@@ -92,4 +94,16 @@ def cap(sernum):
     checkSrcVialdAndAutoCreate('./cap/')
     os.system(cmd1)
     os.system(cmd2)
+
+
     return out_path + img_name
+
+if __name__ == '__main__':
+    sernum = 'b2dcaa55'
+    out_path = os.path.dirname(__file__) + os.sep + "cap" + os.sep
+    img_name = sernum + "_cap.jpg"
+    cmd1 = r"adb -s " + sernum + " shell /system/bin/screencap -p /sdcard/" + img_name
+    cmd2 = r"adb -s " + sernum + " pull /sdcard/" + img_name + " " + out_path + img_name
+    checkSrcVialdAndAutoCreate('./cap/')
+    os.system(cmd1)
+    os.system(cmd2)

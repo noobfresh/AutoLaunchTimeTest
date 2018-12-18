@@ -9,6 +9,7 @@ from datachart.data_center import write_data_to_file
 from datachart.data_to_format import format_data, create_sheet
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
+from screenrecord.screen_record_main import start_python
 
 if __name__ == '__main__':
 
@@ -16,7 +17,7 @@ if __name__ == '__main__':
     start_time = datetime.datetime.now()
 
     firstLaunchTimes, notFirstLaunchTimes, apkName = get_start_params()
-    # start_python(firstLaunchTimes, notFirstLaunchTimes, apkName)
+    start_python(firstLaunchTimes, notFirstLaunchTimes, apkName)
 
     end_video_2_frame_time = datetime.datetime.now()
 
@@ -69,10 +70,10 @@ if __name__ == '__main__':
     sendEmailWithDefaultConfig()
 
     end_time = datetime.datetime.now()
-    # MLog.info("all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
-    #     end_time - start_time,
-    #     end_video_2_frame_time - start_time,
-    #     end_calculate_time - end_video_2_frame_time,
-    #     end_time - end_calculate_time))
+    MLog.info("all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
+        end_time - start_time,
+        end_video_2_frame_time - start_time,
+        end_calculate_time - end_video_2_frame_time,
+        end_time - end_calculate_time))
     # 强行结束
     os._exit(0)
