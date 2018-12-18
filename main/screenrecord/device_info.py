@@ -2,7 +2,7 @@
 
 import os
 import re
-from file_related import checkNameValid
+from file_operation import checkNameValid
 
 
 # 拿设备信息防止文件夹重名
