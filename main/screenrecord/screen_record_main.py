@@ -12,7 +12,7 @@ from multiprocessing import Pool
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/DevelopmentSoft/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -26,6 +26,7 @@ def getDevices():
         filters = ['list', 'of', 'device', 'devices', 'attached']
         if item.lower() not in filters:
             serial.append(item)
+    return serial
 
 
 # 首次启动
@@ -154,19 +155,24 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
     print 'end main'
 
 
-def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
+# 改成单个
+def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName, serial_num):
     # for index in range(len(deviceList)):
-    getDevices()
-    p = Pool();
-    for index in range(len(serial)):
-        serNum = serial[index]
-        print serNum + "444444444444"
-        temp_dir = getDeviceInfo(serNum)
-
-        # main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
-        p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
-    p.close()
-    p.join()
+    # getDevices()
+    # p = Pool()
+    # for index in range(len(serial)):
+    #     serNum = serial[index]
+    #     print serNum + "444444444444"
+    #     temp_dir = getDeviceInfo(serNum)
+    #
+    #     # main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
+    #     p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
+    print serial_num + "   444444444444"
+    temp_dir = getDeviceInfo(serial_num)
+    screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serial_num)
+    # p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
+    # p.close()
+    # p.join()
 
 
 if __name__ == "__main__":
