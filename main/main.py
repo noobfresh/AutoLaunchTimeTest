@@ -1,9 +1,9 @@
 # coding=utf-8
 import datetime
+from multiprocessing import Pool
 
-from calculate.conclude import multi_huya_calculate, multi_normal_calculate, start_calculate
-from config.configs import Config
-from config.sys_config import get_start_params, get_device_params, getApkName
+from calculate.conclude import start_calculate
+from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
 from datachart.data_center import write_data_to_file
 from datachart.data_to_format import format_data, create_sheet
@@ -11,7 +11,6 @@ from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.device_info import getDeviceInfo
 from screenrecord.screen_record_main import start_python, getDevices
-from multiprocessing import Pool
 
 
 def test_main(serial_num):

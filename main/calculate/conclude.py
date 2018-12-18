@@ -2,7 +2,7 @@
 import datetime
 from multiprocessing.dummy import Pool as ThreadPool
 from os.path import exists
-
+from multiprocessing import cpu_count
 import settings
 from base_utils import count_dirs, count_file
 from config.configs import Config
@@ -10,10 +10,12 @@ from first_frame_calculate import first_frame_find
 from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame
 from log.log import MLog
 from rgb import calculate_homepage_rgb
+from screenrecord.screen_record_main import getDevices
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
 rgb_folder = calculate_homepage_rgb()  # 计算样本库的rgb均值
+cpu_num = cpu_count()
 
 
 # 每个目录算一次，这种计算只针对普通启动： 置灰 -> 启动页 -> 正常首页
@@ -48,16 +50,21 @@ def multi_normal_calculate_part(params):
 
 # 原始数据暂时还没有对异常数据进行刨除
 def multi_normal_calculate(device_name, suffix):
-    pool = ThreadPool()
+    # 感觉这个有点乱来
+    device_len = len(getDevices())
+    num = cpu_num - 1 - device_len
+    if num <= 0:
+        num = 0
+    pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_" + suffix)
     params = []
     results = []
     start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "suffix": suffix, "dir_index": i}
-        # params.append(params_temp)
-        results.append(multi_normal_calculate_part(params_temp))
-    # results = pool.map(multi_normal_calculate_part, params)
+        params.append(params_temp)
+        # results.append(multi_normal_calculate_part(params_temp))
+    results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
     pool.close()
@@ -67,7 +74,11 @@ def multi_normal_calculate(device_name, suffix):
 
 
 def multi_huya_calculate(device_name):
-    # pool = ThreadPool()
+    device_len = len(getDevices())
+    num = cpu_num - 1 - device_len
+    if num <= 0:
+        num = 0
+    pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_first")
     params = []
     results = []
@@ -75,9 +86,9 @@ def multi_huya_calculate(device_name):
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "dir_index": i}
         params.append(params_temp)
-        results.append(multi_huya_calculate_parts(params))
+        # results.append(multi_huya_calculate_parts(params))
     # start_time = datetime.datetime.now()
-    # results = pool.map(multi_normal_calculate_part, params)
+    results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
     # pool.close()
@@ -129,4 +140,4 @@ def start_calculate(device_name):
 
 
 if __name__ == '__main__':
-    multi_normal_calculate("Redmi4A", "notfirst")
+    print 1
