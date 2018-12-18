@@ -20,6 +20,7 @@ conf = Config("default.ini")
 # 序列号
 serial = []
 
+
 def getDevices():
     devices = subprocess.Popen('adb devices'.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
     for item in devices.split():
@@ -157,7 +158,7 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName):
     # for index in range(len(deviceList)):
     getDevices()
-    p = Pool();
+    p = Pool()
     for index in range(len(serial)):
         serNum = serial[index]
         print serNum + "444444444444"

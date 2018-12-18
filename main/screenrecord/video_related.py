@@ -38,6 +38,7 @@ def pullRecord(name, sernum, machineName):
 # ffmpeg没有视频切成帧输出到指定目录的命令，只能反复调工作目录
 def videoToPhoto(dirname, index, machineName):
     curPath = os.getcwd()
+
     if machineName == "PACM00":
         print str(curPath) + "-------------"
 
@@ -64,9 +65,10 @@ def videoToPhoto(dirname, index, machineName):
     chagePath = curPath + '/' + dirname
     print '+++++++++++++' + chagePath
     os.chdir(chagePath)
-    print u"帧数 = " + str(settings.get_value("ffmpeg"))
-    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
-        settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
+    # print u"帧数 = " + str(settings.get_value("ffmpeg"))
+    strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(50) + ' -f ' + 'image2 %05d.jpg'
+   # strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
+   #      settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
