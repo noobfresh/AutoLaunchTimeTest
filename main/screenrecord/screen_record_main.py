@@ -4,9 +4,9 @@ import sys
 from uiautomator import Device
 from register_event import *
 from start_app import startAPP
-from file_related import *
-from app_stop_related import *
-from video_related import *
+from file_operation import *
+from app_operation import *
+from video_operation import *
 from device_info import getDeviceInfo
 from multiprocessing import Pool
 

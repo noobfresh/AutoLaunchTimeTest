@@ -51,11 +51,13 @@ def multi_normal_calculate(device_name, suffix):
     pool = ThreadPool()
     dir_count = count_dirs("./screenrecord/" + device_name + "_" + suffix)
     params = []
+    results = []
+    start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "suffix": suffix, "dir_index": i}
-        params.append(params_temp)
-    start_time = datetime.datetime.now()
-    results = pool.map(multi_normal_calculate_part, params)
+        # params.append(params_temp)
+        results.append(multi_normal_calculate_part(params_temp))
+    # results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
     pool.close()
@@ -65,18 +67,21 @@ def multi_normal_calculate(device_name, suffix):
 
 
 def multi_huya_calculate(device_name):
-    pool = ThreadPool()
+    # pool = ThreadPool()
     dir_count = count_dirs("./screenrecord/" + device_name + "_first")
     params = []
+    results = []
+    start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "dir_index": i}
         params.append(params_temp)
-    start_time = datetime.datetime.now()
-    results = pool.map(multi_normal_calculate_part, params)
+        results.append(multi_huya_calculate_parts(params))
+    # start_time = datetime.datetime.now()
+    # results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
-    pool.close()
-    pool.join()
+    # pool.close()
+    # pool.join()
     print "actual calculate time = {} -------------- {}".format(end_time - start_time, results)
     return results
 
@@ -109,6 +114,18 @@ def multi_huya_calculate_parts(params):
     total_time = int((last - first + 1) * (1000 / float(frame_value)))
     launching_time = int((launching_index - first + 1) * (1000 / float(frame_value)))
     return dir_index, first, launching_index, last, total_time, launching_time, total_time - launching_time
+
+
+def start_calculate(device_name):
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    if app_key == "huya" or app_key == "momo":
+        first_launch_result = multi_huya_calculate(device_name)
+    else:
+        first_launch_result = multi_normal_calculate(device_name, "first")
+    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
+    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    return first_launch_result, normal_launch_result
 
 
 if __name__ == '__main__':
