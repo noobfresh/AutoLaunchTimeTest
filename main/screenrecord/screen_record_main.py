@@ -4,15 +4,15 @@ import sys
 from uiautomator import Device
 from register_event import *
 from start_app import startAPP
-from file_related import *
-from app_stop_related import *
-from video_related import *
+from file_operation import *
+from app_operation import *
+from video_operation import *
 from device_info import getDeviceInfo
 from multiprocessing import Pool
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/DevelopmentSoft/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -137,10 +137,12 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
     print 'start main---' + sernum
     settings._init()
     try:
+        settings._init()
         d = Device(sernum)
+        print d
         doInThread(runwatch, d, 0)
         doInThread(inputListener, d, 0, sernum)
-        time.sleep(30)
+        time.sleep(20)
         machineName = getDeviceInfo(sernum)
         firstLaunchTimes = int(firstLaunchTimes)
         notFirstLaunchTimes = int(notFirstLaunchTimes)
