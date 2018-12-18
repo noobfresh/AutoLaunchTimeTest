@@ -10,7 +10,7 @@ import os
 from device_info import getDeviceInfo
 from uitl.baseUtil import sysExit
 from uitl.fileUtil import checkSrcVialdAndAutoCreate
-from video_operation import screenRecord
+from video_related import screenRecord
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
@@ -70,16 +70,18 @@ def getPos(d, app_name, sernum):
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
     feature_dir = conf.getconf(str(app_key)).feature
-    if machineName == "vivoX9":
-        MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX9_launch_feature.jpg")
-    elif machineName == "vivoX7":
-        MLog.info("get pos by cap findLaunchLogo")
-        pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
-    else:
-        MLog.debug("get pos by uiautomator")
-        pos = d(text=app_name).bounds
-    print "getPost: pos=" + str(pos) + " d: d = " + str(d)
+    # if machineName == "vivoX9":
+    MLog.info("get pos by cap findLaunchLogo")
+    img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_launch_feature.jpg"
+    MLog.info(u"start_app getPos: img_path = " + img_path)
+    pos = findLaunchLogo(cap(sernum), img_path)
+    MLog.debug(u"start_app getPos:" + str(pos))
+    # elif machineName == "vivoX7":
+    #     MLog.info("get pos by cap findLaunchLogo")
+    #     pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
+    # else:
+    #     MLog.debug("get pos by uiautomator")
+    #     pos = d(text=app_name).bounds
     settings.set_value(sernum + "pos", pos)
     return pos
 
