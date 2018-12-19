@@ -20,7 +20,6 @@ conf = Config("default.ini")
 # 序列号
 serial = []
 
-
 def getDevices():
     devices = subprocess.Popen('adb devices'.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
     for item in devices.split():
