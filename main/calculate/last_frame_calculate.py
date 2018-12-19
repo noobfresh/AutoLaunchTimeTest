@@ -3,7 +3,7 @@ import base_utils
 from log.log import MLog
 from rgb import compare_rgb
 from rgb import calculate_repos_rgb
-from template_match import match_img, isLaunchingPage
+from template_match import match_img, isLaunchingPage, isHomepageFinish
 from color_histogram import calculate_by_hists
 from clip import clip_specific_pic, clip_generate_flag
 
@@ -83,6 +83,10 @@ def last_and_launching_frame_find_rgb(length, from_index, real_path, real_launch
                 MLog.debug("find_lanching_end_frame: " + src_file_path + " is not launching frame!!!!")
                 launching_homepage_flag = False
         else:
+            # 首页匹配
+            # 取巧操作，取右下角的点，看他是不是纯白，来过滤掉还有蒙层的帧
+            if not isHomepageFinish(src_file_path):
+                continue
             match_img(src_file_path, real_last_feature_path, threshold, real_path + feature_name)
             if base_utils.os.path.exists(real_path + feature_name):
                 # 如果识别到了，拿来图片和图库对比，如果当前图片rgb值远大于图库的平均rgb

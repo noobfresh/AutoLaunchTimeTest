@@ -2,9 +2,7 @@
 
 import cv2
 import numpy as np
-from PIL import Image
 
-from base_utils import rename_path
 from log.log import MLog
 
 
@@ -109,9 +107,17 @@ def isLaunchingPage(src, target_path):
     return False
 
 
+def isHomepageFinish(path):
+    img = cv2.imread(path)
+    height, width, something = img.shape
+    print "width = {}, height = {}, something = {}".format(width, height, something)
+    rgb = img[height - 5, 5]
+    if rgb[0] >= 253 and rgb[1] >= 253 and rgb[2] >= 253:
+        return True
+    return False
+
+
 if __name__ == '__main__':
-    image = "../screen.jpg"
-    target = "../feature/vivoX9_launch_feature.jpg"
-    value = 0.9
-    match_img(image, target, value, "aaaaaaaaaa.jpg")
+    isHomepageFinish("E:\PYF-CODE\NewAutoLaunchTest\main\screenrecord\MiNote2_first\MiNote2_first_9\\00513.jpg")
+    print 1
 
