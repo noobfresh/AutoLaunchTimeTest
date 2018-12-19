@@ -30,6 +30,7 @@ def multi_normal_calculate_part(params):
     feature_dir = conf.getconf(app_key).feature  # 特征图的文件夹名字
     file_count = count_file("./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(dir_index))
     real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(dir_index) + "/"
+    # file_count = 749
     real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
     if not exists(real_first_feature_path):
         MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
@@ -38,6 +39,8 @@ def multi_normal_calculate_part(params):
     real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
     real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
     first = first_frame_find(file_count, real_path, real_first_feature_path)  # 取图片这些步骤好繁琐啊，想想有没办法改进下
+    if first == -1:
+        return dir_index, 0, 0, 0, 0, 0, 0
     launching_index, last = last_and_launching_frame_find_rgb(file_count, first, real_path,
                                                               real_launching_feature_path,
                                                               real_last_feature_path, rgb_folder)
