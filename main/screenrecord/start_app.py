@@ -10,7 +10,7 @@ import os
 from device_info import getDeviceInfo
 from uitl.baseUtil import sysExit
 from uitl.fileUtil import checkSrcVialdAndAutoCreate
-from video_related import screenRecord
+from video_operation import screenRecord
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
@@ -72,7 +72,7 @@ def getPos(d, app_name, sernum):
     feature_dir = conf.getconf(str(app_key)).feature
     # if machineName == "vivoX9":
     MLog.info("get pos by cap findLaunchLogo")
-    img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_launch_feature.jpg"
+    img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_start_feature.jpg"
     MLog.info(u"start_app getPos: img_path = " + img_path)
     pos = findLaunchLogo(cap(sernum), img_path)
     MLog.debug(u"start_app getPos:" + str(pos))

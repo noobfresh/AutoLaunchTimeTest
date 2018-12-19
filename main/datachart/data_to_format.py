@@ -31,22 +31,7 @@ def avg_list(list):
     return nsum / count
 
 
-def format_data():
-    device_name = get_device_params()
-    apk_name = getApkName()
-
-    # 主动切换一下cmd的当前路径
-    path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    print "path = " + path
-    os.chdir(path)
-    conf_default = Config("default.ini")
-    app_key = conf_default.getconf("default").app
-    if app_key == "huya" or app_key == "momo":
-        first_launch_result = multi_huya_calculate(device_name)
-    else:
-        first_launch_result = multi_normal_calculate(device_name, "first")
-    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
-    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+def format_data(first_launch_result, normal_launch_result, apk_name):
 
     # 算平均值啥的
     total_datas1 = []

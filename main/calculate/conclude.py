@@ -2,7 +2,7 @@
 import datetime
 from multiprocessing.dummy import Pool as ThreadPool
 from os.path import exists
-
+from multiprocessing import cpu_count
 import settings
 from base_utils import count_dirs, count_file
 from config.configs import Config
@@ -10,10 +10,12 @@ from first_frame_calculate import first_frame_find
 from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame
 from log.log import MLog
 from rgb import calculate_homepage_rgb
+from screenrecord.screen_record_main import getDevices
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
 rgb_folder = calculate_homepage_rgb()  # 计算样本库的rgb均值
+cpu_num = cpu_count()
 
 
 # 每个目录算一次，这种计算只针对普通启动： 置灰 -> 启动页 -> 正常首页
@@ -28,6 +30,7 @@ def multi_normal_calculate_part(params):
     feature_dir = conf.getconf(app_key).feature  # 特征图的文件夹名字
     file_count = count_file("./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(dir_index))
     real_path = "./screenrecord/" + name_with_suffix + "/" + name_with_suffix + "_" + str(dir_index) + "/"
+    # file_count = 749
     real_first_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launch_feature.jpg"
     if not exists(real_first_feature_path):
         MLog.debug("calculate: first, there is no adapted feature pic for current Phone")
@@ -36,6 +39,8 @@ def multi_normal_calculate_part(params):
     real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
     real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
     first = first_frame_find(file_count, real_path, real_first_feature_path)  # 取图片这些步骤好繁琐啊，想想有没办法改进下
+    if first == -1:
+        return dir_index, 0, 0, 0, 0, 0, 0
     launching_index, last = last_and_launching_frame_find_rgb(file_count, first, real_path,
                                                               real_launching_feature_path,
                                                               real_last_feature_path, rgb_folder)
@@ -48,13 +53,20 @@ def multi_normal_calculate_part(params):
 
 # 原始数据暂时还没有对异常数据进行刨除
 def multi_normal_calculate(device_name, suffix):
-    pool = ThreadPool()
+    # 感觉这个有点乱来
+    device_len = len(getDevices())
+    num = cpu_num - 1 - device_len
+    if num <= 0:
+        num = 0
+    pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_" + suffix)
     params = []
+    results = []
+    start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "suffix": suffix, "dir_index": i}
         params.append(params_temp)
-    start_time = datetime.datetime.now()
+        # results.append(multi_normal_calculate_part(params_temp))
     results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
@@ -65,18 +77,25 @@ def multi_normal_calculate(device_name, suffix):
 
 
 def multi_huya_calculate(device_name):
-    pool = ThreadPool()
+    device_len = len(getDevices())
+    num = cpu_num - 1 - device_len
+    if num <= 0:
+        num = 0
+    pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_first")
     params = []
+    results = []
+    start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "dir_index": i}
         params.append(params_temp)
-    start_time = datetime.datetime.now()
+        # results.append(multi_huya_calculate_parts(params))
+    # start_time = datetime.datetime.now()
     results = pool.map(multi_normal_calculate_part, params)
     end_time = datetime.datetime.now()
     # 资源回收
-    pool.close()
-    pool.join()
+    # pool.close()
+    # pool.join()
     print "actual calculate time = {} -------------- {}".format(end_time - start_time, results)
     return results
 
@@ -111,5 +130,17 @@ def multi_huya_calculate_parts(params):
     return dir_index, first, launching_index, last, total_time, launching_time, total_time - launching_time
 
 
+def start_calculate(device_name):
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    if app_key == "huya" or app_key == "momo":
+        first_launch_result = multi_huya_calculate(device_name)
+    else:
+        first_launch_result = multi_normal_calculate(device_name, "first")
+    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
+    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    return first_launch_result, normal_launch_result
+
+
 if __name__ == '__main__':
-    multi_normal_calculate("Redmi4A", "notfirst")
+    print 1
