@@ -35,7 +35,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
-            path = os.path.abspath('.')
+            path = os.path.dirname(__file__) + "\\"
             print path
             os.chdir(path)
             if os.path.exists("Screenshots"):
@@ -90,7 +90,7 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
-            path = os.path.abspath('.')
+            path = os.path.dirname(__file__) + "\\"
             print path
             os.chdir(path)
             if os.path.exists("Screenshots"):
