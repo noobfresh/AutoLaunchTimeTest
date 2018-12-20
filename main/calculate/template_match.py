@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from log.log import MLog
+from matplotlib import pyplot as plt
 
 
 def match_img(img, target_img, values, match_path):
@@ -110,14 +111,46 @@ def isLaunchingPage(src, target_path):
 def isHomepageFinish(path):
     img = cv2.imread(path)
     height, width, something = img.shape
-    print "width = {}, height = {}, something = {}".format(width, height, something)
+    # print "width = {}, height = {}, something = {}".format(width, height, something)
     rgb = img[height - 5, 5]
+    print rgb
     if rgb[0] >= 253 and rgb[1] >= 253 and rgb[2] >= 253:
         return True
     return False
 
 
+def test():
+    img = cv2.imread("F:\cvtest\\test11.jpg")
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    gaus = cv2.GaussianBlur(gray, (19, 19), 0)
+
+    ret, binary = cv2.threshold(gaus, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_TRIANGLE)
+
+    edges = cv2.Canny(binary, 1, 20, apertureSize=3)
+
+    minLineLength = 100
+    maxLineGap = 75
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 2, 100, minLineLength, maxLineGap)
+    # print a + "-------------------"
+    # print b + "-------------------"
+    # print c + "-------------------"
+    print len(lines)
+    # for x1, y1, x2, y2 in lines[0]:
+    #     cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+    for i in range(0, len(lines)):
+        for x1, y1, x2, y2 in lines[i]:
+            cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+    cv2.imwrite("F:\cvtest\linedetect.jpg", img)
+    cv2.imwrite("F:\cvtest\linedges.jpg", edges)
+    # cv2.imwrite("F:\\ret.jpg", ret)
+    cv2.imwrite("F:\cvtest\\binary.jpg", binary)
+
+
 if __name__ == '__main__':
-    isHomepageFinish("E:\PYF-CODE\NewAutoLaunchTest\main\screenrecord\MiNote2_first\MiNote2_first_9\\00513.jpg")
+    # isHomepageFinish("F:\\test2.jpg")
+    test()
+    # print findLaunchLogo("F:\\test2.jpg", "F:\\feature.jpg")
     print 1
 

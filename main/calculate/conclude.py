@@ -57,7 +57,7 @@ def multi_normal_calculate(device_name, suffix):
     device_len = len(getDevices())
     num = cpu_num - 1 - device_len
     if num <= 0:
-        num = 0
+        num = 1
     pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_" + suffix)
     params = []
@@ -80,7 +80,7 @@ def multi_huya_calculate(device_name):
     device_len = len(getDevices())
     num = cpu_num - 1 - device_len
     if num <= 0:
-        num = 0
+        num = 1
     pool = ThreadPool(num)
     dir_count = count_dirs("./screenrecord/" + device_name + "_first")
     params = []

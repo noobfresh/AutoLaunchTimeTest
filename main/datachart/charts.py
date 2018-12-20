@@ -50,7 +50,7 @@ def create_page(lines, result_file_name):
 
 
 # 创建真正图中的线
-def create_line(title, line_data, show_avg, attr=None):
+def create_line(title, line_data, show_avg=True, attr=None):
     # 横竖坐标的大小
     style = Style(
         width=800, height=600

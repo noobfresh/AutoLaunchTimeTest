@@ -7,6 +7,7 @@ from calculate.conclude import multi_huya_calculate, multi_normal_calculate
 from config.configs import Config
 from config.sys_config import get_device_params, get_start_params, getApkName
 from datachart.data_center import write_data_to_file
+from datachart.data_transform import json_file_to_type
 from datachart.handledata import create_detail_sheet_by_json
 from log.log import MLog
 
@@ -102,7 +103,14 @@ def format_data(first_launch_result, normal_launch_result, apk_name):
         "datas": total_datas2
     }
 
-    return json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2
+    # write log data
+    MLog.info(json.dumps(json_datas1))
+    MLog.info(json.dumps(json_datas2))
+    MLog.info(json.dumps(json_detail))
+    MLog.info(json.dumps(json_detail2))
+    MLog.info(json.dumps(dict1))
+    MLog.info(json.dumps(dict2))
+    return json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2
 
 
 def create_charts(json_datas1, json_datas2):
@@ -115,12 +123,11 @@ def create_charts(json_datas1, json_datas2):
     write_data_to_file(u"非首次启动总耗时", device_name, apk_name, json_datas2)
 
 
-def create_sheet(json_detail, dict1, json_detail2, dict2):
-    device_name = get_device_params()
+def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
     apk_name = getApkName()
 
-    sheet_name = "detail_time_cost"
-    file_name = "data_detail"
+    sheet_name = device_name + "_detail_time_cost"
+    file_name = device_name + "_data_detail"
 
     MLog.info(u"data_to_format create_sheet:-----------------" )
     MLog.info(json.dumps(json_detail))
@@ -133,3 +140,10 @@ def create_sheet(json_detail, dict1, json_detail2, dict2):
     print "--------------------------------------------------------"
     create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
                                 json_detail2, dict2)
+
+
+def create_lines(devices, apk_name):
+    types = [u"非首次启动总耗时", u"首次启动总耗时"]
+    apks = [apk_name.split(".apk")[0], + apk_name.split(".apk")[0] + "_launch"]
+    json_file_to_type(types, devices, apks)
+    MLog.info("create_lines done!")

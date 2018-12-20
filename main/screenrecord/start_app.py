@@ -23,7 +23,7 @@ def startAPP(d, times, video, sernum, machineName):
         MLog.debug(u"尝试启动app")
         startAppBySwipe(d, times, video, sernum, machineName)
     except Exception, e:
-        MLog.debug(u"startAPP:" + u"启动app失败! e = " + repr(e))
+        MLog.debug(u"startAPP:" + u"启动app失败! e = " + repr(e) + "  " + machineName)
         sysExit(u"程序退出,原因:启动app失败!")
 
 

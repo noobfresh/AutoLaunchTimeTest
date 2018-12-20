@@ -122,5 +122,5 @@ def test(path):
 
 
 if __name__ == '__main__':
-    calculate_pic_rgb("F:\\test3.jpg")
+    print calculate_pic_rgb("F:\\photo2.jpg")
     # test("F:\\test3.jpg")
