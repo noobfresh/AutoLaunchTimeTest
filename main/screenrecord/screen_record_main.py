@@ -12,7 +12,7 @@ from multiprocessing import Pool
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
 os.environ.update()
 
 conf = Config("default.ini")
@@ -35,7 +35,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
-            path = os.path.abspath('.')
+            path = os.path.dirname(__file__) + "\\"
             print path
             os.chdir(path)
             if os.path.exists("Screenshots"):
@@ -90,7 +90,7 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
             print u"删除 screenshot==="
-            path = os.path.abspath('.')
+            path = os.path.dirname(__file__) + "\\"
             print path
             os.chdir(path)
             if os.path.exists("Screenshots"):
