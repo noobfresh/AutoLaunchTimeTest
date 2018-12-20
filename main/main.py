@@ -1,7 +1,7 @@
 # coding=utf-8
 import datetime
 from multiprocessing import Pool
-
+import time
 from calculate.conclude import start_calculate
 from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
@@ -52,11 +52,12 @@ if __name__ == '__main__':
     MLog.debug(u"程序启动...")
     # 取序列号
     serial = getDevices()
-    pool = Pool(len(serial))  # 取电脑核数
+    pool = Pool(5)  # 取电脑核数
     for index in range(len(serial)):
         serial_numebr = serial[index]
         # 好扯啊这个
-        pool.apply_async(test_main, args=(serial_numebr, ))
+        pool.apply_async(test_main, args=(serial_numebr,))
+        time.sleep(10)
     pool.close()
     pool.join()
     print 1
