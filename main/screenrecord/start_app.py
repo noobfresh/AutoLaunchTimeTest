@@ -33,13 +33,15 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
     try:
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
-        # d(text=app_name).click()
+
         pos = settings.get_value(sernum + "pos", None)
         if pos is None:
+            MLog.info(u"start_app startAppBySwipe: get pos from setting is None! so get pos from function getPos().")
             pos = getPos(d, app_name, sernum)
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
+        MLog.info(u"start_app startAppBySwipe: change app's start name , appname is " + app_name)
         # d(text=app_name).click()
         pos = getPos(d, app_name, sernum)
 
@@ -65,23 +67,20 @@ def startAppBySwipe(d, times, video, sernum, machineName):
 
 # 某些特定手机点不到，通过图片匹配去点击
 def getPos(d, app_name, sernum):
+    MLog.info(u"start_app getPos: appname = " + app_name + u" sernum = " + sernum)
     machineName = getDeviceInfo(sernum)
     conf = Config("apk.ini")
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
     feature_dir = conf.getconf(str(app_key)).feature
-    # if machineName == "vivoX9":
-    MLog.info("get pos by cap findLaunchLogo")
-    img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_start_feature.jpg"
-    MLog.info(u"start_app getPos: img_path = " + img_path)
-    pos = findLaunchLogo(cap(sernum), img_path)
-    MLog.debug(u"start_app getPos:" + str(pos))
-    # elif machineName == "vivoX7":
-    #     MLog.info("get pos by cap findLaunchLogo")
-    #     pos = findLaunchLogo(cap(), path + "/picrepos/feature/" + feature_dir + "/vivoX7_launch_feature.jpg")
-    # else:
-    #     MLog.debug("get pos by uiautomator")
-    #     pos = d(text=app_name).bounds
+
+    if machineName == "vivoX9" or machineName == "vivoX7":
+        img_path = path + "/picrepos/feature/" + feature_dir + "/" + machineName + "_start_feature.jpg"
+        MLog.info(u"start_app getPos: img_path = " + img_path)
+        pos = findLaunchLogo(cap(sernum), img_path)
+    else:
+        MLog.debug("get pos by uiautomator")
+        pos = d(text=app_name).bounds
     settings.set_value(sernum + "pos", pos)
     return pos
 
@@ -95,8 +94,8 @@ def cap(sernum):
     os.system(cmd1)
     os.system(cmd2)
 
-
     return out_path + img_name
+
 
 if __name__ == '__main__':
     sernum = 'b2dcaa55'

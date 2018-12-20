@@ -115,7 +115,6 @@ def inputListener(d, data, serialNum):
 # 注册一些点击事件
 def registerEvent(d):
     d.watchers.remove()
-    print u"registerEvent" + str(d.watchers)
     conf = Config("default.ini")
     event = conf.getconf("common").click_event
     # print event
