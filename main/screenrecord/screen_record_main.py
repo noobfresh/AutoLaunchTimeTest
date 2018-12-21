@@ -50,7 +50,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
         mkdir(first_dir, sernum)
         if machineName != "PACM00":
             installAPK(apkName, sernum)
-            time.sleep(40)  # 后续改成轮询是否有安装包的包名，有再录屏
+            time.sleep(20)  # 后续改成轮询是否有安装包的包名，有再录屏
         # screenRecord(firstTimes, first_dir + '/' + 'first.mp4')
         # startTime = time.time()
         for index in range(firstLaunchTimes):
@@ -143,9 +143,13 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
         d = u2.connect(sernum)
         # d = Device(sernum)
         print d.device_info
+        print 'test....'
         doInThread(runwatch, d, 0)
+        time.sleep(10)
+        print 'test....1'
         doInThread(inputListener, d, 0, sernum)
-        time.sleep(30)
+        print 'test....2'
+        time.sleep(20)
         machineName = getDeviceInfo(sernum)
         firstLaunchTimes = int(firstLaunchTimes)
         notFirstLaunchTimes = int(notFirstLaunchTimes)

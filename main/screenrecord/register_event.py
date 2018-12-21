@@ -64,15 +64,15 @@ def inputListener(d, data, serialNum):
 
     if machineName == "PACM00":
         if d(className="android.widget.EditText",
-             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").exists(timeout=50000):
-            print '1'
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").exists(timeout=50):
+            print 'PACM00 1'
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
                 getPwdByConfig(machineName))
-            print '2'
+            print 'PACM00 2'
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50000):
-            print '3'
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
+            print 'PACM00 3'
             d.click(458, 1900)
     print 3
 
@@ -137,8 +137,10 @@ def registerEvent(d):
         key = 'event' + str(index)
         item = num[index]
         MLog.debug("key = " + key + " and " + "item = " + item)
-        d .watcher(key).when(text=item).click(text=item)
+        d.watcher(key).when(text=item).click(text=item)
 
+    d.watchers.watched = True
+    d.watchers.run()
     MLog.debug(u"列出所有watchers")
     print d.watchers
 
@@ -159,7 +161,7 @@ def runwatch(d, data):
     while True:
         if len(d.watchers) != num:
             registerEvent(d)
-            d.watchers.run()
+
 
 
 def utf8(file_name):
