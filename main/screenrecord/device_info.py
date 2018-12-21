@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import re
+
 from file_operation import checkNameValid
 
 

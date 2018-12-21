@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 
 import sys
-from uiautomator import Device
+# from uiautomator import Device
+import uiautomator2 as u2
+
 from register_event import *
 from start_app import startAPP
 from file_operation import *
@@ -19,6 +21,7 @@ conf = Config("default.ini")
 
 # 序列号
 serial = []
+
 
 def getDevices():
     devices = subprocess.Popen('adb devices'.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
@@ -137,7 +140,9 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
     print 'start main---' + sernum
     settings._init()
     try:
-        d = Device(sernum)
+        d = u2.connect(sernum)
+        # d = Device(sernum)
+        print d.device_info
         doInThread(runwatch, d, 0)
         doInThread(inputListener, d, 0, sernum)
         time.sleep(30)
@@ -157,22 +162,9 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
 
 # 改成单个
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName, serial_num):
-    # for index in range(len(deviceList)):
-    # getDevices()
-    # p = Pool()
-    # for index in range(len(serial)):
-    #     serNum = serial[index]
-    #     print serNum + "444444444444"
-    #     temp_dir = getDeviceInfo(serNum)
-    #
-    #     # main(d, firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum)
-    #     p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
     print serial_num + "   444444444444"
     temp_dir = getDeviceInfo(serial_num)
     screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serial_num)
-    # p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
-    # p.close()
-    # p.join()
 
 
 if __name__ == "__main__":
@@ -185,7 +177,6 @@ if __name__ == "__main__":
         # 加上下面两行
         settings._init()
         settings.set_value("ffmpeg", 30)
-        # screenmain(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
         p.apply_async(screenmain, args=(sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum,))
     p.close()
     p.join()

@@ -18,7 +18,6 @@ path = conf.getconf("default").feature_path
 
 # 启动应用
 def startAPP(d, times, video, sernum, machineName):
-    # os.system('adb shell monkey -p '+packageName+' -c android.intent.category.LAUNCHER 1')
     try:
         MLog.debug(u"尝试启动app")
         startAppBySwipe(d, times, video, sernum, machineName)
@@ -31,38 +30,15 @@ def startAppBySwipe(d, times, video, sernum, machineName):
     conf = Config("default.ini")
     app_name = conf.getconf("default").app_name
 
+    screenRecord(d, times, video, sernum, machineName)
     try:
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
-
-        pos = settings.get_value(sernum + "pos", None)
-        if pos is None:
-            MLog.info(u"start_app startAppBySwipe: get pos from setting is None! so get pos from function getPos().")
-            pos = getPos(d, app_name, sernum)
+        d(text=app_name).click()
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
         MLog.info(u"start_app startAppBySwipe: change app's start name , appname is " + app_name)
-        # d(text=app_name).click()
-        pos = getPos(d, app_name, sernum)
-
-    MLog.debug("startAppBySwipe:" + str(pos))
-    # offset代表偏移量，方便点中logo中间部分
-    screenRecord(d, times, video, sernum, machineName)
-    time.sleep(2)
-    offset = 0
-    left = pos['left'] + offset
-    top = pos['top'] + offset
-    right = pos['right']
-    bottom = pos['bottom']
-
-    x = (left + right) >> 1
-    y = (top + bottom) >> 1
-    duration = 10
-    start_shell = "adb -s " + sernum + "  shell input swipe " + str(x) + " " + str(y) + " " + str(x + 1) + " " + str(
-        y) + " " + str(
-        duration)
-    MLog.info(start_shell)
-    os.system(start_shell)
+        d(text=app_name).click()
 
 
 # 某些特定手机点不到，通过图片匹配去点击

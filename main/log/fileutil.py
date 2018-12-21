@@ -12,7 +12,7 @@ def get_items_list_in_dir(src, lst):
         path = os.path.join(src, item)
         if os.path.splitext(path)[1] == '.txt':
             lst.append(path)
-            print "add " + path
+            # print "add " + path
 
         # if os.path.isdir(path):
         #     get_items_list_in_dir(path, lst)

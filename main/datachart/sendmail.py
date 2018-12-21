@@ -62,7 +62,7 @@ def sendEmail(authInfo, fromAdd, toAdd, subject, content, contentType='plain', p
     if not patchFileList is None:
         MLog.debug(u"sendmail sendEmail: 打包附件:")
         for patchFile in patchFileList:
-            print patchFile
+            # print patchFile
             with codecs.open(patchFile, 'rb') as f:
                 patchFileName = patchFile.split("/")[-1]
                 # 设置附件的MIME和文件名，这里是txt类型:
