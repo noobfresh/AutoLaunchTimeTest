@@ -13,6 +13,9 @@ from log.log import MLog
 
 
 # 去掉最低最高取平均
+from uitl.baseUtil import utf8
+
+
 def avg_list(list):
     nsum = 0
     count = 0
@@ -103,6 +106,16 @@ def format_data(first_launch_result, normal_launch_result, apk_name):
         "datas": total_datas2
     }
 
+    json_launching1 = {
+        "app": apk_name + u"_launching",
+        "datas": launching_datas1
+    }
+
+    json_launching2 = {
+        "app": apk_name + u"_launching",
+        "datas": launching_datas2
+    }
+
     # write log data
     MLog.info(json.dumps(json_datas1))
     MLog.info(json.dumps(json_datas2))
@@ -110,7 +123,7 @@ def format_data(first_launch_result, normal_launch_result, apk_name):
     MLog.info(json.dumps(json_detail2))
     MLog.info(json.dumps(dict1))
     MLog.info(json.dumps(dict2))
-    return json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2
+    return json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, json_launching1, json_launching2
 
 
 def create_charts(json_datas1, json_datas2):
@@ -144,6 +157,11 @@ def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
 
 def create_lines(devices, apk_name):
     types = [u"非首次启动总耗时", u"首次启动总耗时"]
-    apks = [apk_name.split(".apk")[0], + apk_name.split(".apk")[0] + "_launch"]
+    apk_name = "71416"
+    apks = [utf8(apk_name), utf8(apk_name) + u"_launch"]
     json_file_to_type(types, devices, apks)
     MLog.info("create_lines done!")
+
+
+if __name__ == '__main__':
+    create_lines(["PACM00"], "")
