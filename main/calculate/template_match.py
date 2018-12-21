@@ -113,22 +113,22 @@ def isHomepageFinish(path):
     height, width, something = img.shape
     # print "width = {}, height = {}, something = {}".format(width, height, something)
     rgb = img[height - 5, 5]
-    print rgb
+    print rgb + "___" + path
     if rgb[0] >= 253 and rgb[1] >= 253 and rgb[2] >= 253:
         return True
     return False
 
 
 def test():
-    img = cv2.imread("F:\cvtest\\test11.jpg")
+    img = cv2.imread("F:\cvtest\\direct.jpg")
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    gaus = cv2.GaussianBlur(gray, (19, 19), 0)
+    # gaus = cv2.GaussianBlur(gray, (19, 19), 0)
 
-    ret, binary = cv2.threshold(gaus, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_TRIANGLE)
+    # ret, binary = cv2.threshold(gaus, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_TRIANGLE)
 
-    edges = cv2.Canny(binary, 1, 20, apertureSize=3)
+    edges = cv2.Canny(img, 1, 20, apertureSize=3)
 
     minLineLength = 100
     maxLineGap = 75
@@ -144,12 +144,102 @@ def test():
             cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
     cv2.imwrite("F:\cvtest\linedetect.jpg", img)
     cv2.imwrite("F:\cvtest\linedges.jpg", edges)
+
+    return lines
     # cv2.imwrite("F:\\ret.jpg", ret)
-    cv2.imwrite("F:\cvtest\\binary.jpg", binary)
+    # cv2.imwrite("F:\cvtest\\binary.jpg", binary)
+
+
+def test2():
+    img = cv2.imread("F:\\LEARN\\CV\\SAMPLE\\test6.jpg")
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_TRIANGLE)
+    # cv2.namedWindow('binary',cv2.WINDOW_FREERATIO)
+    # cv2.imshow('binary',binary)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    dilation = cv2.dilate(binary, (9, 9), iterations=10)
+    cv2.namedWindow('dilation', cv2.WINDOW_FREERATIO)
+    cv2.imshow('dilation', dilation)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    dilation = cv2.medianBlur(dilation, ksize=9)
+    dilation = cv2.medianBlur(dilation, ksize=9)
+    cv2.namedWindow('dilation', cv2.WINDOW_FREERATIO)
+    cv2.imshow('dilation', dilation)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    erosion = cv2.erode(dilation, (5, 5), iterations=30)
+    cv2.namedWindow('erosion', cv2.WINDOW_FREERATIO)
+    cv2.imshow('erosion', erosion)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    img_not = cv2.bitwise_not(erosion)
+    cv2.namedWindow('img_not', cv2.WINDOW_FREERATIO)
+    cv2.imshow('img_not', img_not)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    x = cv2.Sobel(img_not, cv2.CV_16S, 1, 0)
+    y = cv2.Sobel(img_not, cv2.CV_16S, 0, 1)
+
+    absX = cv2.convertScaleAbs(x)  # 转回uint8
+    absY = cv2.convertScaleAbs(y)
+
+    dst = cv2.addWeighted(absX, 1, absY, 1, 0)
+
+    # cv2.imshow("absX", absX)
+    cv2.namedWindow('absX', cv2.WINDOW_FREERATIO)
+    cv2.imshow('absX', absX)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    # cv2.imshow("absY", absY)
+    cv2.namedWindow('absY', cv2.WINDOW_FREERATIO)
+    cv2.imshow('absY', absY)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    cv2.namedWindow('dst', cv2.WINDOW_FREERATIO)
+    cv2.imshow('dst', dst)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def direct_fuck():
+    img = cv2.imread("F:\cvtest\\test_clip.jpg")
+    height, width, something = img.shape
+    print "height = {}, width = {}".format(height, width)
+    for i in range(height):
+        # 行数遍历
+        mean_rgb = [0, 0, 0]
+        count = 0
+        for j in range(width):
+            if img[i, j][0] >= 252 and img[i, j][1] >= 252 and img[i, j][2] >= 252:
+                count += 1
+
+        if count >= width / 2:
+            for j in range(width):
+                img[i, j] = [255, 255, 255]
+        else:
+            for j in range(width):
+                img[i, j] = [0, 0, 0]
+    cv2.imwrite("F:\cvtest\direct.jpg", img)
+
+    # 然后调 霍夫直线检测，快速获取每一条水平线的纵坐标
+    lines = test() 
 
 
 if __name__ == '__main__':
     # isHomepageFinish("F:\\test2.jpg")
+    # direct_fuck()
     test()
     # print findLaunchLogo("F:\\test2.jpg", "F:\\feature.jpg")
     print 1

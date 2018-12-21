@@ -29,7 +29,7 @@ def calculate_pic_rgb(path):
     mean_r /= (width * height)
     mean_g /= (width * height)
     mean_b /= (width * height)
-    # MLog.debug("mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
+    MLog.debug("mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
     return mean_r, mean_g, mean_b
 
 
@@ -62,6 +62,7 @@ def calculate_homepage_rgb():
 
 
 def compare_rgb(path, rgb_folder):
+    rgb_folder = [168, 163, 164]
     rgb_pic = calculate_pic_rgb(path)
     # 主要就是怎么比这几个值了，要根据哪个值为准呢
     # 当前我决定取，rgb每个值都差了15 以上，则认为还没加载完成，这个值取啥一样是个难点

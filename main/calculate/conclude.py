@@ -14,7 +14,7 @@ from screenrecord.screen_record_main import getDevices
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
-rgb_folder = calculate_homepage_rgb()  # 计算样本库的rgb均值
+rgb_folder = [0, 0, 0]  # 计算样本库的rgb均值
 cpu_num = cpu_count()
 
 
@@ -48,6 +48,8 @@ def multi_normal_calculate_part(params):
     frame_value = 50
     total_time = int((last - first + 1) * (1000 / float(frame_value)))
     launching_time = int((launching_index - first + 1) * (1000 / float(frame_value)))
+    MLog.info("calculate result: first index = {}, launching_inde = {}, last index = {}, dir_index = {}".format(
+        first, launching_index, last, dir_index))
     return dir_index, first, launching_index, last, total_time, launching_time, total_time - launching_time
 
 
@@ -62,17 +64,14 @@ def multi_normal_calculate(device_name, suffix):
     dir_count = count_dirs("./screenrecord/" + device_name + "_" + suffix)
     params = []
     results = []
-    start_time = datetime.datetime.now()
     for i in range(0, dir_count):
         params_temp = {"device": device_name, "suffix": suffix, "dir_index": i}
         params.append(params_temp)
         # results.append(multi_normal_calculate_part(params_temp))
     results = pool.map(multi_normal_calculate_part, params)
-    end_time = datetime.datetime.now()
     # 资源回收
     pool.close()
     pool.join()
-    print "actual calculate time = {} -------------- {}".format(end_time - start_time, results)
     return results
 
 

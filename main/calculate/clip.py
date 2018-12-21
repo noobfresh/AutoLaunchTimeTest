@@ -30,9 +30,9 @@ def clip_specific_pic(path, dst_path):
     img = Image.open(path)
     width = img.size[0]
     height = img.size[1]
-    # 上面部分裁剪 20%， 下面部分裁剪18%
-    top_margin = int(height * 0.2)
-    bottom_margin = int(height * 0.18)
+    # 上面部分裁剪 15%， 下面部分裁剪15%
+    top_margin = int(height * 0.15)
+    bottom_margin = int(height * 0)
     img = img.crop(
         (
             0,
@@ -61,5 +61,5 @@ def clip_generate_flag(path1, path2):
 
 
 if __name__ == '__main__':
-    clip_specific_pic("../screenrecord/MI8_first/MI8_first_0/00475.jpg")
+    clip_specific_pic("F:\cvtest\\test7.jpg", "F:\cvtest\\test_clip.jpg")
     print 1
