@@ -19,7 +19,7 @@ def screenRecord(d, times, name, sernum, machineName):
         time.sleep(5)
     else:
         print(name + "         ----------------------------------                ---------------------------")
-        subprocess.Popen("adb -s " + sernum + " shell screenrecord --time-limit " + str(times) + " " + save_dir + name)
+        subprocess.Popen("adb -s " + sernum + " shell screenrecord --bit-rate 10000000 --time-limit " + str(times) + " " + save_dir + name)
     doInThread(get_mem_cpu, d, 0)
     print u'录屏开始'
 
