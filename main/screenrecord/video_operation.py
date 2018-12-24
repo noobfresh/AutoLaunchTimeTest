@@ -40,7 +40,7 @@ def pullRecord(name, sernum, machineName):
         for root, dirs, files in os.walk(srcPath):  # 遍历统计
             for file in files:
                 if file.__contains__('_'):
-                    os.rename(file, file[0] + ".mp4")
+                    os.rename(file, file.split('_')[0] + ".mp4")
         os.chdir(curPath)
 
 
