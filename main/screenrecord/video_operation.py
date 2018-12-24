@@ -4,7 +4,6 @@ import os
 import time
 import shutil
 import subprocess
-import settings
 from sub_thread import doInThread
 
 save_dir = '/sdcard/screenrecord/'
