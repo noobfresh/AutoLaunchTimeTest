@@ -163,6 +163,5 @@ def runwatch(d, data):
             registerEvent(d)
 
 
-
 def utf8(file_name):
     return file_name.decode('utf-8')

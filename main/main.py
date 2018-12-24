@@ -64,7 +64,6 @@ if __name__ == '__main__':
         devices.append(getDeviceInfo(serial_numebr))
         # 好扯啊这个
         pool.apply_async(test_main, args=(serial_numebr,))
-        time.sleep(40)
     pool.close()
     pool.join()
     # 专门画总图
