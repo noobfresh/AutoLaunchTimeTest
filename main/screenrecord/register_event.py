@@ -15,21 +15,21 @@ def getPwdByConfig(device_name):
 
 def click_with_pos(d, class_name, res_id, pos_x, pos_y):
     if d(className=class_name,
-         resourceId=res_id).exists(timeout=50000):
+         resourceId=res_id).exists(timeout=50):
         MLog.debug("click_with_pos:" + "x = " + str(pos_x) + "  y =" + str(pos_y))
         d.click(pos_x, pos_y)
 
 
 def click_with_id(d, class_name, res_id):
     if d(className=class_name,
-         resourceId=res_id).wait.exists(timeout=50000):
+         resourceId=res_id).wait.exists(timeout=50):
         d(className=class_name,
           resourceId=res_id).click()
 
 
 def set_text_with_id(d, class_name, res_id, text_content):
     if d(className=class_name,
-         resourceId=res_id).wait.exists(timeout=50000):
+         resourceId=res_id).wait.exists(timeout=50):
         d(className=class_name,
           resourceId=res_id).set_text(text_content)
 
@@ -39,26 +39,21 @@ def inputListener(d, data, serialNum):
     machineName = getDeviceInfo(serialNum)
     print 'register_event' + machineName
     if machineName == "OPPOR11Plusk":
-        # if d(className="android.widget.EditText",
-        #      resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
-        #     d(className="android.widget.EditText",
-        #       resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
-        #         getPwdByConfig(machineName))
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
             d.click(458, 1602)
     print 1
 
     if machineName == "OPPOR9s":
         if d(className="android.widget.EditText",
-             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50000):
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50):
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
                 getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
             d.click(696, 1793)
     print 2
 
@@ -78,11 +73,11 @@ def inputListener(d, data, serialNum):
 
     if machineName == "OPPOA59a":
         if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
-                timeout=50000):
+                timeout=50):
             d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
                 getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50000):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
             d.click(458, 1900)
     print 4
 
@@ -106,7 +101,7 @@ def inputListener(d, data, serialNum):
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50000):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(528, 1218)
 
     if machineName == "vivoX9":
@@ -124,15 +119,6 @@ def registerEvent(d):
     MLog.debug("event = " + event)
     num = event.split(',')
     print num
-    # 允许,始终允许,继续安装,安装,完成,确定,好,继续安装旧版本
-    # d.watcher("key").when(text=u"安装").click()
-    # d.watcher("key1").when(text=u"始终允许").click()
-    # d.watcher("key2").when(text=u"继续安装").click()
-    # d.watcher("key3").when(text=u"完成").click()
-    # d.watcher("key4").when(text=u"确定").click()
-    # d.watcher("key5").when(text=u"好").click()
-    # d.watcher("key6").when(text=u"继续安装旧版本").click()
-
     for index in range(len(num)):
         key = 'event' + str(index)
         item = num[index]
