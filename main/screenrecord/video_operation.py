@@ -19,19 +19,30 @@ def screenRecord(d, times, name, sernum, machineName):
         time.sleep(5)
     else:
         print(name + "         ----------------------------------                ---------------------------")
-        subprocess.Popen("adb -s " + sernum + " shell screenrecord --bit-rate 10000000 --time-limit " + str(times) + " " + save_dir + name)
+        subprocess.Popen("adb -s " + sernum + " shell screenrecord --bit-rate 10000000 --time-limit " + str(
+            times) + " " + save_dir + name)
     doInThread(get_mem_cpu, d, 0)
     print u'录屏开始'
 
 
 # 数据上传
 def pullRecord(name, sernum, machineName):
+    curPath = os.getcwd()
     if machineName == "PACM00":
         os.system("adb -s " + sernum + "  pull " + name)
     else:
         print save_dir + name
         os.system("adb -s " + sernum + "  pull " + save_dir + name)
         print u'数据上传成功'
+        path = os.path.dirname(__file__) + "\\"
+        srcPath = os.path.join(os.path.dirname(path), name)
+        print srcPath + "pull record----"
+        os.chdir(srcPath)
+        for root, dirs, files in os.walk(srcPath):  # 遍历统计
+            for file in files:
+                if file.__contains__('_'):
+                    os.rename(file, file[0] + ".mp4")
+        os.chdir(curPath)
 
 
 # 视频转换成帧
@@ -67,8 +78,8 @@ def videoToPhoto(dirname, index, machineName):
     os.chdir(chagePath)
     # print u"帧数 = " + str(settings.get_value("ffmpeg"))
     strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(50) + ' -f ' + 'image2 %05d.jpg'
-   # strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
-   #      settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
+    # strcmd = 'ffmpeg -i ' + curPath + '/' + index + '.mp4' + ' -r ' + str(
+    #      settings.get_value("ffmpeg")) + ' -f ' + 'image2 %05d.jpg'
     subprocess.call(strcmd, shell=True)
     os.chdir(curPath)
 
