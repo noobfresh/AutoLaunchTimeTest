@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from calculate.template_match import findLaunchLogo
+from calculate.template_match import findLaunchLogo, get_ent_pos
 
 from log.log import MLog
 import settings
@@ -63,7 +63,7 @@ def getPos(d, app_name, sernum):
 
 def cap(sernum):
     out_path = os.path.dirname(__file__) + os.sep + "cap" + os.sep
-    img_name = sernum + "_cap.jpg"
+    img_name = sernum + "_cap.png"
     cmd1 = r"adb -s " + sernum + " shell /system/bin/screencap -p /sdcard/" + img_name
     cmd2 = r"adb -s " + sernum + " pull /sdcard/" + img_name + " " + out_path + img_name
     checkSrcVialdAndAutoCreate('./cap/')
@@ -74,11 +74,12 @@ def cap(sernum):
 
 
 def enter(d, times, video, sernum, machineName, package):
-    cap(sernum)
+    path = cap(sernum)
+    x, y = get_ent_pos(path)
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     print 'enter before click'
-    d.click(367, 940)
+    d.click(x, y)
     print 'enter after click'
     time.sleep(6)
     if package == 'com.duo.mobile':

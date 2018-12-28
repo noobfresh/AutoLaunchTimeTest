@@ -1,4 +1,6 @@
 # coding=utf-8
+import cv2
+
 from PIL import Image
 import os
 import base_utils
@@ -26,13 +28,20 @@ def clip(path, count):
 
 
 def clip_specific_pic(path, dst_path):
+    if path.find(".png") != -1:
+        img = cv2.imread(path)
+        # 防png
+        path = path.replace(".png", ".jpg")
+        cv2.imwrite(path, img)
     MLog.debug("clip_specific_pic(): the path = {}".format(path))
     img = Image.open(path)
+    # img.convert("RGB")
+    # img.save("F:\\cao.jpg")
     width = img.size[0]
     height = img.size[1]
-    # 上面部分裁剪 20%， 下面部分裁剪18%
-    top_margin = int(height * 0.2)
-    bottom_margin = int(height * 0.18)
+    # 上面部分裁剪 12%， 下面部分裁剪0%
+    top_margin = int(height * 0.12)
+    bottom_margin = int(height * 0)
     img = img.crop(
         (
             0,
@@ -58,6 +67,34 @@ def clip_generate_flag(path1, path2):
         )
     )
     img.save(path2)
+
+
+def clip_specific_area(src, dst, x1, y1, x2, y2):
+    img = Image.open(src)
+    img = img.crop(
+        (
+            x1,
+            y1,
+            x2,
+            y2
+        )
+    )
+    img.save(dst)
+
+
+def clip_half_pic(path):
+    img = Image.open(path)
+    width = img.size[0]
+    height = img.size[1]
+    img = img.crop(
+        (
+            width/2,
+            0,
+            width,
+            height
+        )
+    )
+    img.save(path)
 
 
 if __name__ == '__main__':

@@ -121,6 +121,25 @@ def test(path):
     print just_count
 
 
+def calcule_specific_area_rgb(path, x1, y1, x2, y2):
+    im = Image.open(path)
+    pix = im.load()
+    mean_r = 0
+    mean_g = 0
+    mean_b = 0
+    for i in range(x1, x2):
+        for j in range(y1, y2):
+            mean_r += pix[i, j][0]
+            mean_g += pix[i, j][1]
+            mean_b += pix[i, j][2]
+    pixles = (x2 - x1) * (y2 - y1)
+    mean_r /= pixles
+    mean_g /= pixles
+    mean_b /= pixles
+    MLog.debug("mean: r = {}, g = {}, b = {}".format(mean_r, mean_g, mean_b))
+    return mean_r, mean_g, mean_b
+
+
 if __name__ == '__main__':
     print calculate_pic_rgb("F:\\photo2.jpg")
     # test("F:\\test3.jpg")

@@ -162,7 +162,7 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
         mkdir(enter_dir, sernum)
         for index in range(enterLiveRoomTimes):
 
-            enter(d, 15, enter_dir + '/' + str(index) + ".mp4", sernum, machineName, packageName)
+            enter(d, 10, enter_dir + '/' + str(index) + ".mp4", sernum, machineName, packageName)
             time.sleep(15)
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')
