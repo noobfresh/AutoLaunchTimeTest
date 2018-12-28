@@ -119,6 +119,8 @@ def registerEvent(d):
     MLog.debug("event = " + event)
     num = event.split(',')
     print num
+    d.watchers.remove()
+    d.watchers.watched = False
     for index in range(len(num)):
         key = 'event' + str(index)
         item = num[index]
