@@ -83,10 +83,10 @@ def enter(d, times, video, sernum, machineName, package):
     time.sleep(6)
     if package == 'com.duo.mobile':
         print 'shou yy'
-        d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click(timeout=3)
+        d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click()
     elif package == 'sg.bigo.live':
         print 'bigo live'
-        d(resourceId="sg.bigo.live:id/btn_live_video_close").click(timeout=3)
+        d(resourceId="sg.bigo.live:id/btn_live_video_close").click()
 
 
 if __name__ == '__main__':
