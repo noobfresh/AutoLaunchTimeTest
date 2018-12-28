@@ -74,6 +74,7 @@ def cap(sernum):
 
 
 def enter(d, times, video, sernum, machineName):
+    cap(sernum)
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     d.click(375, 800)
