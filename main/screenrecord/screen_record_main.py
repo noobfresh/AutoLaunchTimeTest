@@ -1,7 +1,14 @@
 # -*- coding: UTF-8 -*-
 
 import sys
+<<<<<<< HEAD
 from uiautomator import Device
+=======
+# from uiautomator import Device
+import uiautomator2 as u2
+
+import settings
+>>>>>>> f4410739de86d6bb49f1ccde971f7411d85797dc
 from register_event import *
 from start_app import startAPP
 from file_operation import *
@@ -9,10 +16,15 @@ from app_operation import *
 from video_operation import *
 from device_info import getDeviceInfo
 from multiprocessing import Pool
+from start_app import enter
 
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
+<<<<<<< HEAD
 os.environ.__setitem__('ANDROID_HOME', 'C:/Users/Administrator/AppData/Local/Android/Sdk/')
+=======
+os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
+>>>>>>> f4410739de86d6bb49f1ccde971f7411d85797dc
 os.environ.update()
 
 conf = Config("default.ini")
@@ -132,8 +144,53 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
         os.chdir(path)
 
 
+def start(packageName, serNum):
+    os.system('adb -s ' + serNum + ' shell monkey -p ' + packageName + ' -c android.intent.category.LAUNCHER 1 ')
+
+
+# 进入直播间
+def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
+    print '===enterLiveRoom==='
+    # 启动APP
+    start('com.duowan.mobile', sernum)
+    time.sleep(15)
+    if enterLiveRoomTimes > 0:
+        if machineName == "PACM00":
+            removeDirs("/sdcard/DCIM/Screenshots", sernum)
+            print u"删除 screenshot==="
+            path = os.path.dirname(__file__) + "\\"
+            print path
+            os.chdir(path)
+            if os.path.exists("Screenshots"):
+                shutil.rmtree("Screenshots")
+
+        enter_dir = temp_dir + "_enterliveroom"
+        mkdir(enter_dir, sernum)
+        for index in range(enterLiveRoomTimes):
+
+            enter(d, 15, enter_dir + '/' + str(index) + ".mp4", sernum, machineName)
+            time.sleep(15)
+            if machineName == "PACM00":
+                os.system('adb -s ' + sernum + ' shell service call statusbar 1')
+                d(text="停止录屏").click()
+
+        time.sleep(5)
+        if machineName == "PACM00":
+            pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)
+        else:
+            pullRecord(enter_dir, sernum, machineName)
+        path = os.path.abspath('.')
+        folder = path + '/' + enter_dir
+        print "====" + folder
+        os.chdir(folder)
+        killProcess(sernum)
+        for index in range(enterLiveRoomTimes):
+            videoToPhoto(str(enter_dir + "_" + str(index)), str(index), machineName)
+        os.chdir(path)
+
+
 # main函数，线程sleep时间有待商榷
-def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum):
+def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, temp_dir, sernum):
     print 'start main---' + sernum
     settings._init()
     try:
@@ -144,11 +201,13 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
         machineName = getDeviceInfo(sernum)
         firstLaunchTimes = int(firstLaunchTimes)
         notFirstLaunchTimes = int(notFirstLaunchTimes)
+        enterLiveTimes = int(enterLiveTimes)
         print "===screen record main ====times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes),
                                                                                         str(notFirstLaunchTimes),
                                                                                         apkName)
         firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName)
         notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
+        enterLiveRoom(d, enterLiveTimes, temp_dir, sernum, machineName)
     except BaseException, e:
         print repr(e)
 
@@ -156,6 +215,7 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, sernum)
 
 
 # 改成单个
+<<<<<<< HEAD
 def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName, serial_num):
     # for index in range(len(deviceList)):
     # getDevices()
@@ -173,6 +233,12 @@ def start_python(firstLaunchTimes, notFirstLaunchTimes, apkName, serial_num):
     # p.apply_async(screenmain, args=(firstLaunchTimes, notFirstLaunchTimes, apkName, temp_dir, serNum,))
     # p.close()
     # p.join()
+=======
+def start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num):
+    print serial_num + "   444444444444"
+    temp_dir = getDeviceInfo(serial_num)
+    screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, temp_dir, serial_num)
+>>>>>>> f4410739de86d6bb49f1ccde971f7411d85797dc
 
 
 if __name__ == "__main__":
@@ -185,7 +251,11 @@ if __name__ == "__main__":
         # 加上下面两行
         settings._init()
         settings.set_value("ffmpeg", 30)
+<<<<<<< HEAD
         # screenmain(d, sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum)
         p.apply_async(screenmain, args=(sys.argv[1], sys.argv[2], sys.argv[3], temp_dir, serNum,))
+=======
+        p.apply_async(screenmain, args=(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], temp_dir, serNum,))
+>>>>>>> f4410739de86d6bb49f1ccde971f7411d85797dc
     p.close()
     p.join()

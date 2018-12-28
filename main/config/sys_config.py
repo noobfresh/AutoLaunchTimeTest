@@ -23,8 +23,9 @@ def getApkName():
 
 def get_start_params():
     frame = 30
-    firstLaunchTimes = 1
-    notFirstLaunchTimes = 1
+    firstLaunchTimes = 0
+    notFirstLaunchTimes = 0
+    enterLiveTimes = 1
     apkName = u"yy.apk"
 
     try:
@@ -33,6 +34,7 @@ def get_start_params():
         frame = conf.getconf("default").frame
         firstLaunchTimes = conf.getconf("default").first_start
         notFirstLaunchTimes = conf.getconf("default").normal_start
+        enterLiveTimes = conf.getconf("default").enter_liveroom
         apkName = conf.getconf("default").apk_name
 
     except Exception:
@@ -40,10 +42,11 @@ def get_start_params():
         frame = 30
         firstLaunchTimes = 1
         notFirstLaunchTimes = 1
+        enterLiveTimes = 1
         apkName = u"yy.apk"
     finally:
         # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
         MLog.info("apk = " + str(apkName) + " ,first_start = " \
                   + str(firstLaunchTimes) + " ,normal_start = " + str(notFirstLaunchTimes) + " ,frame = " + str(frame))
 
-    return int(firstLaunchTimes), int(notFirstLaunchTimes), str(apkName)
+    return int(firstLaunchTimes), int(notFirstLaunchTimes), int(enterLiveTimes), str(apkName)

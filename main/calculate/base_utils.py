@@ -49,7 +49,7 @@ def rename(count):
 
 def rename_files():
     i = 1
-    path = "../homepage"
+    path = "E:\PYF-CODE\LaunchPicRepos\picrepos\homepage\yy"
     for file1 in os.listdir(path):
         if os.path.isfile(os.path.join(path, file1)) == True:
             new_name = rename(i)

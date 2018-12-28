@@ -14,10 +14,10 @@ from screenrecord.screen_record_main import start_python, getDevices
 
 
 def test_main(serial_num):
-    firstLaunchTimes, notFirstLaunchTimes, apkName = get_start_params()
+    firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes,apkName = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
-    start_python(firstLaunchTimes, notFirstLaunchTimes, apkName, serial_num)
+    start_python(firstLaunchTimes, notFirstLaunchTimes,enterLiveTimes, apkName, serial_num)
     end_video_2_frame_time = datetime.datetime.now()
     MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
 
