@@ -144,8 +144,9 @@ def start(packageName, serNum):
 # 进入直播间
 def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
     print '===enterLiveRoom==='
+    packageName = conf.getconf("default").package
     # 启动APP
-    start('com.duowan.mobile', sernum)
+    start(packageName, sernum)
     time.sleep(15)
     if enterLiveRoomTimes > 0:
         if machineName == "PACM00":
@@ -161,7 +162,7 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
         mkdir(enter_dir, sernum)
         for index in range(enterLiveRoomTimes):
 
-            enter(d, 15, enter_dir + '/' + str(index) + ".mp4", sernum, machineName)
+            enter(d, 15, enter_dir + '/' + str(index) + ".mp4", sernum, machineName, packageName)
             time.sleep(15)
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')

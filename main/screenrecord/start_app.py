@@ -73,14 +73,20 @@ def cap(sernum):
     return out_path + img_name
 
 
-def enter(d, times, video, sernum, machineName):
+def enter(d, times, video, sernum, machineName, package):
     cap(sernum)
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
-    d.click(375, 800)
-    time.sleep(10)
-    d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click()
-    print 1
+    print 'enter before click'
+    d.click(367, 940)
+    print 'enter after click'
+    time.sleep(6)
+    if package == 'com.duo.mobile':
+        print 'shou yy'
+        d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click(timeout=3)
+    elif package == 'sg.bigo.live':
+        print 'bigo live'
+        d(resourceId="sg.bigo.live:id/btn_live_video_close").click(timeout=3)
 
 
 if __name__ == '__main__':
