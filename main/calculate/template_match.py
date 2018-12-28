@@ -1,8 +1,12 @@
 # coding=utf-8
+import datetime
 
 import cv2
 import numpy as np
+from PIL import Image
 
+from calculate.clip import clip_specific_area, clip_specific_pic
+from calculate.rgb import calculate_pic_rgb, calcule_specific_area_rgb
 from log.log import MLog
 from matplotlib import pyplot as plt
 
@@ -213,34 +217,87 @@ def test2():
     cv2.destroyAllWindows()
 
 
-def direct_fuck():
+def direct_fuck(path):
+    clip_specific_pic(path, "F:\cvtest\\test_clip.jpg")
     img = cv2.imread("F:\cvtest\\test_clip.jpg")
     height, width, something = img.shape
     print "height = {}, width = {}".format(height, width)
-    for i in range(height):
+    start_time = datetime.datetime.now()
+    y_array = [0]
+    array_flag = False
+    for i in range(0, height, 1):
         # 行数遍历
-        mean_rgb = [0, 0, 0]
         count = 0
-        for j in range(width):
+        for j in range(0, width, 1):
             if img[i, j][0] >= 252 and img[i, j][1] >= 252 and img[i, j][2] >= 252:
                 count += 1
-
         if count >= width / 2:
+            # print count
+            if not array_flag:
+                y_array.append(i)
+                array_flag = True
             for j in range(width):
                 img[i, j] = [255, 255, 255]
         else:
+            if array_flag:
+                y_array.append(i - 1)
+                array_flag = False
             for j in range(width):
                 img[i, j] = [0, 0, 0]
-    cv2.imwrite("F:\cvtest\direct.jpg", img)
+    cv2.imwrite("F:\cvtest\\detect.jpg", img)
+    # 前面这个计算时间太长了
+    print "pre-deal time = {}".format(datetime.datetime.now() - start_time)
+    test_count = 0
+    print y_array
+    for t in range(1, len(y_array)):
+        if y_array[t] - y_array[t-1] > 120:
+            # 测试过程可以打开这个
+            clip_specific_area("F:\cvtest\\test_clip.jpg", "F:\cvtest\\" + str(test_count) + ".jpg",
+                               0, y_array[t-1], width/2, y_array[t])
+            test_count += 1
+            mean_r, mean_g, mean_b = calcule_specific_area_rgb("F:\cvtest\\test_clip.jpg",
+                                                               0, y_array[t-1], width/2, y_array[t])
+            gray_range = range(231, 241)
+            if mean_r in gray_range and mean_g in gray_range and mean_r in gray_range:
+                return False
 
-    # 然后调 霍夫直线检测，快速获取每一条水平线的纵坐标
-    lines = test() 
+            clip_specific_area("F:\cvtest\\test_clip.jpg", "F:\cvtest\\" + str(test_count) + ".jpg",
+                               width / 2, y_array[t - 1], width, y_array[t])
+            test_count += 1
+
+            mean_r, mean_g, mean_b = calcule_specific_area_rgb("F:\cvtest\\test_clip.jpg",
+                                                               width/2, y_array[t-1], width, y_array[t])
+            if mean_r in gray_range and mean_g in gray_range and mean_r in gray_range:
+                return False
+
+    # 取出来了3个块，第一步先不做竖直线的查找，先直接对半分计算一下每个块的rgb,两个方案 ->
+    # 一个是直接算切出来的方块的平均rgb，另一个就算238238238附近的像素点能达到这个方块的百分之50吗
+    print "all time = {}".format(datetime.datetime.now() - start_time)
+    return True
+
+
+def test1():
+    # 做直线识别测试
+    print 1
+    im = Image.open("F:\\360WiFi\\3.jpg")
+    pix = im.load()
+    width = im.size[0]
+    height = im.size[1]
+    print "width = {}, height = {}".format(width, height)
+    count = 0
+    for i in range(width):
+        for j in range(height):
+            r, g, b = pix[i, j]
+            if r <= 50 and g <= 50 and b <= 50:
+                count += 1
+        if count > height*2/3:
+            return i
+    return -1
 
 
 if __name__ == '__main__':
     # isHomepageFinish("F:\\test2.jpg")
-    # direct_fuck()
-    test()
-    # print findLaunchLogo("F:\\test2.jpg", "F:\\feature.jpg")
+    # print direct_fuck("F:\cvtest\\test38.jpg")
+    # match_img("F:\\360WiFi\\3\\00120.jpg", "F:\\360WiFi\\feature.jpg", 0.9, "F:\\360WiFi\\feature_result.jpg")
+    print test1()
     print 1
-

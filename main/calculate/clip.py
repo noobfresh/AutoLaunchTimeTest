@@ -31,7 +31,7 @@ def clip_specific_pic(path, dst_path):
     width = img.size[0]
     height = img.size[1]
     # 上面部分裁剪 15%， 下面部分裁剪15%
-    top_margin = int(height * 0.15)
+    top_margin = int(height * 0.12)
     bottom_margin = int(height * 0)
     img = img.crop(
         (
@@ -60,6 +60,35 @@ def clip_generate_flag(path1, path2):
     img.save(path2)
 
 
+def clip_specific_area(src, dst, x1, y1, x2, y2):
+    img = Image.open(src)
+    img = img.crop(
+        (
+            x1,
+            y1,
+            x2,
+            y2
+        )
+    )
+    img.save(dst)
+
+
+def clip_half_pic(path):
+    img = Image.open(path)
+    width = img.size[0]
+    height = img.size[1]
+    img = img.crop(
+        (
+            width/2,
+            0,
+            width,
+            height
+        )
+    )
+    img.save(path)
+
+
 if __name__ == '__main__':
-    clip_specific_pic("F:\cvtest\\test7.jpg", "F:\cvtest\\test_clip.jpg")
+    # clip_specific_pic("F:\cvtest\\test2.jpg", "F:\cvtest\\test_clip.jpg")
+    clip_half_pic("F:\\360wifi\\feature.jpg")
     print 1
