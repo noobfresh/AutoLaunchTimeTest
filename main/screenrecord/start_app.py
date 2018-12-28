@@ -77,10 +77,11 @@ def enter(d, times, video, sernum, machineName):
     cap(sernum)
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
-    d.click(375, 800)
+    print 'enter before click'
+    d.click(367, 940)
+    print 'enter after click'
     time.sleep(10)
     d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click()
-    print 1
 
 
 if __name__ == '__main__':
