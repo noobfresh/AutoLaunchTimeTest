@@ -161,13 +161,11 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
         enter_dir = temp_dir + "_enterliveroom"
         mkdir(enter_dir, sernum)
         for index in range(enterLiveRoomTimes):
-
             enter(d, 10, enter_dir + '/' + str(index) + ".mp4", sernum, machineName, packageName)
-            time.sleep(15)
+            time.sleep(5)
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
-
         time.sleep(5)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)

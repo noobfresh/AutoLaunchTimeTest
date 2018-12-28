@@ -69,7 +69,7 @@ def cap(sernum):
     checkSrcVialdAndAutoCreate('./cap/')
     os.system(cmd1)
     os.system(cmd2)
-
+    print 'cap ====1'
     return out_path + img_name
 
 
@@ -82,7 +82,7 @@ def enter(d, times, video, sernum, machineName, package):
     d.click(x, y)
     print 'enter after click'
     time.sleep(6)
-    if package == 'com.duo.mobile':
+    if package == 'com.duowan.mobile':
         print 'shou yy'
         d(resourceId="com.duowan.mobile.entlive:id/btn_exit_portrait").click()
     elif package == 'sg.bigo.live':
