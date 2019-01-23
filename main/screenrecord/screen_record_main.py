@@ -205,7 +205,7 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, t
                                                                                         apkName)
         firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName)
         notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
-        enterLiveRoom(d, enterLiveTimes, temp_dir, sernum, machineName)
+        # enterLiveRoom(d, enterLiveTimes, temp_dir, sernum, machineName)
     except BaseException, e:
         print repr(e)
 
