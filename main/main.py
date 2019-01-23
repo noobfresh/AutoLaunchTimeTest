@@ -2,6 +2,9 @@
 import datetime
 from multiprocessing import Pool
 import time
+
+import settings
+from calculate import first_frame_calculate
 from calculate.conclude import start_calculate
 from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
@@ -14,15 +17,17 @@ from screenrecord.screen_record_main import start_python, getDevices
 
 
 def test_main(serial_num):
+    settings._init()
     firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes,apkName = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
-    start_python(firstLaunchTimes, notFirstLaunchTimes,enterLiveTimes, apkName, serial_num)
+    start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
     end_video_2_frame_time = datetime.datetime.now()
     MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
 
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
+    print path
     device_name = getDeviceInfo(serial_num)
     first_launch_result, normal_launch_result = start_calculate(device_name)
     json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(
@@ -68,8 +73,9 @@ if __name__ == '__main__':
     pool.join()
     # 专门画总图
     create_lines(devices, getApkName())
-    #
+
     sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
+    # test_main(serial[0])
     print 1

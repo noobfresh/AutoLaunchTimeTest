@@ -4,8 +4,10 @@ import datetime
 import cv2
 import numpy as np
 
+import settings
 from calculate.clip import clip_specific_pic, clip_specific_area
 from calculate.rgb import calcule_specific_area_rgb
+from config.configs import Config
 from log.log import MLog
 from PIL import Image
 
@@ -212,9 +214,9 @@ def direct_fuck(path):
     return True
 
 
-def get_ent_pos(path):
-    clip_specific_pic(path, "F:\cvtest\\test_clip.jpg")
-    img = cv2.imread("F:\cvtest\\test_clip.jpg")
+def get_ent_pos(path, out_path, machineName):
+    origin_height = clip_specific_pic(path, out_path + machineName + "_clip.jpg")
+    img = cv2.imread(out_path + machineName + "_clip.jpg")
     height, width, something = img.shape
     print "height = {}, width = {}".format(height, width)
     start_time = datetime.datetime.now()
@@ -245,8 +247,23 @@ def get_ent_pos(path):
     print ent_part_pair
     print "all time = {}".format(datetime.datetime.now() - start_time)
     x = width*3/4
+    leng_arr = len(ent_part_pair)
+    # 特征直播间存起来，似乎不用裁剪，只要专门往上算10个px（有坐标就行），看这10个px平均RGB多少，拿什么存坐标呢（settings）
+    # 还是要裁剪图片的，因为需要图片来判断是否进入直播间成功
+    # 裁第几格子，这个要靠app判断，读配置文件
+    conf_default = Config("default.ini")
+    app_key = conf_default.getconf("default").app
+    count = 2
+    if app_key == "bigo":
+        count = 1
+    clip_specific_area(out_path + machineName + "_clip.jpg", out_path + machineName + "_feature.jpg",
+                       width/4, ent_part_pair[leng_arr-count][0],
+                       width, ent_part_pair[leng_arr-count][1])
+    settings.set_value("feature_path", out_path + machineName + "_feature.jpg")
+    settings.set_value("ent_top_pos_x", x)
+    settings.set_value("ent_top_pos_y", ent_part_pair[leng_arr-count][0] + origin_height*0.12)
     # 潜规则，要加上12%的高度，因为裁图裁掉了12%
-    y = (ent_part_pair[1][0] + ent_part_pair[1][1])/2 + height*0.12
+    y = (ent_part_pair[leng_arr-count][0] + ent_part_pair[leng_arr-count][1])/2 + origin_height*0.12
     print "finally x = {}, y = {}".format(x, y)
     return x, y
 
@@ -270,11 +287,21 @@ def test1():
     return -1
 
 
+def test2():
+    img = cv2.imread("F:\\360WiFi\\00114.jpg")
+    img2gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    imageVar = cv2.Laplacian(img2gray, cv2.CV_64F).var()
+    print imageVar
+
+
 if __name__ == '__main__':
     # isHomepageFinish("F:\\test2.jpg")
     # test()
     # print findLaunchLogo("F:\\test2.jpg", "F:\\feature.jpg")
-    # get_ent_pos("F:\github\main\screenrecord\cap\\28ab58d80005_cap.png")
-    direct_fuck("F:\github\main\screenrecord\cap\\28ab58d80005_cap.png")
+    # print get_ent_pos("F:\cvtest\\test39.jpg")
+    # direct_fuck("F:\cvtest\\test39.jpg")
+    clip_specific_area("F:\github\main\screenrecord\MI8_enterliveroom\MI8_enterliveroom_0\\00114.jpg",
+                       "F:\\360WiFi\\00114.jpg", 810, 240, 1080, 780)
+    # test2()
     print 1
 

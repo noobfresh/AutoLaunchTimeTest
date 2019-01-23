@@ -70,5 +70,15 @@ def count_dirs(path):
     return num_dirs
 
 
+def get_dp():
+    # TODO 还没有指定序列号，这个要改
+    r = os.popen("adb shell wm density")
+    text = r.read()
+    r.close()
+    density = int(text.split(":")[1][1:4])
+    return density / 160.0
+
+
 if __name__ == '__main__':
-    rename_files()
+    # rename_files()
+    get_dp()

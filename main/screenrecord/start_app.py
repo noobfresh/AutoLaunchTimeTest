@@ -70,12 +70,12 @@ def cap(sernum):
     os.system(cmd1)
     os.system(cmd2)
     print 'cap ====1'
-    return out_path + img_name
+    return out_path + img_name, out_path
 
 
 def enter(d, times, video, sernum, machineName, package):
-    path = cap(sernum)
-    x, y = get_ent_pos(path)
+    path, out_path = cap(sernum)
+    x, y = get_ent_pos(path, out_path, machineName)
     screenRecord(d, times, video, sernum, machineName)
     time.sleep(2)
     print 'enter before click'

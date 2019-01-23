@@ -6,15 +6,16 @@ from multiprocessing import cpu_count
 import settings
 from base_utils import count_dirs, count_file
 from config.configs import Config
-from first_frame_calculate import first_frame_find
-from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame
+from first_frame_calculate import first_frame_find, enter_ent_first_frame_find
+from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame, enter_ent_last_frame_find
 from log.log import MLog
 from rgb import calculate_homepage_rgb
 from screenrecord.screen_record_main import getDevices
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path
-rgb_folder = calculate_homepage_rgb()  # 计算样本库的rgb均值
+# rgb_folder = calculate_homepage_rgb()  # 计算样本库的rgb均值
+rgb_folder = [183, 183, 183]
 cpu_num = cpu_count()
 
 
@@ -130,17 +131,47 @@ def multi_huya_calculate_parts(params):
     return dir_index, first, launching_index, last, total_time, launching_time, total_time - launching_time
 
 
+def enter_ent_calcucate(device_name):
+    # 先不写并行计算
+    top_x = settings.get_value("ent_top_pos_x")
+    top_y = settings.get_value("ent_top_pos_y")
+    # top_x = 810
+    # top_y = 1417
+    print "top_x = {}, topy_y = {}".format(top_x, top_y)
+    dir_count = count_dirs("./screenrecord/" + device_name + "_enterliveroom/")
+    print "dir_count = {}".format(dir_count)
+    for i in range(dir_count):
+        enter_ent_calculate_part("./screenrecord/" + device_name + "_enterliveroom/" + device_name + "_enterliveroom_" +
+                                 str(i) + "/", top_x, top_y)
+
+
+def enter_ent_calculate_part(path, x, y):
+    file_count = count_file(path)
+    first_index = enter_ent_first_frame_find(file_count, path, x, y)
+    print "first_index = {}".format(first_index)
+    feature_path = settings.get_value("feature_path")
+    enter_live_room_index, last_index = enter_ent_last_frame_find(first_index, file_count, path,
+                                                                  feature_path)
+    print "first_index = {}, the enter_live_room_index = {}, last index = {}".format(first_index, enter_live_room_index,
+                                                                                     last_index)
+    return first_index, enter_live_room_index, last_index
+
+
 def start_calculate(device_name):
     conf_default = Config("default.ini")
     app_key = conf_default.getconf("default").app
+    first_launch_result = []
+    normal_launch_result = []
     if app_key == "huya" or app_key == "momo":
         first_launch_result = multi_huya_calculate(device_name)
     else:
         first_launch_result = multi_normal_calculate(device_name, "first")
     # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
     normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    # enter_ent_calcucate(device_name)
     return first_launch_result, normal_launch_result
 
 
 if __name__ == '__main__':
+    start_calculate("MI8")
     print 1

@@ -122,6 +122,10 @@ def test(path):
 
 
 def calcule_specific_area_rgb(path, x1, y1, x2, y2):
+    x1 = int(x1)
+    y1 = int(y1)
+    x2 = int(x2)
+    y2 = int(y2)
     im = Image.open(path)
     pix = im.load()
     mean_r = 0

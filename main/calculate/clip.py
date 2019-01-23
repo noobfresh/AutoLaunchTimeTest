@@ -51,6 +51,7 @@ def clip_specific_pic(path, dst_path):
         )
     )
     img.save(dst_path)
+    return height
 
 
 def clip_generate_flag(path1, path2):

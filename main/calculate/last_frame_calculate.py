@@ -1,11 +1,12 @@
 # coding=utf-8
 import base_utils
 from log.log import MLog
-from rgb import compare_rgb
+from rgb import compare_rgb, calcule_specific_area_rgb
+from PIL import Image
 from rgb import calculate_repos_rgb
 from template_match import match_img, isLaunchingPage, isHomepageFinish
 from color_histogram import calculate_by_hists
-from clip import clip_specific_pic, clip_generate_flag
+from clip import clip_specific_pic, clip_generate_flag, clip_half_pic
 
 last_frame_feature = "./feature/vivoX7_homepage_feature.jpg"
 threshold = 0.94  # 准确率测试
@@ -164,5 +165,61 @@ def huya_first_find_frame(length, from_index, real_path, real_launching_feature_
     return launching_index, homepage_index
 
 
+def enter_ent_last_frame_find(start_index, file_count, path, feature_path):
+    dp = base_utils.get_dp()  # 这两个是常用的，应该预先取
+    img = Image.open(path + "00001.jpg")
+    width = img.size[0]  # 这两个是常用的，应该预先取
+    current_rate = 1.0
+    enter_live_room_index = -1
+    last_index = -1
+    for i in range(start_index, file_count):
+        src_file_path = path + base_utils.adapter_num(i) + ".jpg"
+        # 阈值先设置为0.9，暂时不知道用截图裁剪出来的图片，去找图，会发生什么事
+        match_img(src_file_path, feature_path, 0.8, path + base_utils.adapter_num(i) + "_feature.jpg")
+        # 如果裁剪到图片的话，就证明还没进入到直播间
+        if base_utils.os.path.exists(path + base_utils.adapter_num(i) + "_feature.jpg"):
+            print "i find the feature pic! and current rate = {}".format(current_rate)
+            continue
+        else:
+            # 如果，发现当前特征图，无法在当前图片匹配到时，对原有特征图进行对半裁剪，然后再对原有图片进行匹配，若匹配到，跳出循环继续下一张找图
+            # 若无匹配到，则重复上述过程，直至特征图被裁剪到最一开始的 1/8时，若还未找到，则认为已经进入直播间
+            # flag = False
+            # while current_rate > 0.125:
+            #     current_rate /= 2
+            #     clip_half_pic(feature_path)
+            #     print "i have cut a half the feature pic. current rate = {}".format(current_rate)
+            #     match_img(src_file_path, feature_path, 0.9, path + base_utils.adapter_num(i) + "_feature.jpg")
+            #     if base_utils.os.path.exists(path + base_utils.adapter_num(i) + "_feature.jpg"):
+            #         print "i find the feature pic! and current rate = {}".format(current_rate)
+            #         flag = True
+            # if flag:
+            #     continue
+            # 认为进入了直播间
+            print "i think it is entering liveroom index = {}, current dp = {}".format(i, dp)
+            enter_live_room_index = i
+            break
+    if enter_live_room_index == -1:
+        return
+    for i in range(enter_live_room_index, file_count):
+        src_file_path = path + base_utils.adapter_num(i) + ".jpg"
+        top_margin = 80 * dp
+        # 不取0.75这么多
+        clip_video_height = width * 0.5
+        # 然后再计算，认为的视频区域，把他的平均RGB算出来，和平时没视频时的RGB值做比较
+        print "index = " + str(i)
+        r, g, b = calcule_specific_area_rgb(src_file_path, width*0.75, top_margin, width,
+                                        top_margin + clip_video_height)
+        # 如果直播间直播内容比较暗的话，这个判断就会有问题
+        if r >= 80 and g >= 80 and b >= 80:
+            last_index = i
+            print "i think the last frame index is {}".format(last_index)
+            break
+    if last_index == -1:
+        print "i have not found the last frame"
+    return enter_live_room_index, last_index
+
+
 if __name__ == '__main__':
+    print enter_ent_last_frame_find(135, 160, "../screenrecord/MI8_enterliveroom/MI8_enterliveroom_0/",
+                              "F:\\cvtest\\feature.jpg")
     print 1
