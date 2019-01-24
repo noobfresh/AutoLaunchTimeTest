@@ -81,12 +81,9 @@ def create_from_file_per(src, title, show_avg):
 
 
 if __name__ == '__main__':
-    device = u""
-    type = u"非首次启动总耗时"
-
-    types = [type, u"首次启动总耗时"]
+    types = [u"非首次启动总耗时", u"首次启动总耗时"]
     devices = [u"vivoX9", u"MiNote2", u"PACM00"]
-    apks = [u"71461", u"71461_1"]
+    apks = [u"7.14"]
 
     # 生成当前type下所有,所有机型指定apks的图表
     json_file_to_type(types, devices, apks)
