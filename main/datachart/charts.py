@@ -58,6 +58,10 @@ def create_line(title, line_data, show_avg=True, attr=None):
 
     chart = Line(title, **style.init_style)
 
+    if len(line_data) == 0:
+        print u"别传空值进来，大佬"
+        raise RuntimeError(u"别传空值进来，大佬 -_- ! -> line_data size == 0")
+
     if attr is None:
         attr = []
         size = len(line_data[0].dataList)

@@ -59,6 +59,8 @@ def test_main(serial_num):
 
 if __name__ == '__main__':
     MLog.debug(u"程序启动...")
+    os.system("python -m uiautomator2 init")
+    time.sleep(10)
     # 取序列号
     start_time = datetime.datetime.now()
     serial = getDevices()
