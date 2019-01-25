@@ -187,14 +187,9 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, t
     settings._init()
     try:
         d = u2.connect(sernum)
-        # d = Device(sernum)
-        print d.device_info
-        print 'test....'
         doInThread(runwatch, d, 0)
         time.sleep(10)
-        print 'test....1'
         doInThread(inputListener, d, 0, sernum)
-        print 'test....2'
         time.sleep(20)
         machineName = getDeviceInfo(sernum)
         firstLaunchTimes = int(firstLaunchTimes)

@@ -42,18 +42,18 @@ def inputListener(d, data, serialNum):
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(458, 1602)
     print 1
 
     if machineName == "OPPOR9s":
         if d(className="android.widget.EditText",
-             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").wait.exists(timeout=50):
+             resourceId="com.coloros.safecenter:id/et_login_passwd_edit").exists(timeout=50):
             d(className="android.widget.EditText",
               resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
                 getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(696, 1793)
     print 2
 
@@ -72,12 +72,12 @@ def inputListener(d, data, serialNum):
     print 3
 
     if machineName == "OPPOA59a":
-        if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").wait.exists(
+        if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").exists(
                 timeout=50):
             d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").set_text(
                 getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
-             resourceId="com.android.packageinstaller:id/bottom_button_layout").wait.exists(timeout=50):
+             resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(458, 1900)
     print 4
 

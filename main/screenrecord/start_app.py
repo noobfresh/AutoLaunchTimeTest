@@ -29,16 +29,16 @@ def startAPP(d, times, video, sernum, machineName):
 def startAppBySwipe(d, times, video, sernum, machineName):
     conf = Config("default.ini")
     app_name = conf.getconf("default").app_name
-
-    screenRecord(d, times, video, sernum, machineName)
     try:
         MLog.info("startAppBySwipe:" + u"try start app ,name = " + app_name)
-        d(text=app_name).click()
+        bounds = d(text=app_name).info['bounds']
+        print bounds
     except Exception, e:
         MLog.info(repr(e))
         app_name = "@" + app_name
         MLog.info(u"start_app startAppBySwipe: change app's start name , appname is " + app_name)
-        d(text=app_name).click()
+    screenRecord(d, times, video, sernum, machineName)
+    d(text=app_name).click()
 
 
 # 某些特定手机点不到，通过图片匹配去点击
