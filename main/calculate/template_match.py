@@ -163,7 +163,7 @@ def direct_fuck(path):
     start_time = datetime.datetime.now()
     y_array = [0]
     array_flag = False
-    for i in range(0, height, 1):
+    for i in range(0, height, 2):
         # 行数遍历
         count = 0
         for j in range(0, width, 1):
@@ -205,6 +205,67 @@ def direct_fuck(path):
 
             mean_r, mean_g, mean_b = calcule_specific_area_rgb("F:\cvtest\\test_clip.jpg",
                                                                width/2, y_array[t-1], width, y_array[t])
+            if mean_r in gray_range and mean_g in gray_range and mean_r in gray_range:
+                return False
+
+    # 取出来了3个块，第一步先不做竖直线的查找，先直接对半分计算一下每个块的rgb,两个方案 ->
+    # 一个是直接算切出来的方块的平均rgb，另一个就算238238238附近的像素点能达到这个方块的百分之50吗
+    print "all time = {}".format(datetime.datetime.now() - start_time)
+    return True
+
+
+def isHomePageLoadFinish(path, dstPath):
+    clip_specific_pic(path, dstPath)
+    img = cv2.imread(dstPath)
+    height, width, something = img.shape
+    print "height = {}, width = {}".format(height, width)
+    # print len(dstPath)
+    # print dstPath[0: len(dstPath) - 4]
+    start_time = datetime.datetime.now()
+    y_array = [0]
+    array_flag = False
+    for i in range(0, height, 2):
+        # 行数遍历
+        count = 0
+        for j in range(0, width, 1):
+            if img[i, j][0] >= 252 and img[i, j][1] >= 252 and img[i, j][2] >= 252:
+                count += 1
+        if count >= width / 2:
+            # print count
+            if not array_flag:
+                y_array.append(i)
+                array_flag = True
+            for j in range(width):
+                img[i, j] = [255, 255, 255]
+        else:
+            if array_flag:
+                y_array.append(i - 1)
+                array_flag = False
+            for j in range(width):
+                img[i, j] = [0, 0, 0]
+    # cv2.imwrite("F:\cvtest\\detect.jpg", img)
+    # 前面这个计算时间太长了
+    print "pre-deal time = {}".format(datetime.datetime.now() - start_time)
+    test_count = 0
+    print y_array
+    for t in range(1, len(y_array)):
+        if y_array[t] - y_array[t - 1] > 120:
+            # 测试过程可以打开这个
+            # clip_specific_area(dstPath, dstPath[0, len(dstPath) - 4] + str(test_count) + ".jpg",
+            #                    0, y_array[t - 1], width / 2, y_array[t])
+            test_count += 1
+            mean_r, mean_g, mean_b = calcule_specific_area_rgb(dstPath,
+                                                               0, y_array[t - 1], width / 2, y_array[t])
+            gray_range = range(231, 241)
+            if mean_r in gray_range and mean_g in gray_range and mean_r in gray_range:
+                return False
+
+            # clip_specific_area(dstPath, dstPath[0, len(dstPath) - 4] + str(test_count) + ".jpg",
+            #                    width / 2, y_array[t - 1], width, y_array[t])
+            test_count += 1
+
+            mean_r, mean_g, mean_b = calcule_specific_area_rgb(dstPath,
+                                                               width / 2, y_array[t - 1], width, y_array[t])
             if mean_r in gray_range and mean_g in gray_range and mean_r in gray_range:
                 return False
 
@@ -299,9 +360,10 @@ if __name__ == '__main__':
     # test()
     # print findLaunchLogo("F:\\test2.jpg", "F:\\feature.jpg")
     # print get_ent_pos("F:\cvtest\\test39.jpg")
-    # direct_fuck("F:\cvtest\\test39.jpg")
-    clip_specific_area("F:\github\main\screenrecord\MI8_enterliveroom\MI8_enterliveroom_0\\00114.jpg",
-                       "F:\\360WiFi\\00114.jpg", 810, 240, 1080, 780)
+    print isHomePageLoadFinish("F:\cvtest\\test31.jpg", "F:\cvtest\\test00.jpg")
+    # clip_specific_area("F:\github\main\screenrecord\MI8_enterliveroom\MI8_enterliveroom_0\\00114.jpg",
+    #                    "F:\\360WiFi\\00114.jpg", 810, 240, 1080, 780)
     # test2()
+
     print 1
 

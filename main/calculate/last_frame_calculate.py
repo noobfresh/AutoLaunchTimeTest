@@ -4,7 +4,7 @@ from log.log import MLog
 from rgb import compare_rgb, calcule_specific_area_rgb
 from PIL import Image
 from rgb import calculate_repos_rgb
-from template_match import match_img, isLaunchingPage, isHomepageFinish
+from template_match import match_img, isLaunchingPage, isHomepageFinish, isHomePageLoadFinish
 from color_histogram import calculate_by_hists
 from clip import clip_specific_pic, clip_generate_flag, clip_half_pic
 
@@ -99,12 +99,14 @@ def last_and_launching_frame_find_rgb(length, from_index, real_path, real_launch
                 if degree < 0.65:
                     continue
 
-                # 识别到才裁剪，这个裁剪要改一下，每次都被剪掉，剪爆了，就很尴尬了
                 dst_path = real_path + base_utils.adapter_num(i) + "_clip.jpg"
                 clip_specific_pic(src_file_path, dst_path)
                 if compare_rgb(dst_path, rgb_folder):
-                    homepage_index = i
-                    return launching_index, homepage_index
+                    MLog.debug("the rgb test is passed")
+                    if isHomePageLoadFinish(src_file_path, src_file_path[0: len(src_file_path) - 4] + "_loaded.jpg"):
+                        MLog.debug("the loading test is passed")
+                        homepage_index = i
+                        return launching_index, homepage_index
             else:
                 # 没找到首页特征图时，去找启动页的特征图
                 tmp_flag = isLaunchingPage(src_file_path, real_launching_feature_path)

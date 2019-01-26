@@ -39,6 +39,7 @@ def multi_normal_calculate_part(params):
     # 中间launching判断
     real_launching_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_launching_feature.jpg"
     real_last_feature_path = path + "/picrepos/feature/" + feature_dir + "/" + device_name + "_homepage_feature.jpg"
+    #########################
     first = first_frame_find(file_count, real_path, real_first_feature_path)  # 取图片这些步骤好繁琐啊，想想有没办法改进下
     if first == -1:
         return dir_index, 0, 0, 0, 0, 0, 0
@@ -132,11 +133,8 @@ def multi_huya_calculate_parts(params):
 
 
 def enter_ent_calcucate(device_name):
-    # 先不写并行计算
-    top_x = settings.get_value("ent_top_pos_x")
+    top_x = settings.get_value("ent_top_pos_x")  # 这个是进入直播间计算速度计算
     top_y = settings.get_value("ent_top_pos_y")
-    # top_x = 810
-    # top_y = 1417
     print "top_x = {}, topy_y = {}".format(top_x, top_y)
     dir_count = count_dirs("./screenrecord/" + device_name + "_enterliveroom/")
     print "dir_count = {}".format(dir_count)

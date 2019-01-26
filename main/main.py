@@ -21,7 +21,7 @@ def test_main(serial_num):
     firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes,apkName = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
-    start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
+    # start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
     end_video_2_frame_time = datetime.datetime.now()
     MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
 
@@ -30,6 +30,8 @@ def test_main(serial_num):
     print path
     device_name = getDeviceInfo(serial_num)
     first_launch_result, normal_launch_result = start_calculate(device_name)
+    MLog.debug(first_launch_result)
+    MLog.debug(normal_launch_result)
     json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(
         first_launch_result,
         normal_launch_result,
@@ -59,8 +61,8 @@ def test_main(serial_num):
 
 if __name__ == '__main__':
     MLog.debug(u"程序启动...")
-    os.system("python -m uiautomator2 init")
-    time.sleep(10)
+    # os.system("python -m uiautomator2 init")
+    # time.sleep(10)
     # 取序列号
     start_time = datetime.datetime.now()
     serial = getDevices()
@@ -74,6 +76,7 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
     # 专门画总图
+    # test_main(serial[0])
     create_lines(devices, getApkName())
 
     sendEmailWithDefaultConfig()  # 发邮件
