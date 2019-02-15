@@ -81,9 +81,10 @@ def create_from_file_per(src, title, show_avg):
 
 
 if __name__ == '__main__':
-    types = [u"非首次启动总耗时", u"首次启动总耗时"]
+    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时"]
     devices = [u"vivoX9", u"MiNote2", u"PACM00"]
-    apks = [u"7.14"]
+    apks = [u"7.14"]  ## 具体来说apks就是代表图中的折线!!!
+
 
     # 生成当前type下所有,所有机型指定apks的图表
     json_file_to_type(types, devices, apks)

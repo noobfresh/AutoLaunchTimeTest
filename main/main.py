@@ -33,22 +33,40 @@ def test_main(serial_num):
     print "111111111111111111111 ===== {}".format(enter_ent)
     MLog.debug(first_launch_result)
     MLog.debug(normal_launch_result)
+
+    ent_live_room_result = []
+    for x, y, z in enter_ent:
+        print(x, y, z)
+        cost = (z - x + 1) * 20
+        ent_live_room_result.append(cost)
+
+    json_entliveroom = {
+        "app": getApkName().split(".apk")[0],
+        "datas": ent_live_room_result
+    }
+
+    # ent_live_room_result =[1,2,3,5]
+    # first_launch_result = [(1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8)]
+    # normal_launch_result = [(1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8)]
     json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(
         first_launch_result,
         normal_launch_result,
+        ent_live_room_result,
         apkName)
     end_calculate_time = datetime.datetime.now()
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
 
+    create_sheet(json_detail, dict1, json_detail2, dict2, device_name)
+
     # 写 JSON 数据
     write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas1)
-    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
+    # write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
     write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0] + "_launch", launching_datas1)
-    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0] + "_launch", launching_datas2)
+    # write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0] + "_launch", launching_datas2)
+    write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], json_entliveroom)
 
-    create_sheet(json_detail, dict1, json_detail2, dict2, device_name)
 
     # 还差一个画折线图
 
@@ -78,7 +96,7 @@ if __name__ == '__main__':
     pool.join()
     # 专门画总图
     # test_main(serial[0])
-    create_lines(devices, getApkName())
+    # create_lines(devices, getApkName())
 
     sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
