@@ -193,12 +193,12 @@ def start_calculate(device_name):
     app_key = conf_default.getconf("default").app
     first_launch_result = []
     normal_launch_result = []
-    # if app_key == "huya" or app_key == "momo":
-    #     first_launch_result = multi_huya_calculate(device_name)
-    # else:
-    #     first_launch_result = multi_normal_calculate(device_name, "first")
-    # # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
-    # normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    if app_key == "huya" or app_key == "momo":
+        first_launch_result = multi_huya_calculate(device_name)
+    else:
+        first_launch_result = multi_normal_calculate(device_name, "first")
+    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
+    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
     enter_ent_result = enter_ent_calculate_new(device_name)
     return first_launch_result, normal_launch_result, enter_ent_result
 
