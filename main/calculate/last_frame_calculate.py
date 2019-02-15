@@ -1,7 +1,8 @@
 # coding=utf-8
 import base_utils
+from calculate.other_algorithm import phashfinal
 from log.log import MLog
-from rgb import compare_rgb, calcule_specific_area_rgb
+from rgb import compare_rgb, calcule_specific_area_rgb, is_ent_black_point
 from PIL import Image
 from rgb import calculate_repos_rgb
 from template_match import match_img, isLaunchingPage, isHomepageFinish, isHomePageLoadFinish
@@ -221,7 +222,26 @@ def enter_ent_last_frame_find(start_index, file_count, path, feature_path):
     return enter_live_room_index, last_index
 
 
+# 专门为了淡入效果做的算法适配（YY）
+def enter_ent_last_frame_find_fade_in(start_index, file_count, basepath):
+    last_index = -1
+    for i in range(start_index, file_count):
+        src_file_path1 = basepath + base_utils.adapter_num(i) + ".jpg"
+        src_file_path2 = basepath + base_utils.adapter_num(i+1) + ".jpg"
+        compareValue = phashfinal(src_file_path1, src_file_path2)
+        print "No.{} and No.{} compare, value = {}".format(i, i+1, compareValue)
+        if compareValue < 0.80:
+            # 变化率很大，则再判断下是否正在直播间内（右下角的RGB值）
+            if is_ent_black_point(src_file_path2):
+                last_index = i+1
+                break
+    if last_index == -1:
+        print "i have not found the last frame"
+    return 0, last_index
+
+
 if __name__ == '__main__':
-    print enter_ent_last_frame_find(135, 160, "../screenrecord/MI8_enterliveroom/MI8_enterliveroom_0/",
-                              "F:\\cvtest\\feature.jpg")
+    # print enter_ent_last_frame_find(135, 160, "../screenrecord/MI8_enterliveroom/MI8_enterliveroom_0/",
+    #                           "F:\\cvtest\\feature.jpg")
+    print enter_ent_last_frame_find_fade_in(137, 300, "F:\github\main\screenrecord\MiNote2_enterliveroom\MiNote2_enterliveroom_0\\")
     print 1

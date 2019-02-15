@@ -21,7 +21,7 @@ def test_main(serial_num):
     firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes,apkName = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
-    # start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
+    start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
     end_video_2_frame_time = datetime.datetime.now()
     MLog.info(u"录屏及切帧时间 time = {}".format(end_video_2_frame_time - start_time))
 
@@ -29,7 +29,8 @@ def test_main(serial_num):
     os.chdir(path)
     print path
     device_name = getDeviceInfo(serial_num)
-    first_launch_result, normal_launch_result = start_calculate(device_name)
+    first_launch_result, normal_launch_result, enter_ent = start_calculate(device_name)
+    print "111111111111111111111 ===== {}".format(enter_ent)
     MLog.debug(first_launch_result)
     MLog.debug(normal_launch_result)
     json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(

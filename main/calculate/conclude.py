@@ -7,7 +7,8 @@ import settings
 from base_utils import count_dirs, count_file
 from config.configs import Config
 from first_frame_calculate import first_frame_find, enter_ent_first_frame_find
-from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame, enter_ent_last_frame_find
+from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame, enter_ent_last_frame_find, \
+    enter_ent_last_frame_find_fade_in
 from log.log import MLog
 from rgb import calculate_homepage_rgb
 from screenrecord.screen_record_main import getDevices
@@ -143,13 +144,45 @@ def enter_ent_calcucate(device_name):
                                  str(i) + "/", top_x, top_y)
 
 
-def enter_ent_calculate_part(path, x, y):
+def enter_ent_calculate_new(device_name):
+    top_x = settings.get_value("ent_top_pos_x")  # 这个是进入直播间计算速度计算
+    top_y = settings.get_value("ent_top_pos_y")
+    print "top_x = {}, topy_y = {}".format(top_x, top_y)
+    dir_count = count_dirs("./screenrecord/" + device_name + "_enterliveroom/")
+    print "dir_count = {}".format(dir_count)
+    device_len = len(getDevices())
+    num = cpu_num - 1 - device_len
+    if num <= 0:
+        num = 1
+    pool = ThreadPool(num)
+    params = []
+    results = []
+    start_time = datetime.datetime.now()
+    for i in range(0, dir_count):
+        path = "./screenrecord/" + device_name + "_enterliveroom/" + device_name + "_enterliveroom_" + str(i) + "/"
+        params_temp = {"path": path, "top_x": top_x, "top_y": top_y}
+        params.append(params_temp)
+    results = pool.map(enter_ent_calculate_part, params)
+    end_time = datetime.datetime.now()
+    pool.close()
+    pool.join()
+    print "actual calculate time = {} -------------- {}".format(end_time - start_time, results)
+    return results
+
+
+def enter_ent_calculate_part(params):
+    path = params["path"]
+    top_x = params["top_x"]
+    top_y = params["top_y"]
+    return enter_ent_calculate_part_inner(path, top_x, top_y)
+
+
+def enter_ent_calculate_part_inner(path, x, y):
     file_count = count_file(path)
     first_index = enter_ent_first_frame_find(file_count, path, x, y)
     print "first_index = {}".format(first_index)
-    feature_path = settings.get_value("feature_path")
-    enter_live_room_index, last_index = enter_ent_last_frame_find(first_index, file_count, path,
-                                                                  feature_path)
+    # feature_path = settings.get_value("feature_path")
+    enter_live_room_index, last_index = enter_ent_last_frame_find_fade_in(first_index, file_count, path)
     print "first_index = {}, the enter_live_room_index = {}, last index = {}".format(first_index, enter_live_room_index,
                                                                                      last_index)
     return first_index, enter_live_room_index, last_index
@@ -160,14 +193,14 @@ def start_calculate(device_name):
     app_key = conf_default.getconf("default").app
     first_launch_result = []
     normal_launch_result = []
-    if app_key == "huya" or app_key == "momo":
-        first_launch_result = multi_huya_calculate(device_name)
-    else:
-        first_launch_result = multi_normal_calculate(device_name, "first")
-    # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
-    normal_launch_result = multi_normal_calculate(device_name, "notfirst")
-    # enter_ent_calcucate(device_name)
-    return first_launch_result, normal_launch_result
+    # if app_key == "huya" or app_key == "momo":
+    #     first_launch_result = multi_huya_calculate(device_name)
+    # else:
+    #     first_launch_result = multi_normal_calculate(device_name, "first")
+    # # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
+    # normal_launch_result = multi_normal_calculate(device_name, "notfirst")
+    enter_ent_result = enter_ent_calculate_new(device_name)
+    return first_launch_result, normal_launch_result, enter_ent_result
 
 
 if __name__ == '__main__':

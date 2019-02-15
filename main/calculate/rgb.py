@@ -144,6 +144,19 @@ def calcule_specific_area_rgb(path, x1, y1, x2, y2):
     return mean_r, mean_g, mean_b
 
 
+def is_ent_black_point(path):
+    img = Image.open(path)
+    # img = Image.open(basepath + "00001.jpg")
+    width = img.size[0]  # 这两个是常用的，应该预先取
+    height = img.size[1]
+    print "width = {}, height = {}".format(width, height)
+    pix = img.load()
+    pixel = pix[5, height - 5]
+    print "test pixel rgb = {}".format(pixel)
+    if pixel[0] <= 3 and pixel[1] <= 3 and pixel[2] <= 3:
+        return True
+    return False
+
 if __name__ == '__main__':
     print calculate_pic_rgb("F:\\photo2.jpg")
     # test("F:\\test3.jpg")
