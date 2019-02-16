@@ -145,6 +145,7 @@ def calcule_specific_area_rgb(path, x1, y1, x2, y2):
 
 
 def is_ent_black_point(path):
+    dp = base_utils.get_dp()
     img = Image.open(path)
     # img = Image.open(basepath + "00001.jpg")
     width = img.size[0]  # 这两个是常用的，应该预先取
@@ -152,11 +153,64 @@ def is_ent_black_point(path):
     print "width = {}, height = {}".format(width, height)
     pix = img.load()
     pixel = pix[5, height - 5]
-    print "test pixel rgb = {}".format(pixel)
+    # 还有一个找到视频位置大概的点
+    pixel1 = pix[width/2, 80*dp + 200]
+    print "test pixel rgb = {}, pixel1 rgb = {}".format(pixel, pixel1)
     if pixel[0] <= 3 and pixel[1] <= 3 and pixel[2] <= 3:
-        return True
+        if pixel1[0] >= 3 and pixel1[1] >= 3 and pixel1[2] >= 3:
+            return True
     return False
 
+
+# 判断是在竖屏，但这个判断方法 对loading界面无法防御
+def is_in_portrait_live_room(path):
+    dp = base_utils.get_dp()
+    img = Image.open(path)
+    width = img.size[0]  # 这两个是常用的，应该预先取
+    height = img.size[1]
+    pix = img.load()
+    pixel_0 = pix[5, height - 5]  # 左下角
+    pixel_1 = pix[5, 200]  # 随便取的一个左上角
+    pixel_2 = pix[width-5, height-5]  # 右下角
+    pixel_3 = pix[width-5, 200]  # 右上角
+    # 无脑的时候这样写真开心
+    if pixel_0[0] >= 3 and pixel_0[1] >= 3 and pixel_0[2] >= 3:
+        if pixel_1[0] >= 3 and pixel_1[1] >= 3 and pixel_1[2] >= 3:
+            if pixel_2[0] >= 3 and pixel_2[1] >= 3 and pixel_2[2] >= 3:
+                if pixel_3[0] >= 3 and pixel_3[1] >= 3 and pixel_3[2] >= 3:
+                    return True
+    return False
+
+
+# 判断是否全都是黑色
+def is_ent_all_black_point(path):
+    dp = base_utils.get_dp()
+    img = Image.open(path)
+    # img = Image.open(basepath + "00001.jpg")
+    width = img.size[0]  # 这两个是常用的，应该预先取
+    height = img.size[1]
+    pix = img.load()
+    pixel = pix[5, height - 5]
+    # 还有一个找到视频位置大概的点
+    pixel1 = pix[width/2, 80*dp + 200]
+    print "path = {}".format(path)
+    print "is_ent_all_black_point pixel rgb = {}, pixel1 rgb = {}".format(pixel, pixel1)
+    if pixel[0] <= 10 and pixel[1] <= 10 and pixel[2] <= 10:
+        if pixel1[0] <= 10 and pixel1[1] <= 10 and pixel1[2] <= 10:
+            return True
+    return False
+
+
+def is_in_loading(path):
+    rgb = calcule_specific_area_rgb(path, 0, 300, 1080, 500)
+    if rgb[0] in range(70, 80) and rgb[1] in range(67, 77) and rgb[2] in range(65, 75):
+        print "i think it is in loading state"
+        return True
+    print "i think it is not in loading state"
+    return False
+
+
 if __name__ == '__main__':
-    print calculate_pic_rgb("F:\\photo2.jpg")
+    # print calculate_pic_rgb("F:\github\main\screenrecord\special\MiNote2_enterliveroom_3\\00147.jpg")
     # test("F:\\test3.jpg")
+    calcule_specific_area_rgb("F:\github\main\screenrecord\special\MiNote2_enterliveroom_3\\00161.jpg", 0, 300, 1080, 500)

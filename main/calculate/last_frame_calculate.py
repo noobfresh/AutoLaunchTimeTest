@@ -2,7 +2,8 @@
 import base_utils
 from calculate.other_algorithm import phashfinal
 from log.log import MLog
-from rgb import compare_rgb, calcule_specific_area_rgb, is_ent_black_point
+from rgb import compare_rgb, calcule_specific_area_rgb, is_ent_black_point, is_in_portrait_live_room, \
+    is_ent_all_black_point, is_in_loading
 from PIL import Image
 from rgb import calculate_repos_rgb
 from template_match import match_img, isLaunchingPage, isHomepageFinish, isHomePageLoadFinish
@@ -231,7 +232,7 @@ def enter_ent_last_frame_find_fade_in(start_index, file_count, basepath):
         compareValue = phashfinal(src_file_path1, src_file_path2)
         print "No.{} and No.{} compare, value = {}".format(i, i+1, compareValue)
         if compareValue < 0.80:
-            # 变化率很大，则再判断下是否正在直播间内（右下角的RGB值）
+            # 变化率很大，则再判断下是否正在直播间内（右下角的RGB值），经测试证明，这种判断方法只针对横屏开播有效，竖屏开播就GG了
             if is_ent_black_point(src_file_path2):
                 last_index = i+1
                 break
@@ -240,8 +241,50 @@ def enter_ent_last_frame_find_fade_in(start_index, file_count, basepath):
     return 0, last_index
 
 
+def enter_ent_last_frame_find_fade_in_test(start_index, file_count, basepath):
+    last_index = -1
+    skip_compare = False
+    in_portrait = False
+    i = start_index
+    while i < file_count:
+        src_file_path1 = basepath + base_utils.adapter_num(i) + ".jpg"
+        src_file_path2 = basepath + base_utils.adapter_num(i+1) + ".jpg"
+        compareValue = phashfinal(src_file_path1, src_file_path2)
+        print "No.{} and No.{} compare, value = {}".format(i, i+1, compareValue)
+        if compareValue < 0.80 or skip_compare:
+
+            # 变化率很大，则再判断下是否正在直播间内（右下角的RGB值），经测试证明，这种判断方法只针对横屏开播有效，竖屏开播就GG了
+            if is_ent_black_point(src_file_path2):
+                print "find landscape last index"
+                last_index = i+1
+                break
+
+            # 还得顺便是不是竖屏开播，这个怎么判断呢
+            # 思路无可奈何之下改变为，如果发现有全黑屏的情况的话，就认为进入了竖屏判断条件
+            # 然后跳过5张图
+            if is_ent_all_black_point(src_file_path2):
+                print "it is in portrait"
+                in_portrait = True
+                skip_compare = True
+                i = i + 5
+                continue
+
+            # 捕获竖屏开播情况， 左上左下，右上右下都是有颜色的，就算捕获？
+            if in_portrait and not is_in_loading(src_file_path2) and is_in_portrait_live_room(src_file_path2):
+                print "found portrait last index"
+                last_index = i+1
+                break
+
+            skip_compare = False
+        i += 1
+    if last_index == -1:
+        print "i have not found the last frame"
+    return 0, last_index
+
+
 if __name__ == '__main__':
     # print enter_ent_last_frame_find(135, 160, "../screenrecord/MI8_enterliveroom/MI8_enterliveroom_0/",
     #                           "F:\\cvtest\\feature.jpg")
-    print enter_ent_last_frame_find_fade_in(137, 300, "F:\github\main\screenrecord\MiNote2_enterliveroom\MiNote2_enterliveroom_0\\")
+    print enter_ent_last_frame_find_fade_in_test(131, 300,
+                                                 "F:\github\main\screenrecord\special\MiNote2_enterliveroom_3\\")
     print 1

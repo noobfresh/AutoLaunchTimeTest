@@ -8,7 +8,7 @@ from base_utils import count_dirs, count_file
 from config.configs import Config
 from first_frame_calculate import first_frame_find, enter_ent_first_frame_find
 from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_find_frame, enter_ent_last_frame_find, \
-    enter_ent_last_frame_find_fade_in
+    enter_ent_last_frame_find_fade_in, enter_ent_last_frame_find_fade_in_test
 from log.log import MLog
 from rgb import calculate_homepage_rgb
 from screenrecord.screen_record_main import getDevices
@@ -182,7 +182,7 @@ def enter_ent_calculate_part_inner(path, x, y):
     first_index = enter_ent_first_frame_find(file_count, path, x, y)
     print "first_index = {}".format(first_index)
     # feature_path = settings.get_value("feature_path")
-    enter_live_room_index, last_index = enter_ent_last_frame_find_fade_in(first_index, file_count, path)
+    enter_live_room_index, last_index = enter_ent_last_frame_find_fade_in_test(first_index, file_count, path)
     print "first_index = {}, the enter_live_room_index = {}, last index = {}".format(first_index, enter_live_room_index,
                                                                                      last_index)
     return first_index, enter_live_room_index, last_index

@@ -22,7 +22,7 @@ def getApkName():
 
 
 def get_start_params():
-    frame = 30
+    frame = 50
     firstLaunchTimes = 0
     notFirstLaunchTimes = 0
     enterLiveTimes = 1
@@ -39,7 +39,7 @@ def get_start_params():
 
     except Exception:
         MLog.error(u"获取参数错误,使用默认值")
-        frame = 30
+        frame = 50
         firstLaunchTimes = 1
         notFirstLaunchTimes = 1
         enterLiveTimes = 1
