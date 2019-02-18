@@ -30,7 +30,7 @@ def test_main(serial_num):
     print path
     device_name = getDeviceInfo(serial_num)
     first_launch_result, normal_launch_result, enter_ent = start_calculate(device_name)
-    print "111111111111111111111 ===== {}".format(enter_ent)
+    print " enter_ent -> {}".format(enter_ent)
     MLog.debug(first_launch_result)
     MLog.debug(normal_launch_result)
 
@@ -57,16 +57,16 @@ def test_main(serial_num):
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI part ------------------------------#
-
+    MLog.info(u"开始写表格...")
     create_sheet(json_detail, dict1, json_detail2, dict2, device_name)
 
+    MLog.info(u"开始写json数据...")
     # 写 JSON 数据
     write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas1)
-    # write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
-    write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0] + "_launch", launching_datas1)
-    # write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0] + "_launch", launching_datas2)
+    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
+    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0] , launching_datas1)
+    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0] , launching_datas2)
     write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], json_entliveroom)
-
 
     # 还差一个画折线图
 
@@ -80,8 +80,8 @@ def test_main(serial_num):
 
 if __name__ == '__main__':
     MLog.debug(u"程序启动...")
-    # os.system("python -m uiautomator2 init")
-    # time.sleep(10)
+    os.system("python -m uiautomator2 init")
+    time.sleep(10)
     # 取序列号
     start_time = datetime.datetime.now()
     serial = getDevices()
@@ -91,7 +91,8 @@ if __name__ == '__main__':
         serial_numebr = serial[index]
         devices.append(getDeviceInfo(serial_numebr))
         # 好扯啊这个
-        pool.apply_async(test_main, args=(serial_numebr,))
+        result = pool.apply_async(test_main, args=(serial_numebr,))
+        result.get()
     pool.close()
     pool.join()
     # 专门画总图
