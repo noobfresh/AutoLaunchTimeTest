@@ -79,7 +79,6 @@ def format_data(first_launch_result, normal_launch_result, ent_live_room_result,
     MLog.info(json.dumps(json_detail))
     MLog.info(json.dumps(dict1))
 
-    print "--------------------------------------------------------"
     json_detail2 = []
     dict_avg = {
         "a": avg_list(total_datas1),
@@ -98,7 +97,6 @@ def format_data(first_launch_result, normal_launch_result, ent_live_room_result,
     dict2["f"] = u"平均非首次启动首页加载耗时"
     MLog.info(json.dumps(json_detail2))
     MLog.info(json.dumps(dict2))
-    print "--------------------------------------------------------"
 
     print apk_name + "   *****************************"
     json_datas1 = {
@@ -139,7 +137,7 @@ def getEntLiveRoomTime(index, ent_live_room_result):
 
 
 def checkVaild(datas, index):
-    if index >= len(datas):
+    if datas == [] or index >= len(datas):
         return u"暂无数据"
     else:
         return str(datas[index])
@@ -162,20 +160,22 @@ def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
     file_name = device_name + "_data_detail"
 
     MLog.info(u"data_to_format create_sheet:-----------------")
+    MLog.info(u"json_detail:")
     MLog.info(json.dumps(json_detail))
+    MLog.info(u"dict1:")
     MLog.info(json.dumps(dict1))
     create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
-    print "--------------------------------------------------------"
+    MLog.info("--------------------------1------------------------------")
 
     MLog.info(json.dumps(json_detail2))
     MLog.info(json.dumps(dict2))
-    print "--------------------------------------------------------"
+    MLog.info("-------------------------2-------------------------------")
     create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
                                 json_detail2, dict2)
 
 
 def create_lines(devices, apk_name):
-    types = [u"非首次启动总耗时", u"首次启动总耗时",u"进直播间耗时"]
+    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时"]
     apk_name = apk_name.split(".")[0]
     apks = [utf8(apk_name), utf8(apk_name) + u"_launch"]
     json_file_to_type(types, devices, apks)
