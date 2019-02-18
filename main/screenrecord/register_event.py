@@ -93,7 +93,7 @@ def inputListener(d, data, serialNum):
                        1160)
 
         MLog.debug(u"完成")
-        click_with_id(d, "android.widget.TextView", "com.android.packageinstaller:id/done_button")
+        # click_with_id(d, "android.widget.TextView", "com.android.packageinstaller:id/done_button")
 
     print 5
 

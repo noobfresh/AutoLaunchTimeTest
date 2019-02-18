@@ -40,8 +40,8 @@ def init_normal_style():
 
 # 创建详细数据excel表格
 def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_list):
-    if json_data is None:
-        MLog.error(u"json == None, return !")
+    if json_data is None or json_data is [] or len(json_data) == 0:
+        MLog.error(u"json == None or json_data == [], return !")
         raise Exception(u"Invalid json_data! json_data is None")
     if len(json_data[0].keys()) != len(title_list):
         MLog.error(u"title's len ! = jsondata[0].keys() ,return!")

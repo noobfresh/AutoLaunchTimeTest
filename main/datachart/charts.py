@@ -31,7 +31,8 @@ def create_charts(result_name, chart_items):
     for item in chart_items:
         lines.append(create_line_by_param(item.json_data, item.title))
 
-    create_page(lines, result_name)
+    if len(lines) > 0:
+        create_page(lines, result_name)
 
 
 # 创建网页,.html
@@ -39,11 +40,13 @@ def create_page(lines, result_file_name):
     page = Page()
 
     for line in lines:
-        page.add(line)
+        if line is not None:
+            page.add(line)
 
     file_name = file_path + result_file_name + ".html"
-    MLog.debug(u"create_page: 开始生成图表...")
-    MLog.debug(u"create_page: 图表生成路径:" + file_name)
+    MLog.info(u"create_page: 开始生成图表...")
+    MLog.info(u" create_page: Page 大小为:" + str(len(page)))
+    MLog.info(u"create_page: 图表生成路径:" + file_name)
 
     checkSrcVialdAndAutoCreate(file_path)
     page.render(file_name.decode('utf-8'))
@@ -59,8 +62,7 @@ def create_line(title, line_data, show_avg=True, attr=None):
     chart = Line(title, **style.init_style)
 
     if len(line_data) == 0:
-        print u"别传空值进来，大佬"
-        raise RuntimeError(u"别传空值进来，大佬 -_- ! -> line_data size == 0")
+        return
 
     if attr is None:
         attr = []

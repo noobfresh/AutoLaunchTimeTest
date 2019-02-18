@@ -18,7 +18,7 @@ from screenrecord.screen_record_main import start_python, getDevices
 
 def test_main(serial_num):
     settings._init()
-    firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes,apkName = get_start_params()
+    firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
     start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num)
@@ -45,9 +45,6 @@ def test_main(serial_num):
         "datas": ent_live_room_result
     }
 
-    # ent_live_room_result =[1,2,3,5]
-    # first_launch_result = [(1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8)]
-    # normal_launch_result = [(1, 2, 3, 4, 5, 6, 7, 8), (1, 2, 3, 4, 5, 6, 7, 8)]
     json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(
         first_launch_result,
         normal_launch_result,
@@ -56,7 +53,7 @@ def test_main(serial_num):
     end_calculate_time = datetime.datetime.now()
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
-    # ---------------------------- UI part ------------------------------#
+    # ---------------------------- UI Part ------------------------------#
     MLog.info(u"开始写表格...")
     create_sheet(json_detail, dict1, json_detail2, dict2, device_name)
 
@@ -64,8 +61,8 @@ def test_main(serial_num):
     # 写 JSON 数据
     write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas1)
     write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
-    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0] , launching_datas1)
-    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0] , launching_datas2)
+    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], launching_datas1)
+    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], launching_datas2)
     write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], json_entliveroom)
 
     # 还差一个画折线图
@@ -80,27 +77,30 @@ def test_main(serial_num):
 
 if __name__ == '__main__':
     MLog.debug(u"程序启动...")
-    os.system("python -m uiautomator2 init")
-    time.sleep(10)
+    # os.system("python -m uiautomator2 init")
+    # time.sleep(10)
     # 取序列号
     start_time = datetime.datetime.now()
     serial = getDevices()
+    MLog.info(u"读取到的序列号 = " + str(serial))
     devices = []
     pool = Pool(len(serial) + 1)  # 取电脑核数
     for index in range(len(serial)):
-        serial_numebr = serial[index]
-        devices.append(getDeviceInfo(serial_numebr))
-        # 好扯啊这个
-        result = pool.apply_async(test_main, args=(serial_numebr,))
-        result.get()
+        serial_number = serial[index]
+        MLog.info(u"main : index = " + str(index) + u" serial_number = " + serial_number)
+        devices.append(getDeviceInfo(serial_number))
+        pool.apply_async(test_main, args=(serial_number,))
+        # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
+        # result = pool.apply_async(test_main, args=(serial_numeber,))
+        # result.get()
     pool.close()
     pool.join()
     # 专门画总图
-    # test_main(serial[0])
-    # create_lines(devices, getApkName())
+    test_main(serial[0])
+    create_lines(devices, getApkName())
 
-    sendEmailWithDefaultConfig()  # 发邮件
+    # sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
     # test_main(serial[0])
-    print 1
+    print u"end main..."
