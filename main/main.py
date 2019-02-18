@@ -30,9 +30,12 @@ def test_main(serial_num):
     print path
     device_name = getDeviceInfo(serial_num)
     first_launch_result, normal_launch_result, enter_ent = start_calculate(device_name)
-    print " enter_ent -> {}".format(enter_ent)
+    MLog.debug("first_launch_result ==========")
     MLog.debug(first_launch_result)
+    MLog.debug("normal_launch_result ==========")
     MLog.debug(normal_launch_result)
+    MLog.debug("enter ent ==========")
+    MLog.debug(enter_ent)
 
     ent_live_room_result = []
     for x, y, z in enter_ent:
@@ -96,11 +99,10 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
     # 专门画总图
-    test_main(serial[0])
+    # test_main(serial[0])
     create_lines(devices, getApkName())
 
     # sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
-    # test_main(serial[0])
     print u"end main..."

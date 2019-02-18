@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import traceback
 from multiprocessing.dummy import Pool as ThreadPool
 from os.path import exists
 from multiprocessing import cpu_count
@@ -202,8 +203,9 @@ def start_calculate(device_name):
     # TODO 如果进直播间测试次数设置为0，会崩溃，杨帆后续改
     try:
         enter_ent_result = enter_ent_calculate_new(device_name)
-    except:
-        MLog.error(u"测试进直播间计算的时候出现崩溃了")
+    except Exception, e:
+        MLog.error(u"测试进直播间计算的时候出现崩溃了 + error = ")
+        MLog.error(traceback.format_exc(e))
         enter_ent_result = []
 
     return first_launch_result, normal_launch_result, enter_ent_result
