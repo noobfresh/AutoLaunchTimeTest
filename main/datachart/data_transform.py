@@ -3,19 +3,24 @@ import os
 
 from datachart.charts import create_charts, ChartItem
 from log.log import MLog
-from uitl.baseUtil import read_json
+
+from uitl.baseUtil import read_json, list2str
 from uitl.fileUtil import fileExist, count_file
 
 json_file_path = os.path.dirname(__file__) + os.sep + "files" + os.sep
 
 
 def get_json_file(type, device, apk):
+    apk = apk.replace(u".apk", '')
     return json_file_path + os.sep + type + os.sep + device + os.sep + apk + ".json"
 
 
 # 根据指定类型将所有该类型下的数据全部生成
 # types：类型  | devices：设备名  | apk：app名
 def json_file_to_type(types, devices, apks):
+    MLog.info(u"data_transform :打印传入的参数  ")
+    MLog.info(u"data_transform json_file_to_type:"
+              u"apks = " + list2str(apks) + u" devices = " + list2str(devices) + u" types = " + list2str(types))
     result_name = u"chart"
     lines = []
     for type in types:
@@ -28,7 +33,7 @@ def json_file_to_type(types, devices, apks):
                         lines.append(json_file_to_charts(type, device, apks))
 
     if len(lines) == 0:
-        MLog.error(u"data_transform json_file_to_type: lines == 0!")
+        MLog.error(u"收集到的折线为0，直接返回!")
         return
     create_charts(result_name, lines)
 
@@ -83,7 +88,7 @@ def create_from_file_per(src, title, show_avg):
 
 
 if __name__ == '__main__':
-    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时"]
+    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时", u"非首次启动闪屏页耗时", u"首次启动闪屏页耗时"]
     devices = [u"OPPOA83", u"vivoX9", u"MiNote2", u"PACM00"]
     apks = [u"7.15"]  ## 具体来说apks就是代表图中的折线!!!
 

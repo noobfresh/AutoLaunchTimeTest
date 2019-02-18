@@ -175,9 +175,8 @@ def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
 
 
 def create_lines(devices, apk_name):
-    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时"]
-    apk_name = apk_name.split(".")[0]
-    apks = [utf8(apk_name), utf8(apk_name) + u"_launch"]
+    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时", u"非首次启动闪屏页耗时", u"首次启动闪屏页耗时"]
+    apks = [utf8(apk_name)]
     json_file_to_type(types, devices, apks)
     MLog.info("create_lines done!")
 

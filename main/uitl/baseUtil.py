@@ -13,6 +13,10 @@ def utf8(file_name):
     return file_name.decode('utf-8')
 
 
+def list2str(list):
+    return str(list).decode('unicode-escape')
+
+
 def write_json(json_data, json_file_name):
     fileObject = open(json_file_name, 'w')
     fileObject.write(json.dumps(json_data))

@@ -149,7 +149,3 @@ def runwatch(d, data):
     while True:
         if len(d.watchers) != num:
             registerEvent(d)
-
-
-def utf8(file_name):
-    return file_name.decode('utf-8')
