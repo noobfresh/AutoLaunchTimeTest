@@ -22,14 +22,14 @@ def click_with_pos(d, class_name, res_id, pos_x, pos_y):
 
 def click_with_id(d, class_name, res_id):
     if d(className=class_name,
-         resourceId=res_id).wait.exists(timeout=50):
+         resourceId=res_id).exists(timeout=50):
         d(className=class_name,
           resourceId=res_id).click()
 
 
 def set_text_with_id(d, class_name, res_id, text_content):
     if d(className=class_name,
-         resourceId=res_id).wait.exists(timeout=50):
+         resourceId=res_id).exists(timeout=50):
         d(className=class_name,
           resourceId=res_id).set_text(text_content)
 

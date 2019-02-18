@@ -199,7 +199,13 @@ def start_calculate(device_name):
         first_launch_result = multi_normal_calculate(device_name, "first")
     # 以后想适配虎牙陌陌的话，必须uiautomator那边要手动处理下登录/跳过
     normal_launch_result = multi_normal_calculate(device_name, "notfirst")
-    enter_ent_result = enter_ent_calculate_new(device_name)
+    # TODO 如果进直播间测试次数设置为0，会崩溃，杨帆后续改
+    try:
+        enter_ent_result = enter_ent_calculate_new(device_name)
+    except:
+        MLog.error(u"测试进直播间计算的时候出现崩溃了")
+        enter_ent_result = []
+
     return first_launch_result, normal_launch_result, enter_ent_result
 
 
