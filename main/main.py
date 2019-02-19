@@ -14,6 +14,20 @@ from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.device_info import getDeviceInfo
 from screenrecord.screen_record_main import start_python, getDevices
+from uitl import dbutil
+
+
+def testdb():
+    dbutil.connect("datas.db")
+    # dbutil.create("detail",
+    #               {"device": "text", "time": "text", "first_all_cost": "TEXT", "first_splash_cost": "TEXT",
+    #                "first_homepage_cost": "TEXT", "normal_all_cost": "TEXT", "normal_splash_cost": "TEXT",
+    #                "normal_homepage_cost": "TEXT", "enter_live_room_cost": "TEXT"})
+    dbutil.insert("detail",
+                  {"device": "text", "time": "text", "first_all_cost": "TEXT", "first_splash_cost": "TEXT",
+                   "first_homepage_cost": "TEXT", "normal_all_cost": "TEXT", "normal_splash_cost": "TEXT",
+                   "normal_homepage_cost": "TEXT", "enter_live_room_cost": "TEXT"})
+    dbutil.close()
 
 
 def test_main(serial_num):
@@ -77,8 +91,8 @@ def test_main(serial_num):
 
 if __name__ == '__main__':
     MLog.debug(u"程序启动...")
-    # os.system("python -m uiautomator2 init")
-    # time.sleep(10)
+    os.system("python -m uiautomator2 init")
+    time.sleep(10)
     # 取序列号
     start_time = datetime.datetime.now()
     serial = getDevices()
@@ -87,7 +101,7 @@ if __name__ == '__main__':
     pool = Pool(len(serial) + 1)  # 取电脑核数
     for index in range(len(serial)):
         serial_number = serial[index]
-        MLog.info(u"main : index = " + str(index) + u" serial_number = " + serial_number)
+        MLog.info(u"启动一个新进程 : index = " + str(index) + u" serial_number = " + serial_number)
         devices.append(getDeviceInfo(serial_number))
         pool.apply_async(test_main, args=(serial_number,))
         # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
@@ -96,11 +110,9 @@ if __name__ == '__main__':
     pool.close()
     pool.join()
     # 专门画总图
-    test_main(serial[0])
     create_lines(devices, getApkName())
 
     # sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
-    # test_main(serial[0])
     print u"end main..."

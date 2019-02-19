@@ -29,7 +29,7 @@ def get_start_params():
     apkName = u"yy.apk"
 
     try:
-        print u"使用配置文件参数..."
+        MLog.info(u"sys_config get_start_params: 读取配置文件参数..." )
         conf = Config("default.ini")
         frame = conf.getconf("default").frame
         firstLaunchTimes = conf.getconf("default").first_start
@@ -46,7 +46,7 @@ def get_start_params():
         apkName = u"yy.apk"
     finally:
         # start_python 需要运行在init_ffmpeg后面，否则拿不到帧数的值
-        MLog.info("apk = " + str(apkName) + " ,first_start = " \
+        MLog.info("apkName = " + str(apkName) + " ,first_start = " \
                   + str(firstLaunchTimes) + " ,normal_start = " + str(notFirstLaunchTimes) + " ,frame = " + str(frame))
 
     return int(firstLaunchTimes), int(notFirstLaunchTimes), int(enterLiveTimes), str(apkName)

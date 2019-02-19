@@ -4,6 +4,8 @@ import os
 import time
 import shutil
 import subprocess
+
+from log.log import MLog
 from sub_thread import doInThread
 
 save_dir = '/sdcard/screenrecord/'
@@ -20,8 +22,9 @@ def screenRecord(d, times, name, sernum, machineName):
         print(name + "         ----------------------------------                ---------------------------")
         subprocess.Popen("adb -s " + sernum + " shell screenrecord --bit-rate 10000000 --time-limit " + str(
             times) + " " + save_dir + name)
+        time.sleep(2)
     doInThread(get_mem_cpu, d, 0)
-    print u'录屏开始'
+    MLog.info(u"video_operation screenRecord: 录屏开始")
 
 
 # 数据上传
@@ -32,7 +35,7 @@ def pullRecord(name, sernum, machineName):
     else:
         print save_dir + name
         os.system("adb -s " + sernum + "  pull " + save_dir + name)
-        print u'数据上传成功'
+        MLog.info(u"video_operation pullRecord: 数据上传成功")
         path = os.path.dirname(__file__) + "\\"
         srcPath = os.path.join(os.path.dirname(path), name)
         print srcPath + "pull record----"
@@ -67,7 +70,7 @@ def videoToPhoto(dirname, index, machineName):
         # rename_mp4_files(curPath)
         os.chdir(curPath)
 
-    print '+++++++++++++' + curPath
+    MLog.info(u"video_operation videoToPhoto:" + '+++++++++++++' + curPath)
     if os.path.isdir(dirname):
         # os.removedirs(dirname)
         shutil.rmtree(dirname)
@@ -90,4 +93,5 @@ def get_mem_cpu(d, data):
     #     r.close()
     #     MLog.info(text[0:1000])
     #     time.sleep(5)
+    # TODO 打印个1是什么意思？？？
     print 1

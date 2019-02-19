@@ -161,14 +161,15 @@ def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
 
     MLog.info(u"data_to_format create_sheet:-----------------")
     MLog.info(u"json_detail:")
-    MLog.info(json.dumps(json_detail))
+    # MLog.info(json.dumps(json_detail))
+    MLog.info(json.dumps(json_detail, ensure_ascii=False).decode('utf8'))
     MLog.info(u"dict1:")
-    MLog.info(json.dumps(dict1))
+    MLog.info(json.dumps(dict1, ensure_ascii=False).decode('utf8'))
     create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
     MLog.info("--------------------------1------------------------------")
-
-    MLog.info(json.dumps(json_detail2))
-    MLog.info(json.dumps(dict2))
+    MLog.info(u"json_detail2:")
+    MLog.info(json.dumps(json_detail2, ensure_ascii=False).decode('utf8'))
+    MLog.info(json.dumps(dict2, ensure_ascii=False).decode('utf8'))
     MLog.info("-------------------------2-------------------------------")
     create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
                                 json_detail2, dict2)

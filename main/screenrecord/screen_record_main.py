@@ -46,7 +46,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
         uninstallAPK(sernum)
-        print 'executing uninstall' + sernum
+
         # firstTimes = firstLaunchTimes * 20
         first_dir = temp_dir + "_first"
         mkdir(first_dir, sernum)
@@ -183,7 +183,11 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
 
 # main函数，线程sleep时间有待商榷
 def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, temp_dir, sernum):
-    print 'start main---' + sernum
+    MLog.info(u"screen_record_main screenmain: sernum = " + str(sernum))
+    MLog.info(u"screen_record_main screenmain: "
+                  + " firstLaunchTimes = " + str(firstLaunchTimes)
+                  + " notFirstLaunchTimes = " + str(notFirstLaunchTimes)
+                  + " apkName = " + apkName)
     settings._init()
     try:
         d = u2.connect(sernum)
@@ -195,21 +199,16 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, t
         firstLaunchTimes = int(firstLaunchTimes)
         notFirstLaunchTimes = int(notFirstLaunchTimes)
         enterLiveTimes = int(enterLiveTimes)
-        print "===screen record main ====times1 = {}, times2 = {}, apkName = {}".format(str(firstLaunchTimes),
-                                                                                        str(notFirstLaunchTimes),
-                                                                                        apkName)
         firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName)
         notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
         enterLiveRoom(d, enterLiveTimes, temp_dir, sernum, machineName)
     except BaseException, e:
         print repr(e)
 
-    print 'end main'
-
 
 # 改成单个
 def start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num):
-    print serial_num + "   444444444444"
+    MLog.info(u"screen_record_main start_python: serial_num = " + str(serial_num))
     temp_dir = getDeviceInfo(serial_num)
     screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, temp_dir, serial_num)
 
@@ -219,7 +218,8 @@ if __name__ == "__main__":
     p = Pool(5)
     for index in range(len(serial)):
         serNum = serial[index]
-        print serNum + "444444444444" + sys.argv[1] + " " + sys.argv[2]
+        MLog.info(
+            u"screen_record_main serNum :" + serNum + " sys.argv[1] = " + sys.argv[1] + " sys.argv[2] = " + sys.argv[2])
         temp_dir = getDeviceInfo(serNum)
         # 加上下面两行
         settings._init()

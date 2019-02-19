@@ -4,6 +4,8 @@ import os
 import shutil
 import re
 
+from log.log import MLog
+
 save_dir = '/sdcard/screenrecord/'
 
 
@@ -11,15 +13,15 @@ save_dir = '/sdcard/screenrecord/'
 def mkdir(name, sernum):
     os.system('adb -s ' + sernum + ' shell rm -rf ' + save_dir + name)
     os.system('adb -s ' + sernum + ' shell mkdir -p ' + save_dir + name)
-    print u'SD卡文件夹创建成功'
+    MLog.debug(u"file_operation mkdir: SD卡文件夹创建成功")
     path = os.path.dirname(__file__) + "\\"
     os.chdir(path)
-    print u'创建文件夹' + path
+    MLog.debug(u"file_operation mkdir:" + u'创建文件夹' + path)
     if os.path.exists(name):
         shutil.rmtree(name)
     print name
     os.makedirs(name)
-    print u'PC文件夹创建成功'
+    MLog.debug(u"file_operation mkdir: 'PC文件夹创建成功")
 
 
 # Windows文件名检查

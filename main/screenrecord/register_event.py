@@ -9,7 +9,6 @@ from device_info import getDeviceInfo
 def getPwdByConfig(device_name):
     conf = Config("device.ini")
     pwd = conf.getconf(device_name).password
-    print "device_name = " + str(device_name) + " and " + "pwd = " + str(pwd)
     return pwd
 
 
@@ -29,7 +28,7 @@ def click_with_id(d, class_name, res_id):
 
 def set_text_with_id(d, class_name, res_id, text_content):
     if d(className=class_name,
-         resourceId=res_id).exists(timeout=50):
+         resourceId=res_id).exists(timeout=70):
         d(className=class_name,
           resourceId=res_id).set_text(text_content)
 
@@ -37,14 +36,13 @@ def set_text_with_id(d, class_name, res_id, text_content):
 # 监听输入密码,特殊的点击事件
 def inputListener(d, data, serialNum):
     machineName = getDeviceInfo(serialNum)
-    print 'register_event' + machineName
+    MLog.info(u"register_event : machineName = " + machineName + u" password = " + getPwdByConfig(machineName))
     if machineName == "OPPOR11Plusk":
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(458, 1602)
-    print 1
 
     if machineName == "OPPOR9s":
         if d(className="android.widget.EditText",
@@ -55,7 +53,6 @@ def inputListener(d, data, serialNum):
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(696, 1793)
-    print 2
 
     if machineName == "PACM00":
         if d(className="android.widget.EditText",
@@ -69,7 +66,6 @@ def inputListener(d, data, serialNum):
              resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             print 'PACM00 3'
             d.click(458, 1900)
-    print 3
 
     if machineName == "OPPOA59a":
         if d(className="android.widget.EditText", resourceId="com.coloros.safecenter:id/verify_input").exists(
@@ -79,23 +75,17 @@ def inputListener(d, data, serialNum):
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(458, 1900)
-    print 4
 
     if machineName == "OPPOA83":
-        MLog.debug(getPwdByConfig(machineName))
-
-        MLog.debug(u"输入密码界面")
+        MLog.debug(u"等待OPPOA83输入密码界面")
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
                          getPwdByConfig(machineName))
-
+        MLog.debug(u"输入密码完成")
         MLog.debug(u"来至电脑端未知来源，只能自己配[222, 1160]")
         click_with_pos(d, "android.widget.LinearLayout", "com.android.packageinstaller:id/bottom_button_layout", 222,
                        1160)
-
-        MLog.debug(u"完成")
+        MLog.debug(u"点击完成")
         # click_with_id(d, "android.widget.TextView", "com.android.packageinstaller:id/done_button")
-
-    print 5
 
     if machineName == "OPPOA57":
         set_text_with_id(d, "android.widget.EditText", "com.coloros.safecenter:id/et_login_passwd_edit",
@@ -103,11 +93,9 @@ def inputListener(d, data, serialNum):
         if d(className="android.widget.LinearLayout",
              resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
             d.click(528, 1218)
-
     if machineName == "vivoX9":
         MLog.debug("vivoX9")
         click_with_pos(d, "android.widget.Button", "vivo:id/vivo_adb_install_ok_button", 298, 1845)
-    print 6
 
 
 # 注册一些点击事件
@@ -115,10 +103,8 @@ def registerEvent(d):
     d.watchers.remove()
     conf = Config("default.ini")
     event = conf.getconf("common").click_event
-    # print event
-    MLog.debug("event = " + event)
+    MLog.debug("从配置文件中读取到的注册事件: event = " + event)
     num = event.split(',')
-    print num
     d.watchers.remove()
     d.watchers.watched = False
     for index in range(len(num)):
@@ -129,15 +115,13 @@ def registerEvent(d):
 
     d.watchers.watched = True
     d.watchers.run()
-    MLog.debug(u"列出所有watchers")
+    MLog.debug(u"列出所有注册上的watchers")
     print d.watchers
 
 
 def getWatchNum():
     conf = Config("default.ini")
     event = conf.getconf("common").click_event
-    # print event
-    MLog.debug("event = " + event)
     num = event.split(',')
     return len(num)
 

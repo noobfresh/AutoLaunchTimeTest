@@ -38,6 +38,7 @@ def startAppBySwipe(d, times, video, sernum, machineName):
         app_name = "@" + app_name
         MLog.info(u"start_app startAppBySwipe: change app's start name , appname is " + app_name)
     screenRecord(d, times, video, sernum, machineName)
+    MLog.info(u"start_app startAppBySwipe: click app logo.")
     d(text=app_name).click()
 
 
