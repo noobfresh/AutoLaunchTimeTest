@@ -1,7 +1,6 @@
 # ecoding=utf-8
 import os
 
-
 from log.log import MLog
 from uitl.baseUtil import write_json
 from uitl.fileUtil import checkSrcVialdAndAutoCreate

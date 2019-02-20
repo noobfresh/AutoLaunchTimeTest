@@ -1,6 +1,5 @@
 # coding=utf-8
 import datetime
-import json
 import time
 from multiprocessing import Pool
 
@@ -8,8 +7,7 @@ import settings
 from calculate.conclude import start_calculate
 from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
-from datachart.data_center import write_data_to_file
-from datachart.data_to_format import format_data, create_sheet, create_lines
+from datachart.data_to_format import format_data, create_sheet, create_lines, write_data_local
 from datachart.sendmail import sendEmailWithDefaultConfig
 from log.log import MLog
 from screenrecord.device_info import getDeviceInfo
@@ -51,49 +49,20 @@ def test_main(serial_num):
     MLog.debug("enter ent ==========")
     MLog.debug(enter_ent)
 
-    ent_live_room_result = []
-    for x, y, z in enter_ent:
-        print(x, y, z)
-        cost = (z - x + 1) * 20
-        ent_live_room_result.append(cost)
-
-    enter_liveroom_datas = {
-        "app": getApkName().split(".apk")[0],
-        "datas": ent_live_room_result
-    }
-
-    first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas = format_data(
+    first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas, enter_liveroom_datas = format_data(
         first_launch_result,
         normal_launch_result,
-        ent_live_room_result,
+        enter_ent,
         apkName)
     end_calculate_time = datetime.datetime.now()
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI Part ------------------------------#
-    MLog.info(u"--------------------------开始准备生成表格---------------------------")
+    # 创建表格
     create_sheet(detail_data, avg_detail_data, device_name)
-    MLog.info(u"--------------------------生成表格结束---------------------------")
-    MLog.info(u"--------------------------开始写入json数据到本地--------------------------")
-    # write log data
-    MLog.debug(u"首次启动总耗时->")
-    MLog.info(json.dumps(first_launch_all_datas, ensure_ascii=False).decode('utf8'))
-    MLog.debug(u"非首次启动总耗时>")
-    MLog.info(json.dumps(normal_launch_all_datas, ensure_ascii=False).decode('utf8'))
-    MLog.debug(u"首次启动闪屏页耗时->")
-    MLog.info(json.dumps(first_lunch_splash_datas, ensure_ascii=False).decode('utf8'))
-    MLog.debug(u"非首次启动闪屏页耗时->")
-    MLog.info(json.dumps(normal_launch_splash_datas, ensure_ascii=False).decode('utf8'))
-    MLog.debug(u"进直播间耗时->")
-    MLog.info(json.dumps(enter_liveroom_datas, ensure_ascii=False).decode('utf8'))
-
-    # 写 JSON 数据
-    write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], first_launch_all_datas)
-    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], normal_launch_all_datas)
-    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], first_lunch_splash_datas)
-    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], normal_launch_splash_datas)
-    write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], enter_liveroom_datas)
-    MLog.info(u"--------------------------写入json数据到本地结束--------------------------")
+    # 写入json数据到本地
+    write_data_local(device_name, enter_liveroom_datas, first_launch_all_datas, first_lunch_splash_datas,
+                     normal_launch_all_datas, normal_launch_splash_datas)
 
     end_time = datetime.datetime.now()
     MLog.info("all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
@@ -117,16 +86,16 @@ if __name__ == '__main__':
         serial_number = serial[index]
         MLog.info(u"启动一个新进程 : index = " + str(index) + u" serial_number = " + serial_number)
         devices.append(getDeviceInfo(serial_number))
-        pool.apply_async(test_main, args=(serial_number,))
+        # pool.apply_async(test_main, args=(serial_number,))
         # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
-        # result = pool.apply_async(test_main, args=(serial_numeber,))
-        # result.get()
+        result = pool.apply_async(test_main, args=(serial_number,))
+        result.get()
     pool.close()
     pool.join()
-    # 专门画总图
+    # 生成图表
     create_lines(devices, getApkName())
 
-    sendEmailWithDefaultConfig()  # 发邮件
+    # sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
-    print u"end main..."
+    MLog.info(u"end main...")

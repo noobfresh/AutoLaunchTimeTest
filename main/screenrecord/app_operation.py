@@ -24,21 +24,19 @@ def installAPK(name, sermun):
         sysExit(u"应用退出,原因:安装失败!")
     MLog.debug(u"installAPK: 执行安装操作，包路径apk_path = " + apk_path)
     os.system("adb -s " + sermun + " install " + apk_path)
-    MLog.info(u"app_operation installAPK: 安装成功！sermun = " + sermun)
+    MLog.info(u"app_operation installAPK: 安装成功! sermun = " + sermun)
 
 
 # 杀进程
 def killProcess(sernum):
     MLog.info(u"app_operation killProcess: 执行杀进程 ，sernum = " + sernum)
     os.system('adb -s ' + sernum + ' shell am force-stop ' + packageName)
-    print '---kill process ---'
 
 
 # 清除数据
 def clearData(sernum):
     MLog.info(u"app_operation clearData: 执行清除数据，sernum = " + sernum)
     os.system('adb -s ' + sernum + ' shell pm clear ' + packageName)
-    print u'清除数据'
 
 
 # 卸载应用

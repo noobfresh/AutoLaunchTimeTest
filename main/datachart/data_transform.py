@@ -18,7 +18,6 @@ def get_json_file(type, device, apk):
 # 根据指定类型将所有该类型下的数据全部生成
 # types：类型  | devices：设备名  | apk：app名
 def json_file_to_type(types, devices, apks):
-    MLog.info(u"--------------------------开始准备生成折线图---------------------------")
     MLog.info(u"data_transform :传入的参数如下:")
     MLog.info(u"data_transform json_file_to_type:"
               u"apks = " + list2str(apks) + u" devices = " + list2str(devices) + u" types = " + list2str(types))
@@ -37,7 +36,6 @@ def json_file_to_type(types, devices, apks):
         MLog.error(u"收集到的折线为0，直接返回!")
         return
     create_charts(result_name, lines)
-    MLog.info(u"--------------------------生成折线图结束---------------------------")
 
 
 #  生成一副折线图，给外部调用

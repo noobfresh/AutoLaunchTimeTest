@@ -67,6 +67,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
                 time.sleep(3)
             startAPP(d, 15, first_dir + '/' + str(index) + '.mp4', sernum, machineName)
             time.sleep(15)
+            MLog.info(u"等待清除缓存...")
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
@@ -185,9 +186,9 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
 def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, temp_dir, sernum):
     MLog.info(u"screen_record_main screenmain: sernum = " + str(sernum))
     MLog.info(u"screen_record_main screenmain: "
-                  + " firstLaunchTimes = " + str(firstLaunchTimes)
-                  + " notFirstLaunchTimes = " + str(notFirstLaunchTimes)
-                  + " apkName = " + apkName)
+              + " firstLaunchTimes = " + str(firstLaunchTimes)
+              + " notFirstLaunchTimes = " + str(notFirstLaunchTimes)
+              + " apkName = " + apkName)
     settings._init()
     try:
         d = u2.connect(sernum)

@@ -4,6 +4,7 @@ import json
 import os
 
 from config.sys_config import getApkName
+from datachart.data_center import write_data_to_file
 from datachart.data_transform import json_file_to_type
 from datachart.handledata import create_detail_sheet_by_json
 from log.log import MLog
@@ -34,11 +35,17 @@ def avg_list(list):
     return nsum / count
 
 
-def format_data(first_launch_result, normal_launch_result, ent_live_room_result, apk_name):
+def format_data(first_launch_result, normal_launch_result, enter_ent, apk_name):
     # 算平均值啥的
     total_datas1 = []
     launching_datas1 = []
     homepage_datas1 = []
+    ent_live_room_result = []
+    for x, y, z in enter_ent:
+        print(x, y, z)
+        cost = (z - x + 1) * 20
+        ent_live_room_result.append(cost)
+
     for i in range(0, len(first_launch_result)):
         total_datas1.append(first_launch_result[i][4])
         launching_datas1.append(first_launch_result[i][5])
@@ -98,7 +105,12 @@ def format_data(first_launch_result, normal_launch_result, ent_live_room_result,
         "app": apk_name + u"_launching",
         "datas": launching_datas2
     }
-    return first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas
+
+    enter_liveroom_datas = {
+        "app": getApkName().split(".apk")[0],
+        "datas": ent_live_room_result
+    }
+    return first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas, enter_liveroom_datas
 
 
 def checkVaild(datas, index):
@@ -109,6 +121,7 @@ def checkVaild(datas, index):
 
 
 def create_sheet(json_detail_data, json_avg_detail, device_name):
+    MLog.info(u"--------------------------开始准备生成表格---------------------------")
     MLog.info(u"data_to_format create_sheet:创建表格开始...")
     apk_name = getApkName()
     sheet_name = device_name + "_detail_time_cost"
@@ -126,13 +139,38 @@ def create_sheet(json_detail_data, json_avg_detail, device_name):
     MLog.info(json.dumps(json_avg_detail, ensure_ascii=False).decode('utf8'))
     title = device_name + " " + apk_name + u" 平均耗时统计"
     create_detail_sheet_by_json(sheet_name, "avg_data_result", title, json_avg_detail)
+    MLog.info(u"--------------------------生成表格结束---------------------------")
 
 
 def create_lines(devices, apk_name):
+    MLog.info(u"--------------------------开始准备生成折线图---------------------------")
     types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时", u"非首次启动闪屏页耗时", u"首次启动闪屏页耗时"]
     apks = [utf8(apk_name)]
     json_file_to_type(types, devices, apks)
-    MLog.info("create_lines done!")
+    MLog.info(u"--------------------------生成折线图结束---------------------------")
+
+
+def write_data_local(device_name, enter_liveroom_datas, first_launch_all_datas, first_lunch_splash_datas,
+                     normal_launch_all_datas, normal_launch_splash_datas):
+    # write log data
+    MLog.info(u"--------------------------开始写入json数据到本地--------------------------")
+    MLog.debug(u"首次启动总耗时->")
+    MLog.info(json.dumps(first_launch_all_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"非首次启动总耗时>")
+    MLog.info(json.dumps(normal_launch_all_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"首次启动闪屏页耗时->")
+    MLog.info(json.dumps(first_lunch_splash_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"非首次启动闪屏页耗时->")
+    MLog.info(json.dumps(normal_launch_splash_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"进直播间耗时->")
+    MLog.info(json.dumps(enter_liveroom_datas, ensure_ascii=False).decode('utf8'))
+    # 写 JSON 数据
+    write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], first_launch_all_datas)
+    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], normal_launch_all_datas)
+    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], first_lunch_splash_datas)
+    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], normal_launch_splash_datas)
+    write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], enter_liveroom_datas)
+    MLog.info(u"--------------------------写入json数据到本地结束--------------------------")
 
 
 if __name__ == '__main__':
