@@ -67,7 +67,10 @@ class Log(object):
         # 创建一个handler，用于写入日志文件
 
         self.suffix = '.txt'
+        # # release包用这个
         self.log_time = time.strftime("%Y_%m_%d_%H_%M")
+        # debug嫌日志文件多用这个
+        # self.log_time = time.strftime("%Y_%m_%d")
         self.log_path = os.path.dirname(__file__) + os.sep + "files" + os.sep
         self.log_name = self.log_path + "log_" + self.log_time + self.suffix
 
