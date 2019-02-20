@@ -39,13 +39,10 @@ def init_normal_style():
 
 
 # 创建详细数据excel表格
-def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_list):
+def create_detail_sheet_by_json(sheet_name, file_name, title, json_data):
     if json_data is None or json_data is [] or len(json_data) == 0:
         MLog.error(u"json == None or json_data == [], return !")
         raise Exception(u"Invalid json_data! json_data is None")
-    if len(json_data[0].keys()) != len(title_list):
-        MLog.error(u"title's len ! = jsondata[0].keys() ,return!")
-        raise Exception(u"Invalid args! title's length need equls jsondata[0].keys() length")
 
     # 创建一个工作簿
     w = Workbook()
@@ -62,25 +59,23 @@ def create_detail_sheet_by_json(sheet_name, file_name, title, json_data, title_l
     x_offset = 0
     y_offset = 0
 
-    MLog.debug(str(json_data))
-
     ws.write_merge(y_offset, y_offset, x_offset, x_offset + len(json_data[0]) - 1, unicode(str(title), 'utf-8'), style)
 
     for index in range(0, len(json_data)):
         cur = 0
-        for key, value in title_list.items():
+        for key, value in json_data[index].items():
             if index == 0:
                 # 写标题
-                ws.write(y_offset + 1, x_offset + cur, title_list[key], style)
+                ws.write(y_offset + 1, x_offset + cur, key, style)
             # 写内容
-            ws.write(index + y_offset + 2, x_offset + cur, json_data[index][key], style)
+            ws.write(index + y_offset + 2, x_offset + cur, value, style)
             cur += 1
 
     file_name = file_path + file_name
 
     checkSrcVialdAndAutoCreate(file_path)
     w.save(file_name + '.xls')
-    MLog.debug(u"handledata create_detail_sheet_by_json: Excel文件生成路径:" + os.path.abspath(file_name))
+    MLog.debug(u"handledata create_detail_sheet_by_json: Excel文件生成路径:" + os.path.abspath(file_name)+".xls")
 
 
 def transform():

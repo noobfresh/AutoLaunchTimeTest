@@ -13,7 +13,6 @@ file_path = os.path.dirname(__file__) + os.sep + u"files" + os.sep
 def write_data_to_file(type, device, apk, json_data):
     suffix = u".json"
     src = file_path + type + os.sep + device + os.sep
-    MLog.debug(u"data_center write_data_to_file:" + src)
     checkSrcVialdAndAutoCreate(src)
     json_file = src + apk + suffix
     MLog.debug(u"data_center write_data_to_file:" + json_file)

@@ -3,21 +3,18 @@ import collections
 import json
 import os
 
-from calculate.conclude import multi_huya_calculate, multi_normal_calculate
-from config.configs import Config
-from config.sys_config import get_device_params, get_start_params, getApkName
-from datachart.data_center import write_data_to_file
+from config.sys_config import getApkName
 from datachart.data_transform import json_file_to_type
 from datachart.handledata import create_detail_sheet_by_json
 from log.log import MLog
 
-# 去掉最低最高取平均
 from uitl.baseUtil import utf8, write_json
 from uitl.fileUtil import checkSrcVialdAndAutoCreate
 
 file_path = os.path.dirname(__file__) + os.sep + "files" + os.sep + u"表格数据" + os.sep
 
 
+# 去掉最低最高取平均
 def avg_list(list):
     nsum = 0
     count = 0
@@ -55,88 +52,53 @@ def format_data(first_launch_result, normal_launch_result, ent_live_room_result,
         launching_datas2.append(normal_launch_result[i][5])
         homepage_datas2.append(normal_launch_result[i][6])
 
-    json_detail = []
+    detail_data = []
     max_count = max(len(total_datas1), len(total_datas2), len(ent_live_room_result))
     for i in range(1, max_count + 1):
-        dict_temp = {"a": str(i),
-                     "b": checkVaild(total_datas1, i - 1),
-                     "c": checkVaild(launching_datas1, i - 1),
-                     "d": checkVaild(homepage_datas1, i - 1),
-                     "e": checkVaild(total_datas2, i - 1),
-                     "f": checkVaild(launching_datas2, i - 1),
-                     "g": checkVaild(homepage_datas2, i - 1),
-                     "h": checkVaild(ent_live_room_result, i - 1)
-                     }
-        json_detail.append(dict_temp)
-    MLog.info(json.dumps(json_detail))
-    dict1 = collections.OrderedDict()
-    dict1["a"] = u"次数"
-    dict1["b"] = u"首次启动总耗时"
-    dict1["c"] = u"首次启动耗时"
-    dict1["d"] = u"首次启动首页加载耗时"
-    dict1["e"] = u"非首次启动总耗时"
-    dict1["f"] = u"非首次启动耗时"
-    dict1["g"] = u"非首次启动首页加载耗时"
-    dict1["h"] = u"进入直播间耗时"
+        dict_temp = collections.OrderedDict()
+        dict_temp[u"次数"] = str(i)
+        dict_temp[u"首次启动总耗时"] = checkVaild(launching_datas1, i - 1)
+        dict_temp[u"首次启动首页加载耗时"] = checkVaild(homepage_datas1, i - 1)
+        dict_temp[u"非首次启动总耗时"] = checkVaild(total_datas2, i - 1)
+        dict_temp[u"非首次启动耗时"] = checkVaild(launching_datas2, i - 1)
+        dict_temp[u"非首次启动首页加载耗时"] = checkVaild(homepage_datas2, i - 1)
+        dict_temp[u"进入直播间耗时"] = checkVaild(ent_live_room_result, i - 1)
+        detail_data.append(dict_temp)
+    MLog.info(u"Excel表格耗时详细数据")
+    MLog.info(json.dumps(detail_data, ensure_ascii=False).decode('utf8'))
 
-    MLog.info(json.dumps(json_detail))
-    MLog.info(json.dumps(dict1))
-
-    json_detail2 = []
+    avg_detail_data = []
     dict_avg = {
-        "a": avg_list(total_datas1),
-        "b": avg_list(launching_datas1),
-        "c": avg_list(homepage_datas1),
-        "d": avg_list(total_datas2),
-        "e": avg_list(launching_datas2),
-        "f": avg_list(homepage_datas2)}
-    json_detail2.append(dict_avg)
-    dict2 = collections.OrderedDict()
-    dict2["a"] = u"平均首次启动总耗时"
-    dict2["b"] = u"平均首次启动耗时"
-    dict2["c"] = u"平均首次启动首页加载耗时"
-    dict2["d"] = u"平均非首次启动总耗时"
-    dict2["e"] = u"平均非首次启动耗时"
-    dict2["f"] = u"平均非首次启动首页加载耗时"
-    MLog.info(json.dumps(json_detail2))
-    MLog.info(json.dumps(dict2))
+        u"平均首次启动总耗时": avg_list(total_datas1),
+        u"平均首次启动耗时": avg_list(launching_datas1),
+        u"平均首次启动首页加载耗时": avg_list(homepage_datas1),
+        u"平均非首次启动总耗时": avg_list(total_datas2),
+        u"平均非首次启动耗时": avg_list(launching_datas2),
+        u"平均非首次启动首页加载耗时": avg_list(homepage_datas2)}
+    avg_detail_data.append(dict_avg)
+    MLog.info(u"Excel表格平均耗时详细数据")
+    MLog.info(json.dumps(avg_detail_data, ensure_ascii=False).decode('utf8'))
 
-    print apk_name + "   *****************************"
-    json_datas1 = {
+    first_launch_all_datas = {
         "app": apk_name,
         "datas": total_datas1
     }
 
-    json_datas2 = {
+    normal_launch_all_datas = {
         "app": apk_name,
         "datas": total_datas2
     }
 
-    json_launching1 = {
+    first_lunch_splash_datas = {
         "app": apk_name + u"_launching",
         "datas": launching_datas1
     }
 
-    json_launching2 = {
+    normal_launch_splash_datas = {
         "app": apk_name + u"_launching",
         "datas": launching_datas2
     }
-
-    # write log data
-    MLog.info(json.dumps(json_datas1))
-    MLog.info(json.dumps(json_datas2))
-    MLog.info(json.dumps(json_detail))
-    MLog.info(json.dumps(json_detail2))
-    MLog.info(json.dumps(dict1))
-    MLog.info(json.dumps(dict2))
-    return json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, json_launching1, json_launching2
-
-
-def getEntLiveRoomTime(index, ent_live_room_result):
-    if index - 1 < len(ent_live_room_result):
-        return ent_live_room_result[index - 1]
-    else:
-        return u"暂无数据"
+    return first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas
 
 
 def checkVaild(datas, index):
@@ -146,39 +108,24 @@ def checkVaild(datas, index):
         return str(datas[index])
 
 
-def create_charts(json_datas1, json_datas2):
-    device_name = get_device_params()
+def create_sheet(json_detail_data, json_avg_detail, device_name):
+    MLog.info(u"data_to_format create_sheet:创建表格开始...")
     apk_name = getApkName()
-
-    MLog.info(json.dumps(json_datas1))
-    MLog.info(json.dumps(json_datas2))
-    write_data_to_file(u"首次启动总耗时", device_name, apk_name, json_datas1)
-    write_data_to_file(u"非首次启动总耗时", device_name, apk_name, json_datas2)
-
-
-def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
-    apk_name = getApkName()
-
     sheet_name = device_name + "_detail_time_cost"
     file_name = device_name + "_data_detail"
-
-    MLog.info(u"data_to_format create_sheet:-----------------")
     checkSrcVialdAndAutoCreate(file_path)
-    write_json(json_detail, file_path + 'alldata.json')
-    write_json(json_detail2, file_path + 'avgdata.json')
-    MLog.info(u"json_detail:")
-    # MLog.info(json.dumps(json_detail))
-    MLog.info(json.dumps(json_detail, ensure_ascii=False).decode('utf8'))
-    MLog.info(u"dict1:")
-    MLog.info(json.dumps(dict1, ensure_ascii=False).decode('utf8'))
-    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail, dict1)
-    MLog.info("--------------------------1------------------------------")
-    MLog.info(u"json_detail2:")
-    MLog.info(json.dumps(json_detail2, ensure_ascii=False).decode('utf8'))
-    MLog.info(json.dumps(dict2, ensure_ascii=False).decode('utf8'))
-    MLog.info("-------------------------2-------------------------------")
-    create_detail_sheet_by_json(sheet_name, "data_result", device_name + " " + apk_name + u" 平均耗时统计",
-                                json_detail2, dict2)
+    write_json(json_detail_data, file_path + 'alldata.json')
+    write_json(json_avg_detail, file_path + 'avgdata.json')
+
+    MLog.info(u"创建耗时统计 -> json数据文件为json_detail_data: ")
+    MLog.info(json.dumps(json_detail_data, ensure_ascii=False).decode('utf8'))
+    title = device_name + " " + apk_name + u" 耗时统计"
+    create_detail_sheet_by_json(sheet_name, file_name, title, json_detail_data)
+
+    MLog.info(u"创建平均耗时统计 -> json数据文件为json_avg_detail: ")
+    MLog.info(json.dumps(json_avg_detail, ensure_ascii=False).decode('utf8'))
+    title = device_name + " " + apk_name + u" 平均耗时统计"
+    create_detail_sheet_by_json(sheet_name, "avg_data_result", title, json_avg_detail)
 
 
 def create_lines(devices, apk_name):
@@ -189,4 +136,16 @@ def create_lines(devices, apk_name):
 
 
 if __name__ == '__main__':
-    create_lines(["PACM00"], "")
+    device_name = "test_device"
+    sheet_name = device_name + "_detail_time_cost"
+    file_name = device_name + "_data_detail"
+    apk_name = "7.16.apk"
+    json_detail = [
+        {"次数": "1", "首次启动总耗时": "3700", "首次启动首页加载耗时": "360", "非首次启动总耗时": "3340", "非首次启动耗时": "2840", "非首次启动首页加载耗时": "500",
+         "进入直播间耗时": "暂无数据"},
+        {"次数": "2", "首次启动总耗时": "3300", "首次启动首页加载耗时": "380", "非首次启动总耗时": "3140", "非首次启动耗时": "2760", "非首次启动首页加载耗时": "380",
+         "进入直播间耗时": "暂无数据"},
+        {"次数": "3", "首次启动总耗时": "3340", "首次启动首页加载耗时": "360", "非首次启动总耗时": "3120", "非首次启动耗时": "2720", "非首次启动首页加载耗时": "400",
+         "进入直播间耗时": "暂无数据"}]
+
+    create_detail_sheet_by_json(sheet_name, file_name, device_name + " " + apk_name + u" 耗时统计", json_detail)

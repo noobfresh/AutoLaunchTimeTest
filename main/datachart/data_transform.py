@@ -18,7 +18,8 @@ def get_json_file(type, device, apk):
 # 根据指定类型将所有该类型下的数据全部生成
 # types：类型  | devices：设备名  | apk：app名
 def json_file_to_type(types, devices, apks):
-    MLog.info(u"data_transform :打印传入的参数  ")
+    MLog.info(u"--------------------------开始准备生成折线图---------------------------")
+    MLog.info(u"data_transform :传入的参数如下:")
     MLog.info(u"data_transform json_file_to_type:"
               u"apks = " + list2str(apks) + u" devices = " + list2str(devices) + u" types = " + list2str(types))
     result_name = u"chart"
@@ -36,17 +37,18 @@ def json_file_to_type(types, devices, apks):
         MLog.error(u"收集到的折线为0，直接返回!")
         return
     create_charts(result_name, lines)
+    MLog.info(u"--------------------------生成折线图结束---------------------------")
 
 
 #  生成一副折线图，给外部调用
 def json_file_to_charts(type, device, apks):
     MLog.info(u"json_file_to_charts: type = " + type + u", device = " + device + u", apks =" + str(apks))
-    MLog.debug(u"json_file_to_charts: 开始生成折线图...")
+    # MLog.debug(u"json_file_to_charts: 开始生成折线图...")
     lines = []
     for apk in apks:
         file = get_json_file(type, device, apk)
         try:
-            MLog.debug(u"尝试打开文件file: " + file)
+            MLog.debug(u"尝试打开文件生成折线图，file = " + file)
             if not fileExist(file):
                 continue
             lines.append(read_json(file))
@@ -56,7 +58,7 @@ def json_file_to_charts(type, device, apks):
             print lines
     # MLog.debug(u"json_file_to_charts: 生成折线图完成...")
     # MLog.info(u"------------------折线图生成异常请看下面折线数量是否大于0-----------------")
-    MLog.info(u"json_file_to_charts: 生成折线数量 = " + str(len(lines)))
+    MLog.info(u"可生成折线数量 = " + str(len(lines)))
     return ChartItem(device + type, lines)
 
 
@@ -88,9 +90,9 @@ def create_from_file_per(src, title, show_avg):
 
 
 if __name__ == '__main__':
-    types = [u"非首次启动总耗时", u"首次启动总耗时", u"进直播间耗时", u"非首次启动闪屏页耗时", u"首次启动闪屏页耗时"]
-    devices = [u"OPPOA83", u"vivoX9", u"MiNote2", u"PACM00"]
-    apks = [u"7.15"]  ## 具体来说apks就是代表图中的折线!!!
+    types = [u"非首次启动总耗时", u"首次启动总耗时", ]
+    devices = [u"OPPOA83"]
+    apks = [u"7.15", u"7.16"]  ## 具体来说apks就是代表图中的折线!!!
 
     # 生成当前type下所有,所有机型指定apks的图表
     json_file_to_type(types, devices, apks)

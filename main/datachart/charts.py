@@ -45,7 +45,7 @@ def create_page(lines, result_file_name):
 
     file_name = file_path + result_file_name + ".html"
     MLog.info(u"create_page: 开始生成图表...")
-    MLog.info(u" create_page: Page 大小为:" + str(len(page)))
+    MLog.info(u"create_page: 图表包含的折线图数量为:" + str(len(page)))
     MLog.info(u"create_page: 图表生成路径:" + file_name)
 
     checkSrcVialdAndAutoCreate(file_path)

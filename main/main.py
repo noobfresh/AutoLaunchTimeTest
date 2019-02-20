@@ -1,10 +1,10 @@
 # coding=utf-8
 import datetime
-from multiprocessing import Pool
+import json
 import time
+from multiprocessing import Pool
 
 import settings
-from calculate import first_frame_calculate
 from calculate.conclude import start_calculate
 from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
@@ -57,12 +57,12 @@ def test_main(serial_num):
         cost = (z - x + 1) * 20
         ent_live_room_result.append(cost)
 
-    json_entliveroom = {
+    enter_liveroom_datas = {
         "app": getApkName().split(".apk")[0],
         "datas": ent_live_room_result
     }
 
-    json_datas1, json_datas2, json_detail, dict1, json_detail2, dict2, launching_datas1, launching_datas2 = format_data(
+    first_launch_all_datas, normal_launch_all_datas, detail_data, avg_detail_data, first_lunch_splash_datas, normal_launch_splash_datas = format_data(
         first_launch_result,
         normal_launch_result,
         ent_live_room_result,
@@ -71,18 +71,29 @@ def test_main(serial_num):
     MLog.info(u"计算时间 time ={}".format(end_calculate_time - end_video_2_frame_time))
 
     # ---------------------------- UI Part ------------------------------#
-    MLog.info(u"开始写表格...")
-    create_sheet(json_detail, dict1, json_detail2, dict2, device_name)
+    MLog.info(u"--------------------------开始准备生成表格---------------------------")
+    create_sheet(detail_data, avg_detail_data, device_name)
+    MLog.info(u"--------------------------生成表格结束---------------------------")
+    MLog.info(u"--------------------------开始写入json数据到本地--------------------------")
+    # write log data
+    MLog.debug(u"首次启动总耗时->")
+    MLog.info(json.dumps(first_launch_all_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"非首次启动总耗时>")
+    MLog.info(json.dumps(normal_launch_all_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"首次启动闪屏页耗时->")
+    MLog.info(json.dumps(first_lunch_splash_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"非首次启动闪屏页耗时->")
+    MLog.info(json.dumps(normal_launch_splash_datas, ensure_ascii=False).decode('utf8'))
+    MLog.debug(u"进直播间耗时->")
+    MLog.info(json.dumps(enter_liveroom_datas, ensure_ascii=False).decode('utf8'))
 
-    MLog.info(u"开始写json数据...")
     # 写 JSON 数据
-    write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas1)
-    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], json_datas2)
-    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], launching_datas1)
-    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], launching_datas2)
-    write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], json_entliveroom)
-
-    # 还差一个画折线图
+    write_data_to_file(u"首次启动总耗时", device_name, getApkName().split(".apk")[0], first_launch_all_datas)
+    write_data_to_file(u"非首次启动总耗时", device_name, getApkName().split(".apk")[0], normal_launch_all_datas)
+    write_data_to_file(u"首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], first_lunch_splash_datas)
+    write_data_to_file(u"非首次启动闪屏页耗时", device_name, getApkName().split(".apk")[0], normal_launch_splash_datas)
+    write_data_to_file(u"进直播间耗时", device_name, getApkName().split(".apk")[0], enter_liveroom_datas)
+    MLog.info(u"--------------------------写入json数据到本地结束--------------------------")
 
     end_time = datetime.datetime.now()
     MLog.info("all time = {}, video_frame time = {}, calculate time = {}, datacharts time = {}".format(
@@ -115,7 +126,7 @@ if __name__ == '__main__':
     # 专门画总图
     create_lines(devices, getApkName())
 
-    # sendEmailWithDefaultConfig()  # 发邮件
+    sendEmailWithDefaultConfig()  # 发邮件
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
     print u"end main..."
