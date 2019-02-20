@@ -44,9 +44,12 @@ def test_main(serial_num):
     print path
     device_name = getDeviceInfo(serial_num)
     first_launch_result, normal_launch_result, enter_ent = start_calculate(device_name)
-    print " enter_ent -> {}".format(enter_ent)
+    MLog.debug("first_launch_result ==========")
     MLog.debug(first_launch_result)
+    MLog.debug("normal_launch_result ==========")
     MLog.debug(normal_launch_result)
+    MLog.debug("enter ent ==========")
+    MLog.debug(enter_ent)
 
     ent_live_room_result = []
     for x, y, z in enter_ent:
