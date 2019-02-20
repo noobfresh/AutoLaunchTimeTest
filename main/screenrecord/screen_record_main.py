@@ -39,9 +39,9 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
     if firstLaunchTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
-            print u"删除 screenshot==="
+            MLog.info(u"删除 screenshot")
             path = os.path.dirname(__file__) + "\\"
-            print path
+            MLog.debug(u"screen_record_main firstLaunch: path = " + path)
             os.chdir(path)
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
@@ -82,7 +82,7 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
             pullRecord(first_dir, sernum, machineName)
         path = os.path.abspath('.')
         folder = path + '/' + first_dir
-        print "====" + folder
+        MLog.debug(u"screen_record_main firstLaunch: folder = " + folder)
         os.chdir(folder)
         killProcess(sernum)
         for index in range(firstLaunchTimes):
@@ -95,7 +95,7 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
     if notFirstLaunchTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
-            print u"删除 screenshot==="
+            MLog.info(u"删除 screenshot")
             path = os.path.dirname(__file__) + "\\"
             print path
             os.chdir(path)
@@ -130,7 +130,7 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
             pullRecord(notfirst_dir, sernum, machineName)
         path = os.path.abspath('.')
         folder = path + '/' + notfirst_dir
-        print "====" + folder
+        MLog.debug(u"screen_record_main notFirstLaunch: path = " + path)
         os.chdir(folder)
         killProcess(sernum)
         for index in range(notFirstLaunchTimes):
@@ -144,7 +144,7 @@ def start(packageName, serNum):
 
 # 进入直播间
 def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
-    print '===enterLiveRoom==='
+    MLog.debug(u"screen_record_main enterLiveRoom: enterLiveRoom")
     packageName = conf.getconf("default").package
     # 启动APP
     start(packageName, sernum)
@@ -152,9 +152,9 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
     if enterLiveRoomTimes > 0:
         if machineName == "PACM00":
             removeDirs("/sdcard/DCIM/Screenshots", sernum)
-            print u"删除 screenshot==="
+            MLog.info(u"删除 screenshot")
             path = os.path.dirname(__file__) + "\\"
-            print path
+            MLog.debug(u"screen_record_main enterLiveRoom: path = " + path)
             os.chdir(path)
             if os.path.exists("Screenshots"):
                 shutil.rmtree("Screenshots")
@@ -174,7 +174,7 @@ def enterLiveRoom(d, enterLiveRoomTimes, temp_dir, sernum, machineName):
             pullRecord(enter_dir, sernum, machineName)
         path = os.path.abspath('.')
         folder = path + '/' + enter_dir
-        print "====" + folder
+        MLog.debug(u"screen_record_main enterLiveRoom: path2 = " + path)
         os.chdir(folder)
         killProcess(sernum)
         for index in range(enterLiveRoomTimes):
@@ -204,10 +204,9 @@ def screenmain(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, t
         notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName)
         enterLiveRoom(d, enterLiveTimes, temp_dir, sernum, machineName)
     except BaseException, e:
-        print repr(e)
+        MLog.error("BaseException = " + repr(e))
 
 
-# 改成单个
 def start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num):
     MLog.info(u"screen_record_main start_python: serial_num = " + str(serial_num))
     temp_dir = getDeviceInfo(serial_num)
@@ -219,8 +218,7 @@ if __name__ == "__main__":
     p = Pool(5)
     for index in range(len(serial)):
         serNum = serial[index]
-        MLog.info(
-            u"screen_record_main serNum :" + serNum + " sys.argv[1] = " + sys.argv[1] + " sys.argv[2] = " + sys.argv[2])
+        MLog.info(u"screen_record_main serNum :" + serNum + " sys.argv[1] = " + sys.argv[1] + " sys.argv[2] = " + sys.argv[2])
         temp_dir = getDeviceInfo(serNum)
         # 加上下面两行
         settings._init()
