@@ -12,7 +12,10 @@ from datachart.handledata import create_detail_sheet_by_json
 from log.log import MLog
 
 # 去掉最低最高取平均
-from uitl.baseUtil import utf8
+from uitl.baseUtil import utf8, write_json
+from uitl.fileUtil import checkSrcVialdAndAutoCreate
+
+file_path = os.path.dirname(__file__) + os.sep + "files" + os.sep + u"表格数据" + os.sep
 
 
 def avg_list(list):
@@ -160,6 +163,9 @@ def create_sheet(json_detail, dict1, json_detail2, dict2, device_name):
     file_name = device_name + "_data_detail"
 
     MLog.info(u"data_to_format create_sheet:-----------------")
+    checkSrcVialdAndAutoCreate(file_path)
+    write_json(json_detail, file_path + 'alldata.json')
+    write_json(json_detail2, file_path + 'avgdata.json')
     MLog.info(u"json_detail:")
     # MLog.info(json.dumps(json_detail))
     MLog.info(json.dumps(json_detail, ensure_ascii=False).decode('utf8'))
