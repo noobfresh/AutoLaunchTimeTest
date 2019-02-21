@@ -71,10 +71,6 @@ def firstLaunch(d, firstLaunchTimes, apkName, temp_dir, sernum, machineName):
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
-        # endTime = time.time()
-        # if firstTimes > int(endTime - startTime):
-        #     print u'尚未录制结束'
-        #     time.sleep(firstTimes - int(endTime - startTime) + 1)
         time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)
@@ -119,10 +115,6 @@ def notFirstLaunch(d, notFirstLaunchTimes, temp_dir, sernum, machineName):
             if machineName == "PACM00":
                 os.system('adb -s ' + sernum + ' shell service call statusbar 1')
                 d(text="停止录屏").click()
-        # endTime = time.time()
-        # if firstTimes > int(endTime - startTime):
-        #     print u'尚未录制结束'
-        #     time.sleep(firstTimes - int(endTime - startTime) + 1)
         time.sleep(10)
         if machineName == "PACM00":
             pullRecord("/sdcard/DCIM/Screenshots", sernum, machineName)
