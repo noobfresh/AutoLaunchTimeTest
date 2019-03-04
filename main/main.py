@@ -72,7 +72,7 @@ def test_main(serial_num):
         end_time - end_calculate_time))
 
 
-if __name__ == '__main__':
+def start():
     MLog.debug(u"程序启动...")
     os.system("python -m uiautomator2 init")
     time.sleep(10)
