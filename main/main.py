@@ -99,3 +99,10 @@ def start():
     end_time = datetime.datetime.now()
     MLog.info("all time = {}".format(end_time - start_time))
     MLog.info(u"end main...")
+
+
+def startAppWithConfig(params):
+    '''
+       带参数的启动方式
+    '''
+    MLog.debug(u"main startAppWithConfig:" + params.sdk_path)

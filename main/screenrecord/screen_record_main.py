@@ -14,12 +14,12 @@ from device_info import getDeviceInfo
 from multiprocessing import Pool
 from start_app import enter
 
+conf = Config("default.ini")
 # 解决即使把adb加入到了path，python也调不到的问题（为了使用UIAutomator引入的）
 os.environ.__delitem__('ANDROID_HOME')
-os.environ.__setitem__('ANDROID_HOME', 'C:/Android/')
+os.environ.__setitem__('ANDROID_HOME', conf.getconf("default").sdk_path)
 os.environ.update()
 
-conf = Config("default.ini")
 
 # 序列号
 serial = []
