@@ -20,15 +20,15 @@ class StartApp(BaseConfig):
         self.videoOperation = VideoOperation(sernum)
 
     # 启动应用
-    def startAPP(self, d, times, video):
+    def startAPP(self, d, times, name):
         try:
             MLog.debug(u"尝试启动app")
-            self.startAppBySwipe(d, times, video)
+            self.startAppBySwipe(d, times, name)
         except Exception, e:
             MLog.debug(u"startAPP:" + u"启动app失败! e = " + repr(e) + "  " + self.machineName)
             sysExit(u"程序退出,原因:启动app失败!")
 
-    def startAppBySwipe(self, d, times, video):
+    def startAppBySwipe(self, d, times, name):
         conf = Config("default.ini")
         app_name = conf.getconf("default").app_name
         try:
@@ -39,7 +39,7 @@ class StartApp(BaseConfig):
             MLog.info(repr(e))
             app_name = "@" + app_name
             MLog.info(u"start_app startAppBySwipe: change app's start name , appname is " + app_name)
-        self.videoOperation.screenRecord(d, times, video)
+        self.videoOperation.screenRecord(d, times, name)
         MLog.info(u"start_app startAppBySwipe: click app logo.")
         d(text=app_name).click()
 

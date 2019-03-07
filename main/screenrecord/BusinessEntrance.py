@@ -60,10 +60,11 @@ class BusinessEntrance(BaseConfig):
             doInThread(self.registerEvent.inputListener, d, 0, self.serNum)
             time.sleep(20)
 
-            if self.method == 1:  # 自动安装
-                self.firstLaunch()
-            elif self.method == 2:  # 手动安装
-                self.firstLaunch2()
+            if self.getFirstStartTime() > 0:
+                if self.method == 1:  # 自动安装
+                    self.firstLaunch()
+                elif self.method == 2:  # 手动安装
+                    self.firstLaunch2()
 
             self.notFirstLaunch()
             self.enterLiveRoom()
@@ -209,7 +210,7 @@ class BusinessEntrance(BaseConfig):
     # 进入直播间
     def enterLiveRoom(self):
         # 启动APP
-        self.startApp.startAPP(self.getPackage(), self.serNum)
+        self.start()
         time.sleep(15)
         if self.getEnterLiveRoom() > 0:
             if self.machineName == "PACM00":
