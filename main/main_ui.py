@@ -6,6 +6,7 @@ from tkFileDialog import askdirectory, askopenfilenames
 from config.configs import Config
 from config.configs2 import Config2
 from main import startAppWithConfig
+from screenrecord.SubThread import doInThread
 
 
 class Params:
@@ -77,7 +78,8 @@ class Application(Frame):
 
     def startAppBtnClickListener(self):
         self.saveToConfig()
-        startAppWithConfig(self.collectParams())
+        doInThread(startAppWithConfig, self.collectParams())
+        # startAppWithConfig(self.collectParams())
 
     def comboxItemListener(self, event):
         if self.combox.get() == "自动安装":

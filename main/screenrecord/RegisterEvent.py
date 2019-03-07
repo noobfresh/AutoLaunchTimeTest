@@ -61,14 +61,14 @@ class RegisterEvent(BaseConfig):
 
         if self.machineName == "PACM00":
             if d(className="android.widget.EditText",
-                 resourceId="com.coloros.safecenter:id/et_login_passwd_edit").exists(timeout=50):
+                 resourceId="com.coloros.safecenter:id/et_login_passwd_edit").exists(timeout=70):
                 print 'PACM00 1'
                 d(className="android.widget.EditText",
                   resourceId="com.coloros.safecenter:id/et_login_passwd_edit").set_text(
                     self.getPwdByConfig(self.machineName))
                 print 'PACM00 2'
             if d(className="android.widget.LinearLayout",
-                 resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=50):
+                 resourceId="com.android.packageinstaller:id/bottom_button_layout").exists(timeout=70):
                 print 'PACM00 3'
                 d.click(458, 1900)
 
