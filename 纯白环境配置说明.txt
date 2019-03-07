@@ -20,3 +20,6 @@
 在install 目录下，双击opencv-3.1.0，将opencv内容解压到某文件夹下，并将解压出来的文件夹中的cv2.pyd放入Python的安装路径下lib/site-package/目录下，以此完成opencv的安装
 
 ANDROID_HOME配置， 需配置platform-tools 上一层的目录
+
+---------------------额外补充-----------------------
+1.如果手机有权限设置的，通常在开发者模式中需要打开这个开关

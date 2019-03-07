@@ -5,7 +5,7 @@ from tkFileDialog import askdirectory, askopenfilenames
 
 from config.configs import Config
 from config.configs2 import Config2
-from main import startAppWithConfig
+from main import startAppWithConfig, MLog
 from screenrecord.SubThread import doInThread
 
 
@@ -50,6 +50,33 @@ class Application(Frame):
         params.features = self.features
         return params
 
+    def checkParamValid(self):
+        ret = True
+        if self.sdkPathEntry.get() == "":
+            MLog.error(u"main_ui checkParamValid: SDK 路径为空，请认真检查！")
+            ret = False
+
+        if self.firstStartEntry.get() == "" or int(self.firstStartEntry.get()) < 0:
+            MLog.error(u"main_ui checkParamValid: 首次启动次数有问题，请认真检查！")
+            ret = False
+
+        if self.normalStartEntry.get() == "" or (self.normalStartEntry.get()) < 0:
+            MLog.error(u"main_ui checkParamValid: 非首次启动次数有问题，请认真检查！")
+            ret = False
+
+        if self.enterLiveRoomEntry.get() == "" or (self.enterLiveRoomEntry.get()) < 0:
+            MLog.error(u"main_ui checkParamValid: 进直播间次数有问题，请认真检查！")
+            ret = False
+
+        if self.appNameEntry.get() == "":
+            MLog.error(u"main_ui checkParamValid: App名称为空，请认真检查！")
+            ret = False
+
+        if self.packageNameEntry.get() == "":
+            MLog.error(u"main_ui checkParamValid: 包名称为空，请认真检查！")
+            ret = False
+        return ret
+
     def saveToConfig(self):
 
         if self.sdkPathEntry.get() != "":
@@ -77,8 +104,15 @@ class Application(Frame):
             Config2("default.ini").update("default", "app_path", self.appPathEntry.get())
 
     def startAppBtnClickListener(self):
-        self.saveToConfig()
-        doInThread(startAppWithConfig, self.collectParams())
+        if self.checkParamValid() is True:
+            self.saveToConfig()
+            if self.isRunning is False:
+                doInThread(startAppWithConfig, self.collectParams())
+                self.isRunning = True
+            else:
+                MLog.error(u"main_ui startAppBtnClickListener: 程序判断你已经运行一次了，要重新运行main_ui才行!")
+        else:
+            MLog.error(u"main_ui startAppBtnClickListener: 参数有问题，请认真检查后重新运行！")
         # startAppWithConfig(self.collectParams())
 
     def comboxItemListener(self, event):
@@ -122,6 +156,7 @@ class Application(Frame):
         print "click"
 
     def initConfig(self):
+        self.isRunning = False
         conf = Config("default.ini")
         self.sdkPath = conf.getconf("default").sdk_path  # sdk路径
         self.sdkPathEntry.delete(0, END)
@@ -219,7 +254,7 @@ class Application(Frame):
         # 创建下拉菜单
         self.combox = ttk.Combobox(self.fm2_left_mid)
         self.combox['value'] = ('手动启动', '自动启动')
-        self.combox.current(0)
+        self.combox.current(1)
         self.combox.bind("<<ComboboxSelected>>", self.comboxItemListener)
 
         self.startAppBtn = Button(self.fm2_right, text='启动脚本', bg='black', fg='white',
@@ -240,14 +275,14 @@ class Application(Frame):
         self.combox.pack(side=LEFT, padx=20)
         self.sdkPathBtn.pack(side=LEFT)
         self.sdkPathEntry.pack(side=LEFT, fill='y', padx=20)
-        self.videoPathButton.pack(side=LEFT)
-        self.videoPathEntry.pack(side=LEFT, fill='y', padx=20)
+        # self.videoPathButton.pack(side=LEFT)
+        # self.videoPathEntry.pack(side=LEFT, fill='y', padx=20)
         self.packageNameButton.pack(side=LEFT)
         self.packageNameEntry.pack(side=LEFT, fill='y', padx=20)
         self.appNameButton.pack(side=LEFT)
         self.appNameEntry.pack(side=LEFT, fill='y', padx=20)
-        self.appPathButton.pack(side=LEFT)
-        self.appPathEntry.pack(side=LEFT, fill='y', padx=20)
+        # self.appPathButton.pack(side=LEFT)
+        # self.appPathEntry.pack(side=LEFT, fill='y', padx=20)
         self.firstStartButton.pack(side=LEFT)
         self.firstStartEntry.pack(side=LEFT, fill='y', padx=20)
         self.normalStartButton.pack(side=LEFT)
