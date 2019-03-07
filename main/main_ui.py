@@ -5,8 +5,9 @@ from tkFileDialog import askdirectory, askopenfilenames
 
 from config.configs import Config
 from config.configs2 import Config2
-from main import startAppWithConfig
+from main import startAppWithConfig, MLog
 from params import Params
+from screenrecord.SubThread import doInThread
 
 
 class Application(Frame):
