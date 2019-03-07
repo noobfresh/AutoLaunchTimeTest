@@ -3,6 +3,7 @@ import shutil
 import time
 
 from log.log import MLog
+from Constants import Constants
 from screenrecord.AppOperation import AppOperation
 from screenrecord.BaseConfig import BaseConfig
 from screenrecord.DeviceInfo import DeviceInfo
@@ -61,9 +62,9 @@ class BusinessEntrance(BaseConfig):
             time.sleep(20)
 
             if self.getFirstStartTime() > 0:
-                if self.method == 1:  # 自动安装
+                if self.method == Constants.autoInstall:  # 自动安装
                     self.firstLaunch()
-                elif self.method == 2:  # 手动安装
+                elif self.method == Constants.manuelInstall:  # 手动安装
                     self.firstLaunch2()
 
             self.notFirstLaunch()
