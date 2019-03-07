@@ -10,9 +10,10 @@ from uitl.fileUtil import fileExist
 
 class AppOperation(BaseConfig):
 
-    def __init__(self, sernum):
+    def __init__(self, sernum, params):
         super(AppOperation, self).__init__()
         self.serNum = sernum
+        self.param = params
         pass
 
     # 安装应用

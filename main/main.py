@@ -9,6 +9,7 @@ from config.sys_config import get_start_params, getApkName
 from datachart.charts import *
 from datachart.data_to_format import format_data, create_sheet, create_lines, write_data_local
 from log.log import MLog
+from screenrecord.BaseConfig import BaseConfig
 from screenrecord.DeviceInfo import DeviceInfo
 from screenrecord.TestMain import getDevices, start_python
 from uitl import dbutil
@@ -27,17 +28,17 @@ def testdb():
     dbutil.close()
 
 
-def test_main(serial_num, method):
+def test_main(serial_num, method, params):
     deviceInfo = DeviceInfo(serial_num)
     settings._init()
     firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, package = get_start_params()
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
-    if method == 1:  # 自动安装
-        start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num, method)
-    elif method == 2:  # 手动安装，判断有么有安装，没有安装提示，return，安装之后走
+    if params.install_method == 1:  # 自动安装
+        start_python(serial_num, params)
+    else:  # 手动安装，判断有么有安装，没有安装提示，return，安装之后走
         if apkIsInstall(package):
-            start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num, method)
+            start_python(serial_num, params)
         else:
             print u"应用没有安装,请先安装应用"
             return
@@ -99,7 +100,7 @@ def start(sdkpath, method, videopahth):
         # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
         # result = pool.apply_async(test_main, args=(serial_number, method,))
         # result.get()
-        test_main(serial_number,method)
+        test_main(serial_number, method)
     pool.close()
     pool.join()
     # 生成图表
@@ -121,10 +122,33 @@ def apkIsInstall(package):
 
 
 def startAppWithConfig(params):
-    '''
-       带参数的启动方式
-    '''
-    MLog.debug(u"main startAppWithConfig:" + params.sdk_path)
+    MLog.debug(u"程序启动...")
+    os.system("python -m uiautomator2 init")
+    time.sleep(10)
+    # 取序列号
+    start_time = datetime.datetime.now()
+    serial = getDevices()
+    MLog.info(u"读取到的序列号 = " + str(serial))
+    devices = []
+    pool = Pool(len(serial) + 1)  # 取电脑核数
+    for index in range(len(serial)):
+        serial_number = serial[index]
+        MLog.info(u"启动一个新进程 : index = " + str(index) + u" serial_number = " + serial_number)
+        deviceInfo = DeviceInfo(serial_number)
+        devices.append(deviceInfo.getDeviceInfo())
+        # pool.apply_async(test_main, args=(serial_number,))
+        # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
+        result = pool.apply_async(test_main, args=(serial_number, 1, params,))
+        result.get()
+    pool.close()
+    pool.join()
+    # 生成图表
+    create_lines(devices, getApkName())
+
+    # sendEmailWithDefaultConfig()  # 发邮件
+    end_time = datetime.datetime.now()
+    MLog.info("all time = {}".format(end_time - start_time))
+    MLog.info(u"end main...")
 
 
 if __name__ == '__main__':
@@ -144,9 +168,9 @@ if __name__ == '__main__':
         devices.append(deviceInfo.getDeviceInfo())
         # pool.apply_async(test_main, args=(serial_number,))
         # 下面方法注释开会导致进程阻塞，debug时可以打开，运行时注释掉！！！
-        result = pool.apply_async(test_main, args=(serial_number, 1,))
+        result = pool.apply_async(test_main, args=(serial_number, 1, None,))
         result.get()
-        #test_main(serial_number, 1)
+        # test_main(serial_number, 1)
     pool.close()
     pool.join()
     # 生成图表

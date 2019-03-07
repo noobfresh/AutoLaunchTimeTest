@@ -21,8 +21,8 @@ def enterMethodDelegate(methodDelegatedObject):
     return methodDelegatedObject.screenmain()
 
 
-def start_python(firstLaunchTimes, notFirstLaunchTimes, enterLiveTimes, apkName, serial_num, method):
-    bussinessEntarnce = BusinessEntrance(serial_num, 1)
+def start_python( serial_num, params):
+    bussinessEntarnce = BusinessEntrance(serial_num, params)
     # 加上下面两行
     settings._init()
     settings.set_value("ffmpeg", 30)

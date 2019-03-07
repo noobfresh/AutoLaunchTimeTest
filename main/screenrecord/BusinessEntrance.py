@@ -24,16 +24,17 @@ os.environ.update()
 
 class BusinessEntrance(BaseConfig):
 
-    def __init__(self, sernum, method):
+    def __init__(self, sernum, params):
         super(BusinessEntrance, self).__init__()
+        self.param = params
         self.serNum = sernum
-        self.method = method
+        self.method = params.install_method
         self.device = DeviceInfo(sernum)
         self.tempDir = self.device.getDeviceInfo()
         self.serial = []
         self.d = u2.connect(sernum)
         self.registerEvent = RegisterEvent(sernum)
-        self.appOperation = AppOperation(sernum)
+        self.appOperation = AppOperation(sernum, params)
         self.fileOperation = FileOperation(sernum)
         self.videoOperation = VideoOperation(sernum)
         self.machineName = self.tempDir
