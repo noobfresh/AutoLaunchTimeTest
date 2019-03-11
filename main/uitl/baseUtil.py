@@ -19,7 +19,7 @@ def list2str(list):
 
 def write_json(json_data, json_file_name):
     fileObject = open(json_file_name, 'w')
-    fileObject.write(json.dumps(json_data))
+    fileObject.write(json.dumps(json_data, ensure_ascii=False).decode('utf8'))
     fileObject.close()
 
 

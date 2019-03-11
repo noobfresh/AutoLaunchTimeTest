@@ -38,6 +38,7 @@ def test_main(serial_num, method, params):
     MLog.info("current Device = {}".format(serial_num))
     start_time = datetime.datetime.now()
     if params.install_method == Constants.autoInstall:  # 自动安装
+        MLog.info(u"main test_main: 自动安装！"  )
         start_python(serial_num, params)
     else:  # 手动安装，判断有么有安装，没有安装提示，return，安装之后走
         if apkIsInstall(package):

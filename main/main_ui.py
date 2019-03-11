@@ -3,6 +3,7 @@ import ttk
 from Tkinter import Frame, YES, BOTH, Label, TOP, Entry, LEFT, Button, END
 from tkFileDialog import askdirectory, askopenfilenames
 
+from Constants import Constants
 from config.configs import Config
 from config.configs2 import Config2
 from main import startAppWithConfig, MLog
@@ -103,10 +104,10 @@ class Application(Frame):
         # startAppWithConfig(self.collectParams())
 
     def comboxItemListener(self, event):
-        if self.combox.get() == "自动安装":
-            self.installMethos = 1
+        if self.combox.get() == "自动启动":
+            self.installMethos = Constants.autoInstall
         else:
-            self.installMethos = 2
+            self.installMethos = Constants.manuelInstall
 
     def btnSdkBtnClick(self):
         self.sdkPath = askdirectory()
@@ -148,7 +149,7 @@ class Application(Frame):
         self.sdkPath = conf.getconf("default").sdk_path  # sdk路径
         self.sdkPathEntry.delete(0, END)
         self.sdkPathEntry.insert(0, self.sdkPath)
-        if self.combox.get() == "自动安装":
+        if self.combox.get() == "自动启动":
             self.installMethos = 1
         else:
             self.installMethos = 2
