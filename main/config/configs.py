@@ -48,8 +48,20 @@ class Config(object):
 
         return getattr(self, section)
 
+    def remove(self, section):
+        if section in self.config.sections():
+            pass
+        else:
+            print ("配置文件中找不到该 section :" + str(section))
+
+        self.remove(section)
+        # write to file
+        with open("test.ini", "w+") as f:
+            self.write(f)
+
 
 if __name__ == "__main__":
-    conf = Config("apk.ini")
+    conf = Config("test.ini")
     info = conf.getconf("yy").name
+    conf.remove("yy")
     print info

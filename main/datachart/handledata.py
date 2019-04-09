@@ -42,7 +42,7 @@ def init_normal_style():
 def create_detail_sheet_by_json(sheet_name, file_name, title, json_data):
     if json_data is None or json_data is [] or len(json_data) == 0:
         MLog.error(u"json == None or json_data == [], return !")
-        raise Exception(u"Invalid json_data! json_data is None")
+        raise Exception(u"创建Excel时，传入的json数据是空的，所以抛出这个错误！")
 
     # 创建一个工作簿
     w = Workbook()

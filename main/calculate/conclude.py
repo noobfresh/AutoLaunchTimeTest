@@ -12,7 +12,7 @@ from last_frame_calculate import last_and_launching_frame_find_rgb, huya_first_f
     enter_ent_last_frame_find_fade_in, enter_ent_last_frame_find_fade_in_test
 from log.log import MLog
 from rgb import calculate_homepage_rgb
-from screenrecord.screen_record_main import getDevices
+from screenrecord.TestMain import getDevices
 
 conf = Config("default.ini")
 path = conf.getconf("default").feature_path

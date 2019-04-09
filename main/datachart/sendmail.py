@@ -17,7 +17,7 @@ from email.utils import parseaddr, formataddr
 from config.configs import Config
 from log.fileutil import make_patch, make_log_patch
 from log.log import MLog
-from screenrecord.device_info import getDeviceInfo
+from screenrecord.DeviceInfo import DeviceInfo
 
 chart_data_path = os.path.dirname(__file__) + os.sep + "dataresult" + os.sep
 
@@ -114,7 +114,8 @@ def sendEmailWithDefaultConfig():
     conf = Config("default.ini")
     event = conf.getconf("serial").serial_number
     serial = event.split(',')
-    subject = getDeviceInfo(serial[0]) + apk_name + u"启动时间数据分析"
+    deviceInfo = DeviceInfo(serial[0])
+    subject = deviceInfo.getDeviceInfo() + apk_name + u"启动时间数据分析"
     content = u"数据分析详见附件："
     contentType = u"application/octet-stream"
     try:

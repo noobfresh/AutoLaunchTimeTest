@@ -119,7 +119,7 @@ def isHomepageFinish(path):
     img = cv2.imread(path)
     height, width, something = img.shape
     # print "width = {}, height = {}, something = {}".format(width, height, something)
-    rgb = img[height - 5, 5]
+    rgb = img[height - 30, 30]
     print rgb
     if rgb[0] >= 253 and rgb[1] >= 253 and rgb[2] >= 253:
         return True

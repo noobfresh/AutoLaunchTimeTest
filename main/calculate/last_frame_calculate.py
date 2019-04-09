@@ -89,6 +89,7 @@ def last_and_launching_frame_find_rgb(length, from_index, real_path, real_launch
             # 首页匹配
             # 取巧操作，取右下角的点，看他是不是纯白，来过滤掉还有蒙层的帧
             if not isHomepageFinish(src_file_path):
+                MLog.info("index = {} is not at homepage".format(i))
                 continue
             match_img(src_file_path, real_last_feature_path, threshold, real_path + feature_name)
             if base_utils.os.path.exists(real_path + feature_name):
